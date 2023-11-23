@@ -87,12 +87,10 @@ namespace Parsify.Core.Config
             mod.TextLineDefinitions.Add( new ParsifyLine() { Name = "HEAD", Fields = new List<BaseField>() } );
             mod.TextLineDefinitions.Add( new ParsifyLine() { Name = "POS", Fields = new List<BaseField>() } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "DELIVERY", Index = 12, Length = 25, DataType = "string" } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "DELDATE", Index = 26, Length = 50, DataType = "datetime" } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "NOTE", Index = 4, Length = 10, DataType = "string" } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "FLAG", Index = 14, Length = 2, DataType = "string" } );
 
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new Plain() { Name = "QUANTITY", Index = 10, Length = 6, DataType = "int" } );
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new Plain() { Name = "PRICE", Index = 16, Length = 22, DataType="decimal(2)" } );
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new Plain() { Name = "X", Index = 30, Length = 36, DataType = "decimal(3)" } );
+            mod.TextLineDefinitions[ 1 ].Fields.Add( new Plain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
 
             return mod;
         }

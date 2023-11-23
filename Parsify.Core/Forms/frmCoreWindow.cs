@@ -1,5 +1,8 @@
-﻿using Parsify.Core.Config;
+﻿using Kbg.NppPluginNET.PluginInfrastructure;
+using Parsify.Core;
+using Parsify.Core.Config;
 using Parsify.Core.Forms;
+using Parsify.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +29,7 @@ namespace Kbg.NppPluginNET
             this.Configuration = AppConfig.LoadOrCreate();
 
             ParsifyModule.DebugCreateDefault( "text.xml", Parsify.Core.Models.TextFormat.Plain );
-            ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
+            //ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
 
             this.Enabled = false;
 
@@ -121,13 +124,34 @@ namespace Kbg.NppPluginNET
         {
             this.treeDataView.Nodes.Add( $"{module.Name} ({module.Version})" );
 
+            ParseFile( module );
+
             foreach ( var line in module.TextLineDefinitions )
             {
                 var lineNode = this.treeDataView.Nodes.Add( line.Name );
 
                 foreach ( var field in line.Fields )
                 {
-                    var fieldNode = lineNode.Nodes.Add( field.Name + ": unknown" );
+                    var fieldNode = lineNode.Nodes.Add( field.Name + ": " + field.Value );
+                }
+            }
+        }
+
+        private void ParseFile( ParsifyModule module )
+        {
+            Scintilla scintilla = new Scintilla();
+
+            foreach ( var def in module.TextLineDefinitions )
+            {
+                foreach ( var line in scintilla.ReadLines( def.Name ) )
+                {
+                    foreach ( var field in def.Fields )
+                    {
+                        if ( field is Plain plain )
+                            field.Value = Extensions.GetField( line, plain.Index, plain.Length );
+                        else
+                            throw new NotImplementedException("csv");
+                    }
                 }
             }
         }
