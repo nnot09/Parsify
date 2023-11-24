@@ -2,6 +2,7 @@
 using Parsify.Core;
 using Parsify.Core.Config;
 using Parsify.Core.Forms;
+using Parsify.Core.Forms.NodeControls;
 using Parsify.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Kbg.NppPluginNET
         public AppConfig Configuration { get; set; }
 
         private List<ParsifyModule> _moduleDefinitions;
+        private Scintilla _scintilla;
 
         public frmCoreWindow()
         {
@@ -27,6 +29,7 @@ namespace Kbg.NppPluginNET
 
             this._moduleDefinitions = new List<ParsifyModule>();
             this.Configuration = AppConfig.LoadOrCreate();
+            this._scintilla = new Scintilla();
 
             ParsifyModule.DebugCreateDefault( "text.xml", Parsify.Core.Models.TextFormat.Plain );
             //ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
@@ -120,37 +123,26 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        private void PrintModule( ParsifyModule module )
+        private void ParseFile( ParsifyModule module )
         {
             this.treeDataView.Nodes.Add( $"{module.Name} ({module.Version})" );
 
-            ParseFile( module );
-
-            foreach ( var line in module.TextLineDefinitions )
-            {
-                var lineNode = this.treeDataView.Nodes.Add( line.Name );
-
-                foreach ( var field in line.Fields )
-                {
-                    var fieldNode = lineNode.Nodes.Add( field.Name + ": " + field.Value );
-                }
-            }
-        }
-
-        private void ParseFile( ParsifyModule module )
-        {
-            Scintilla scintilla = new Scintilla();
-
             foreach ( var def in module.TextLineDefinitions )
             {
-                foreach ( var line in scintilla.ReadLines( def.Name ) )
+                foreach ( var line in _scintilla.ReadLines( def.Name ) )
                 {
+                    var lineNode = new NodeLine( def, line.LineNo );
+                    this.treeDataView.Nodes.Add( lineNode );
+
                     foreach ( var field in def.Fields )
                     {
                         if ( field is Plain plain )
                             field.Value = Extensions.GetField( line.Line, plain.Index, plain.Length );
                         else
-                            throw new NotImplementedException("csv");
+                            throw new NotImplementedException( "csv" );
+
+                        var fieldNode = new NodeField( def, field );
+                        lineNode.Nodes.Add( fieldNode );
                     }
                 }
             }
@@ -158,13 +150,38 @@ namespace Kbg.NppPluginNET
 
         private void comboTextFormats_SelectedIndexChanged( object sender, EventArgs e )
         {
-            if ( comboTextFormats.SelectedItem == null )
-            {
-                this.treeDataView.Nodes.Clear();
-                return;
-            }
+            this.treeDataView.Nodes.Clear();
 
-            PrintModule( comboTextFormats.SelectedItem as ParsifyModule );
+            if ( comboTextFormats.SelectedItem == null )
+                return;
+
+            ParseFile( comboTextFormats.SelectedItem as ParsifyModule );
+        }
+
+        private void treeDataView_NodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
+        {
+            if ( e.Node is NodeField field )
+            {
+                if ( field.Field is Plain plain )
+                {
+                    _scintilla.SelectFieldValue( ( field.Parent as NodeLine ).DocumentLineNo, plain.Index, plain.Length );
+                }
+            }
+        }
+
+        private void treeNodeContext_Opening( object sender, CancelEventArgs e )
+        {
+
+        }
+
+        private void treeNodeContext_Opened( object sender, EventArgs e )
+        {
+
+        }
+
+        private void treeNodeContext_Paint( object sender, PaintEventArgs e )
+        {
+
         }
     }
 }
