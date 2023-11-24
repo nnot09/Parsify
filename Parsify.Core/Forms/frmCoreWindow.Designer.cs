@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panToolbar = new System.Windows.Forms.Panel();
             this.btnOpenConfig = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -35,8 +36,15 @@
             this.btnUpdateModules = new System.Windows.Forms.Button();
             this.panContent = new System.Windows.Forms.Panel();
             this.treeDataView = new System.Windows.Forms.TreeView();
+            this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showAllFieldsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.markAll0LinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.markToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.valueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allValuesOf0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
+            this.treeNodeContext.SuspendLayout();
             this.SuspendLayout();
             // 
             // panToolbar
@@ -105,11 +113,58 @@
             // 
             // treeDataView
             // 
+            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
             this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeDataView.Location = new System.Drawing.Point(0, 0);
             this.treeDataView.Name = "treeDataView";
             this.treeDataView.Size = new System.Drawing.Size(581, 405);
             this.treeDataView.TabIndex = 0;
+            this.treeDataView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeDataView_NodeMouseClick);
+            // 
+            // treeNodeContext
+            // 
+            this.treeNodeContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showAllFieldsToolStripMenuItem,
+            this.markAll0LinesToolStripMenuItem,
+            this.markToolStripMenuItem1});
+            this.treeNodeContext.Name = "treeNodeContext";
+            this.treeNodeContext.Size = new System.Drawing.Size(184, 92);
+            this.treeNodeContext.Opening += new System.ComponentModel.CancelEventHandler(this.treeNodeContext_Opening);
+            this.treeNodeContext.Opened += new System.EventHandler(this.treeNodeContext_Opened);
+            this.treeNodeContext.Paint += new System.Windows.Forms.PaintEventHandler(this.treeNodeContext_Paint);
+            // 
+            // showAllFieldsToolStripMenuItem
+            // 
+            this.showAllFieldsToolStripMenuItem.Name = "showAllFieldsToolStripMenuItem";
+            this.showAllFieldsToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.showAllFieldsToolStripMenuItem.Text = "Show only \"{0}\" lines";
+            // 
+            // markAll0LinesToolStripMenuItem
+            // 
+            this.markAll0LinesToolStripMenuItem.Name = "markAll0LinesToolStripMenuItem";
+            this.markAll0LinesToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.markAll0LinesToolStripMenuItem.Text = "Mark all \"{0}\" lines";
+            // 
+            // markToolStripMenuItem1
+            // 
+            this.markToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.valueToolStripMenuItem,
+            this.allValuesOf0ToolStripMenuItem});
+            this.markToolStripMenuItem1.Name = "markToolStripMenuItem1";
+            this.markToolStripMenuItem1.Size = new System.Drawing.Size(183, 22);
+            this.markToolStripMenuItem1.Text = "Mark";
+            // 
+            // valueToolStripMenuItem
+            // 
+            this.valueToolStripMenuItem.Name = "valueToolStripMenuItem";
+            this.valueToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.valueToolStripMenuItem.Text = "Value";
+            // 
+            // allValuesOf0ToolStripMenuItem
+            // 
+            this.allValuesOf0ToolStripMenuItem.Name = "allValuesOf0ToolStripMenuItem";
+            this.allValuesOf0ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.allValuesOf0ToolStripMenuItem.Text = "All values of \"{0}\"";
             // 
             // frmCoreWindow
             // 
@@ -124,6 +179,7 @@
             this.panToolbar.ResumeLayout(false);
             this.panToolbar.PerformLayout();
             this.panContent.ResumeLayout(false);
+            this.treeNodeContext.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -137,5 +193,11 @@
         private System.Windows.Forms.ComboBox comboTextFormats;
         private System.Windows.Forms.Button btnOpenConfig;
         private System.Windows.Forms.TreeView treeDataView;
+        private System.Windows.Forms.ContextMenuStrip treeNodeContext;
+        private System.Windows.Forms.ToolStripMenuItem showAllFieldsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem markAll0LinesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem markToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem valueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem allValuesOf0ToolStripMenuItem;
     }
 }

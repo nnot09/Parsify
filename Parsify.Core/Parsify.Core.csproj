@@ -73,6 +73,9 @@
     <Compile Include="Config\AppConfig.cs" />
     <Compile Include="Forms\Extensions.cs" />
     <Compile Include="Forms\NativeWindowApi.cs" />
+    <Compile Include="Forms\NodeControls\NodeField.cs" />
+    <Compile Include="Forms\NodeControls\NodeLine.cs" />
+    <Compile Include="Highlighter.cs" />
     <Compile Include="Models\Fields\BaseField.cs" />
     <Compile Include="Models\Fields\Csv.cs" />
     <Compile Include="Models\ParsifyLine.cs" />
