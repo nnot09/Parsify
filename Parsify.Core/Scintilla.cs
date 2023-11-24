@@ -20,15 +20,15 @@ namespace Parsify.Core
             _gateway = new ScintillaGateway( ptr );
         }
 
-        public IEnumerable<(string Line, int LineNo)> GetLines()
+        public IEnumerable<string> GetLines()
         {
             for ( int i = 0; i < _gateway.GetLineCount(); i++ )
             {
-                yield return (_gateway.GetLine( i ), i + 1); // i acts as LineNo
+                yield return _gateway.GetLine( i );
             }
         }
 
-        public IEnumerable<(string Line, int LineNo)> ReadLines( string lineStartIdentifier )
+        public IEnumerable<string> ReadLines( string lineStartIdentifier )
         {
             for ( int i = 0; i < _gateway.GetLineCount(); i++ )
             {
@@ -36,21 +36,9 @@ namespace Parsify.Core
 
                 if ( line.StartsWith( lineStartIdentifier ) )
                 {
-                    yield return (line, i + 1); // i acts as LineNo
+                    yield return line;
                 }
             }
-        }
-
-        public void SelectFieldValue( int lineNo, int index, int length )
-        {
-            _gateway.ClearSelections();
-            _gateway.SetMultipleSelection( true );
-
-            string line = _gateway.GetLine( lineNo - 1 );
-            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
-
-            // caret, anchor
-            _gateway.SetSelection( lineStartIndex + index, lineStartIndex + length + index );
         }
     }
 }
