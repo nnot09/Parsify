@@ -1,4 +1,5 @@
 ﻿using Parsify.Core.Models;
+using Parsify.Core.Models.Values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +11,12 @@ namespace Parsify.Core.Forms.NodeControls
 {
     internal class NodeField : TreeNode
     {
-        public ParsifyLine Line { get; }
-        public BaseField Field { get; }
+        public Field DocumentField { get; }
 
-        public NodeField( ParsifyLine line, BaseField field ) 
-            : base( $"{field.Name}: {field.Value}" )
+        public NodeField( Field field ) 
+            : base( field.ToString() )
         {
-            this.Line = line;
-            this.Field = field;
+            this.DocumentField = field;
         }
     }
 }

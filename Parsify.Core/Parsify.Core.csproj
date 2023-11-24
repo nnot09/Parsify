@@ -70,23 +70,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\AppConfig.cs" />
-    <Compile Include="Forms\Extensions.cs" />
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="Core\DocumentParser.cs" />
+    <Compile Include="Other\Extensions.cs" />
     <Compile Include="Forms\NativeWindowApi.cs" />
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
-    <Compile Include="Models\Fields\BaseField.cs" />
-    <Compile Include="Models\Fields\Csv.cs" />
-    <Compile Include="Models\ParsifyLine.cs" />
-    <Compile Include="Models\ParsifyModule.cs" />
+    <Compile Include="XmlModels\Fields\ParsifyBaseField.cs" />
+    <Compile Include="XmlModels\Fields\ParsifyCsv.cs" />
+    <Compile Include="XmlModels\ParsifyLine.cs" />
+    <Compile Include="XmlModels\ParsifyModule.cs" />
     <Compile Include="Forms\frmConfig.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmConfig.Designer.cs">
       <DependentUpon>frmConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Fields\Plain.cs" />
-    <Compile Include="Models\Types\TextFormat.cs" />
+    <Compile Include="XmlModels\Fields\ParsifyPlain.cs" />
+    <Compile Include="Other\TextFormat.cs" />
+    <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\Field.cs" />
+    <Compile Include="Models\Line.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\frmCoreWindow.cs">
@@ -116,7 +120,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PluginInfrastructure\UnmanagedExports.cs" />
-    <Compile Include="Scintilla.cs" />
+    <Compile Include="Core\Scintilla.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\frmConfig.resx">
@@ -130,9 +134,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\update.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

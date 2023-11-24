@@ -162,6 +162,7 @@
             this.ctxMenuItemMarkSpecificOptionAllValues.Name = "ctxMenuItemMarkSpecificOptionAllValues";
             this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(180, 22);
             this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of \"{0}\"";
+            this.ctxMenuItemMarkSpecificOptionAllValues.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionAllValues_Click);
             // 
             // frmCoreWindow
             // 

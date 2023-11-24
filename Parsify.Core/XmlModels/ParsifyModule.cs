@@ -2,10 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -25,6 +21,9 @@ namespace Parsify.Core.Config
 
         [XmlElement( "Define" )]
         public List<ParsifyLine> TextLineDefinitions { get; set; }
+
+        public override string ToString()
+            => $"{Name} ({Version})";
 
         public static ParsifyModule Load( string path )
         {
@@ -84,13 +83,13 @@ namespace Parsify.Core.Config
                 TextLineDefinitions = new List<ParsifyLine>()
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { Name = "HEAD", Fields = new List<BaseField>() } );
-            mod.TextLineDefinitions.Add( new ParsifyLine() { Name = "POS", Fields = new List<BaseField>() } );
+            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyBaseField>() } );
+            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyBaseField>() } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "NOTE", Index = 4, Length = 10, DataType = "string" } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Plain() { Name = "FLAG", Index = 14, Length = 2, DataType = "string" } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "NOTE", Index = 4, Length = 10 } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
 
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new Plain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
+            mod.TextLineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
 
             return mod;
         }
@@ -105,15 +104,12 @@ namespace Parsify.Core.Config
                 TextLineDefinitions = new List<ParsifyLine>()
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { Name = "Order", Fields = new List<BaseField>(), CsvSplitDelimeter = "," } );
+            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>(), CsvSplitDelimeter = "," } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Csv() { Name = "OrderId", DataType = "string" } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new Csv() { Name = "OrderDescription" } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
+            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );
 
             return mod;
         }
-
-        public override string ToString()
-            => $"{this.Name} ({this.Version})";
     }
 }

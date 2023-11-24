@@ -7,9 +7,9 @@ using System.Xml.Serialization;
 
 namespace Parsify.Core.Models
 {
-    [XmlInclude( typeof( Plain ) )]
-    [XmlInclude( typeof( Csv ) )]
-    public class BaseField
+    [XmlInclude( typeof( ParsifyPlain ) )]
+    [XmlInclude( typeof( ParsifyCsv ) )]
+    public class ParsifyBaseField
     {
         [XmlAttribute( "Type" )]
         public string DataType { get; set; } = "string";

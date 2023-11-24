@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace Parsify.Core.Models
 {
-    public class Plain : BaseField
+    public class ParsifyPlain : ParsifyBaseField
     {
         [XmlAttribute("Index")]
         public int Index { get; set; }
