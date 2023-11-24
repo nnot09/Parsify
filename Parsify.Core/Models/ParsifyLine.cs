@@ -15,7 +15,8 @@ namespace Parsify.Core.Models
         [XmlAttribute( "Name" )]
         public string Name { get; set; }
 
-        [XmlElement( "Field" )]
+        [XmlElement("Plain", typeof( Plain ))]
+        [XmlElement("Csv", typeof( Csv ))]
         public List<BaseField> Fields { get; set; }
 
         [XmlElement("CsvSplitDelimeter")]
