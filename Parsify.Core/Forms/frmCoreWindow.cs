@@ -148,7 +148,7 @@ namespace Kbg.NppPluginNET
                     foreach ( var field in def.Fields )
                     {
                         if ( field is Plain plain )
-                            field.Value = Extensions.GetField( line, plain.Index, plain.Length );
+                            field.Value = Extensions.GetField( line.Line, plain.Index, plain.Length );
                         else
                             throw new NotImplementedException("csv");
                     }

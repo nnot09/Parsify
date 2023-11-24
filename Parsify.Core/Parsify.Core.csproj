@@ -73,6 +73,8 @@
     <Compile Include="Config\AppConfig.cs" />
     <Compile Include="Forms\Extensions.cs" />
     <Compile Include="Forms\NativeWindowApi.cs" />
+    <Compile Include="Forms\NodeControls\NodeField.cs" />
+    <Compile Include="Forms\NodeControls\NodeLine.cs" />
     <Compile Include="Models\Fields\BaseField.cs" />
     <Compile Include="Models\Fields\Csv.cs" />
     <Compile Include="Models\ParsifyLine.cs" />
@@ -132,6 +134,7 @@
   <ItemGroup>
     <None Include="Resources\update.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\PluginInfrastructure\DllExport\NppPlugin.DllExport.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
