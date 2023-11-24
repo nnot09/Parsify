@@ -41,15 +41,29 @@ namespace Parsify.Core
             }
         }
 
+        // TODO Use marking instead of selection
         public void SelectFieldValue( int lineNo, int index, int length )
         {
             _gateway.ClearSelections();
-            _gateway.SetMultipleSelection( true );
 
             int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
 
             // caret, anchor
             _gateway.SetSelection( lineStartIndex + index, lineStartIndex + length + index );
+        }
+
+        public void SelectLines( IEnumerable<int> lineNo )
+        {
+            _gateway.ClearSelections();
+            _gateway.SetMultipleSelection( true );
+
+            foreach ( var line in lineNo )
+            {
+                int lineStartIndex = _gateway.PositionFromLine( line - 1 );
+                int lineEndIndex = _gateway.GetLineEndPosition( line - 1 );
+
+                _gateway.AddSelection( lineStartIndex, lineEndIndex );
+            }
         }
     }
 }

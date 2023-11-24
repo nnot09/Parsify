@@ -7,8 +7,10 @@ using Parsify.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -166,22 +168,22 @@ namespace Kbg.NppPluginNET
                 {
                     _scintilla.SelectFieldValue( ( field.Parent as NodeLine ).DocumentLineNo, plain.Index, plain.Length );
                 }
+
+                ctxMenuItemShowOnlyLines.Visible = false;
+                ctxMenuItemMarkAllLines.Visible = false;
+                ctxMenuItemMarkSpecificOptions.Visible = true;
             }
-        }
+            else if ( e.Node is NodeLine line )
+            {
+                // TODO More performant way
+                var lineNoList = _scintilla.ReadLines( line.ParsifyLine.Name ).Select( l => l.LineNo );
 
-        private void treeNodeContext_Opening( object sender, CancelEventArgs e )
-        {
+                _scintilla.SelectLines( lineNoList );
 
-        }
-
-        private void treeNodeContext_Opened( object sender, EventArgs e )
-        {
-
-        }
-
-        private void treeNodeContext_Paint( object sender, PaintEventArgs e )
-        {
-
+                ctxMenuItemShowOnlyLines.Visible = true;
+                ctxMenuItemMarkAllLines.Visible = true;
+                ctxMenuItemMarkSpecificOptions.Visible = false;
+            }
         }
     }
 }
