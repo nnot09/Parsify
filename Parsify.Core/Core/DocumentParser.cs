@@ -15,7 +15,7 @@ namespace Parsify.Core.Core
     {
         public Document Document { get; set; }
         public bool Success { get; set; }
-        public bool HasErrors { get; set; }
+        public int NumberOfErrors { get; }
 
         private StringBuilder _errors;
 
@@ -39,7 +39,7 @@ namespace Parsify.Core.Core
                 if ( moduleLine == null )
                 {
                     _errors.AppendLine( $"LineNo {documentLine.LineNo} seems to be undefined." );
-                    HasErrors = true;
+                    NumberOfErrors++;
                     continue;
                 }
 
@@ -72,6 +72,6 @@ namespace Parsify.Core.Core
         }
 
         public string GetErrors()
-            => _errors.Length > 0 ? _errors.ToString() : string.Empty;
+            => NumberOfErrors > 0 ? _errors.ToString() : string.Empty;
     }
 }
