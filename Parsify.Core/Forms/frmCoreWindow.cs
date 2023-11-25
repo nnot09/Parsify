@@ -139,6 +139,7 @@ namespace Kbg.NppPluginNET
                 {
                     var fieldNode = new NodeField( field );
                     lineNode.Nodes.Add( fieldNode );
+                    this.treeDataView.UpdateNodeTooltip( fieldNode );
                 }
 
                 this.treeDataView.Nodes.Add( lineNode );
@@ -208,11 +209,6 @@ namespace Kbg.NppPluginNET
                 return;
 
             ApplySelectedModule( comboTextFormats.SelectedItem as ParsifyModule );
-        }
-
-        private void treeDataView_NodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
-        {
-            
         }
 
         private void ctxMenuItemMarkSpecificOptionAllValues_Click( object sender, EventArgs e )
