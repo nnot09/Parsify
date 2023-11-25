@@ -73,7 +73,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Other\Extensions.cs" />
-    <Compile Include="Forms\NativeWindowApi.cs" />
+    <Compile Include="Other\NativeWindowApi.cs" />
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
     <Compile Include="XmlModels\Fields\ParsifyBaseField.cs" />
