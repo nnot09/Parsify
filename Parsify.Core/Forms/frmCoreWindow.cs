@@ -115,7 +115,7 @@ namespace Kbg.NppPluginNET
             SyncModulesList();
 
             if ( errorModules.Length > 0 )
-                MessageBox.Show( $"Failed to load some XML modules:\r\n{errorModules}", "XML-Modules", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show( $"Failed to load some XML modules:\r\n{errorModules}", "XML-Modules", MessageBoxButtons.OK, MessageBoxIcon.Warning );
         }
 
         private void SyncModulesList()
