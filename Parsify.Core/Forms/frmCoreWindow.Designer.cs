@@ -35,7 +35,7 @@
             this.comboTextFormats = new System.Windows.Forms.ComboBox();
             this.btnUpdateModules = new System.Windows.Forms.Button();
             this.panContent = new System.Windows.Forms.Panel();
-            this.treeDataView = new System.Windows.Forms.TreeView();
+            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuItemShowOnlyLines = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkAllLines = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,7 +125,6 @@
             this.treeDataView.Size = new System.Drawing.Size(581, 405);
             this.treeDataView.TabIndex = 0;
             this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
-            this.treeDataView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeDataView_NodeMouseClick);
             // 
             // treeNodeContext
             // 
@@ -235,7 +234,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboTextFormats;
         private System.Windows.Forms.Button btnOpenConfig;
-        private System.Windows.Forms.TreeView treeDataView;
+        Parsify.Core.Forms.NodeControls.FieldTreeView treeDataView;
         private System.Windows.Forms.ContextMenuStrip treeNodeContext;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemShowOnlyLines;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkAllLines;
