@@ -28,8 +28,8 @@ namespace Kbg.NppPluginNET
 
         private List<ParsifyModule> _moduleDefinitions;
         private Scintilla _scintilla;
-        private bool _toggleMarkLines;
         private bool _toggleShowLines;
+        private int _errorsCount;
 
         public frmCoreWindow()
         {
@@ -117,12 +117,14 @@ namespace Kbg.NppPluginNET
                 return;
             }
 
-            if ( documentParser.HasErrors )
+            if ( documentParser.NumberOfErrors > 0 )
                 MessageBox.Show( $"Text document could not be parsed entirely:\r\n{documentParser.GetErrors()}", "Partially parsed", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 
             this.CurrentDocument = documentParser.Document;
+            this._errorsCount = documentParser.NumberOfErrors;
 
             GenerateTree();
+            UpdateStatusBar();
         }
 
         private void GenerateTree()
@@ -141,6 +143,36 @@ namespace Kbg.NppPluginNET
 
                 this.treeDataView.Nodes.Add( lineNode );
             }
+        }
+
+        private void UpdateStatusBar()
+        {
+            footerlbTotalLinesCount.Text = $"Total Lines: {CurrentDocument.Lines.Count}";
+
+            if ( this.treeDataView.SelectedNode != null )
+            {
+                if ( this.treeDataView.SelectedNode is NodeField field )
+                {
+                    string identifier = field.DocumentField.Parent.LineIdentifier;
+                    var sameValuesCount = CurrentDocument.Lines
+                        .Where( l => l.LineIdentifier == identifier )
+                        .SelectMany( l => l.Fields )
+                        .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
+                        .Count();
+
+                    footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
+                }
+                else if ( this.treeDataView.SelectedNode is NodeLine line )
+                {
+                    var sameLinesCount = CurrentDocument.Lines
+                                            .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
+                                            .Count();
+
+                    footerlbSelectedCount.Text = $"{line.DocumentLine.LineIdentifier} Count: {sameLinesCount}";
+                }
+            }
+
+            footerlbParsifyErrorsCount.Text = $"Parsify: {_errorsCount} Errors";
         }
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
@@ -180,27 +212,7 @@ namespace Kbg.NppPluginNET
 
         private void treeDataView_NodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
         {
-            if ( e.Node is NodeField field )
-            {
-                _scintilla.SelectFieldValue( field.DocumentField );
-
-                ctxMenuItemShowOnlyLines.Visible = false;
-                ctxMenuItemMarkAllLines.Visible = false;
-                ctxMenuItemMarkSpecificOptions.Visible = true;
-            }
-            else if ( e.Node is NodeLine line )
-            {
-                // TODO More performant way
-                var lineNoList = CurrentDocument.Lines
-                    .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
-                    .Select( l => l.DocumentLineNumber );
-
-                _scintilla.SelectLines( lineNoList );
-
-                ctxMenuItemShowOnlyLines.Visible = true;
-                ctxMenuItemMarkAllLines.Visible = true;
-                ctxMenuItemMarkSpecificOptions.Visible = false;
-            }
+            
         }
 
         private void ctxMenuItemMarkSpecificOptionAllValues_Click( object sender, EventArgs e )
@@ -275,6 +287,35 @@ namespace Kbg.NppPluginNET
                     .Select( l => l.DocumentLineNumber );
 
                 _scintilla.SelectLines( lineNoList );
+            }
+        }
+
+        private void treeDataView_AfterSelect( object sender, TreeViewEventArgs e )
+        {
+            if ( e.Node == null ) return;
+
+            UpdateStatusBar();
+
+            if ( e.Node is NodeField field )
+            {
+                _scintilla.SelectFieldValue( field.DocumentField );
+
+                ctxMenuItemShowOnlyLines.Visible = false;
+                ctxMenuItemMarkAllLines.Visible = false;
+                ctxMenuItemMarkSpecificOptions.Visible = true;
+            }
+            else if ( e.Node is NodeLine line )
+            {
+                // TODO More performant way
+                var lineNoList = CurrentDocument.Lines
+                    .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
+                    .Select( l => l.DocumentLineNumber );
+
+                _scintilla.SelectLines( lineNoList );
+
+                ctxMenuItemShowOnlyLines.Visible = true;
+                ctxMenuItemMarkAllLines.Visible = true;
+                ctxMenuItemMarkSpecificOptions.Visible = false;
             }
         }
     }

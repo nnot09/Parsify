@@ -42,9 +42,14 @@
             this.ctxMenuItemMarkSpecificOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionValue = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionAllValues = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.footerlbTotalLinesCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.footerlbSelectedCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.footerlbParsifyErrorsCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
             this.treeNodeContext.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panToolbar
@@ -119,6 +124,7 @@
             this.treeDataView.Name = "treeDataView";
             this.treeDataView.Size = new System.Drawing.Size(581, 405);
             this.treeDataView.TabIndex = 0;
+            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
             this.treeDataView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeDataView_NodeMouseClick);
             // 
             // treeNodeContext
@@ -156,7 +162,7 @@
             // ctxMenuItemMarkSpecificOptionValue
             // 
             this.ctxMenuItemMarkSpecificOptionValue.Name = "ctxMenuItemMarkSpecificOptionValue";
-            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(180, 22);
+            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(210, 22);
             this.ctxMenuItemMarkSpecificOptionValue.Text = "Value";
             this.ctxMenuItemMarkSpecificOptionValue.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionValue_Click);
             // 
@@ -167,11 +173,44 @@
             this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type";
             this.ctxMenuItemMarkSpecificOptionAllValues.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionAllValues_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.footerlbTotalLinesCount,
+            this.footerlbSelectedCount,
+            this.footerlbParsifyErrorsCount});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 416);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(581, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // footerlbTotalLinesCount
+            // 
+            this.footerlbTotalLinesCount.Name = "footerlbTotalLinesCount";
+            this.footerlbTotalLinesCount.Size = new System.Drawing.Size(86, 17);
+            this.footerlbTotalLinesCount.Text = "Total Lines: n/a";
+            // 
+            // footerlbSelectedCount
+            // 
+            this.footerlbSelectedCount.Name = "footerlbSelectedCount";
+            this.footerlbSelectedCount.Size = new System.Drawing.Size(240, 17);
+            this.footerlbSelectedCount.Spring = true;
+            this.footerlbSelectedCount.Text = "Selected Count: n/a";
+            // 
+            // footerlbParsifyErrorsCount
+            // 
+            this.footerlbParsifyErrorsCount.Name = "footerlbParsifyErrorsCount";
+            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(188, 17);
+            this.footerlbParsifyErrorsCount.Spring = true;
+            this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
+            // 
             // frmCoreWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(581, 438);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panContent);
             this.Controls.Add(this.panToolbar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -181,7 +220,10 @@
             this.panToolbar.PerformLayout();
             this.panContent.ResumeLayout(false);
             this.treeNodeContext.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -200,5 +242,9 @@
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkSpecificOptions;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkSpecificOptionValue;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkSpecificOptionAllValues;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel footerlbTotalLinesCount;
+        private System.Windows.Forms.ToolStripStatusLabel footerlbSelectedCount;
+        private System.Windows.Forms.ToolStripStatusLabel footerlbParsifyErrorsCount;
     }
 }
