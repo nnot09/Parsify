@@ -75,7 +75,7 @@ namespace Parsify.Core
         }
 
         // TODO Csv support
-        private void SelectMultiplePlainFieldValues( IEnumerable<Line> lines, Field field )
+        public void SelectMultiplePlainFieldValues( IEnumerable<Line> lines, Field field )
         {
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
@@ -110,6 +110,22 @@ namespace Parsify.Core
             int end = lineStartIndex + index + length;
 
             return (start, end);
+        }
+
+        public void UnhideAll( IEnumerable<Line> lines )
+        {
+            foreach (var line in lines)
+            {
+                _gateway.ShowLines( line.DocumentLineNumber - 1, line.DocumentLineNumber - 1 );
+            }
+        }
+
+        public void HideLines( IEnumerable<int> lineNumbers )
+        {
+            foreach ( var lineNo in lineNumbers )
+            {
+                _gateway.HideLines( lineNo - 1, lineNo - 1 );
+            }
         }
     }
 }
