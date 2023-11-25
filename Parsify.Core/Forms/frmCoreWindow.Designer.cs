@@ -128,19 +128,21 @@
             this.ctxMenuItemMarkAllLines,
             this.ctxMenuItemMarkSpecificOptions});
             this.treeNodeContext.Name = "treeNodeContext";
-            this.treeNodeContext.Size = new System.Drawing.Size(184, 92);
+            this.treeNodeContext.Size = new System.Drawing.Size(230, 70);
             // 
             // ctxMenuItemShowOnlyLines
             // 
             this.ctxMenuItemShowOnlyLines.Name = "ctxMenuItemShowOnlyLines";
-            this.ctxMenuItemShowOnlyLines.Size = new System.Drawing.Size(183, 22);
-            this.ctxMenuItemShowOnlyLines.Text = "Show only \"{0}\" lines";
+            this.ctxMenuItemShowOnlyLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
+            this.ctxMenuItemShowOnlyLines.Click += new System.EventHandler(this.ctxMenuItemShowOnlyLines_Click);
             // 
             // ctxMenuItemMarkAllLines
             // 
             this.ctxMenuItemMarkAllLines.Name = "ctxMenuItemMarkAllLines";
-            this.ctxMenuItemMarkAllLines.Size = new System.Drawing.Size(183, 22);
-            this.ctxMenuItemMarkAllLines.Text = "Mark all \"{0}\" lines";
+            this.ctxMenuItemMarkAllLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemMarkAllLines.Text = "Mark all lines from same type";
+            this.ctxMenuItemMarkAllLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllLines_Click);
             // 
             // ctxMenuItemMarkSpecificOptions
             // 
@@ -148,7 +150,7 @@
             this.ctxMenuItemMarkSpecificOptionValue,
             this.ctxMenuItemMarkSpecificOptionAllValues});
             this.ctxMenuItemMarkSpecificOptions.Name = "ctxMenuItemMarkSpecificOptions";
-            this.ctxMenuItemMarkSpecificOptions.Size = new System.Drawing.Size(183, 22);
+            this.ctxMenuItemMarkSpecificOptions.Size = new System.Drawing.Size(229, 22);
             this.ctxMenuItemMarkSpecificOptions.Text = "Mark";
             // 
             // ctxMenuItemMarkSpecificOptionValue
@@ -156,12 +158,13 @@
             this.ctxMenuItemMarkSpecificOptionValue.Name = "ctxMenuItemMarkSpecificOptionValue";
             this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(180, 22);
             this.ctxMenuItemMarkSpecificOptionValue.Text = "Value";
+            this.ctxMenuItemMarkSpecificOptionValue.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionValue_Click);
             // 
             // ctxMenuItemMarkSpecificOptionAllValues
             // 
             this.ctxMenuItemMarkSpecificOptionAllValues.Name = "ctxMenuItemMarkSpecificOptionAllValues";
-            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(180, 22);
-            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of \"{0}\"";
+            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(210, 22);
+            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type";
             this.ctxMenuItemMarkSpecificOptionAllValues.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionAllValues_Click);
             // 
             // frmCoreWindow

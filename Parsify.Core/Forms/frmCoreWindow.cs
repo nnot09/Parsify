@@ -28,6 +28,8 @@ namespace Kbg.NppPluginNET
 
         private List<ParsifyModule> _moduleDefinitions;
         private Scintilla _scintilla;
+        private bool _toggleMarkLines;
+        private bool _toggleShowLines;
 
         public frmCoreWindow()
         {
@@ -66,31 +68,6 @@ namespace Kbg.NppPluginNET
             this.UpdateWindowStyles();
 
             base.OnHandleCreated( e );
-        }
-
-        private void btnOpenConfig_Click( object sender, EventArgs e )
-        {
-            using ( frmConfig configWindow = new frmConfig( this.Configuration ) )
-            {
-                if ( configWindow.ShowDialog() == DialogResult.OK )
-                {
-                    this.Configuration.Save();
-                }
-            }
-        }
-
-        private void btnUpdateModules_Click( object sender, EventArgs e )
-        {
-            this.Enabled = false;
-
-            try
-            {
-                UpdateModulesList();
-            }
-            finally
-            {
-                this.Enabled = true;
-            }
         }
 
         private void UpdateModulesList()
@@ -144,7 +121,7 @@ namespace Kbg.NppPluginNET
                 MessageBox.Show( $"Text document could not be parsed entirely:\r\n{documentParser.GetErrors()}", "Partially parsed", MessageBoxButtons.OK, MessageBoxIcon.Warning );
 
             this.CurrentDocument = documentParser.Document;
-            
+
             GenerateTree();
         }
 
@@ -188,6 +165,7 @@ namespace Kbg.NppPluginNET
             finally
             {
                 this.Enabled = true;
+            }
         }
 
         private void comboTextFormats_SelectedIndexChanged( object sender, EventArgs e )
@@ -234,10 +212,69 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                //foreach ( var documentLines in _scintilla.ReadLines( fieldNode.Line.StartsWithIdentifier ) )
-                //{
+                _scintilla.SelectMultiplePlainFieldValues( CurrentDocument.Lines, fieldNode.DocumentField );
+            }
+        }
 
-                //}
+        private void ctxMenuItemMarkSpecificOptionValue_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( this.treeDataView.SelectedNode is NodeField fieldNode )
+            {
+                _scintilla.SelectFieldValue( fieldNode.DocumentField );
+            }
+        }
+
+        private void ctxMenuItemShowOnlyLines_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( this.treeDataView.SelectedNode is NodeLine lineNode )
+            {
+                if ( _toggleShowLines )
+                {
+                    ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
+
+                    _scintilla.UnhideAll( CurrentDocument.Lines );
+                }
+                else
+                {
+                    ctxMenuItemShowOnlyLines.Text = "Show all lines";
+
+                    // TODO More performant way
+                    var lineNoList = CurrentDocument.Lines
+                        .Where( l => l.LineIdentifier != lineNode.DocumentLine.LineIdentifier )
+                        .Select( l => l.DocumentLineNumber );
+
+                    _scintilla.HideLines( lineNoList );
+                }
+
+                _toggleShowLines = !_toggleShowLines;
+            }
+        }
+
+        private void ctxMenuItemMarkAllLines_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( this.treeDataView.SelectedNode is NodeLine lineNode )
+            {
+                // TODO More performant way
+                var lineNoList = CurrentDocument.Lines
+                    .Where( l => l.LineIdentifier == lineNode.DocumentLine.LineIdentifier )
+                    .Select( l => l.DocumentLineNumber );
+
+                _scintilla.SelectLines( lineNoList );
             }
         }
     }
