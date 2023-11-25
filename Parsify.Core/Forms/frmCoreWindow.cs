@@ -166,6 +166,30 @@ namespace Kbg.NppPluginNET
             }
         }
 
+        private void btnOpenConfig_Click( object sender, EventArgs e )
+        {
+            using ( frmConfig configWindow = new frmConfig( this.Configuration ) )
+            {
+                if ( configWindow.ShowDialog() == DialogResult.OK )
+                {
+                    this.Configuration.Save();
+                }
+            }
+        }
+
+        private void btnUpdateModules_Click( object sender, EventArgs e )
+        {
+            this.Enabled = false;
+
+            try
+            {
+                UpdateModulesList();
+            }
+            finally
+            {
+                this.Enabled = true;
+        }
+
         private void comboTextFormats_SelectedIndexChanged( object sender, EventArgs e )
         {
             this.treeDataView.Nodes.Clear();
