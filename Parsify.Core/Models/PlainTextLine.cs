@@ -4,18 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsify.Core.Models.Values
+namespace Parsify.Core.Models.Values // TODO ns
 {
-    public class Line
+    public class PlainTextLine : BaseLine
     {
         public string LineIdentifier {  get; set; }
-        public int DocumentLineNumber { get; set; }
-        public List<Field> Fields { get; set; }
-        
-        public Line()
-        {
-             Fields = new List<Field>();
-        }
 
         public override string ToString()
             => LineIdentifier; 

@@ -19,11 +19,11 @@ namespace Parsify.Core.Models.Values
         public TextFormat TextFormat { get; set; }
         public bool HasHeader { get; set; }
         public string CsvSplitDelimeter { get; set; }
-        public List<Line> Lines { get; set; }
+        public List<BaseLine> Lines { get; set; }
 
         public Document()
         {
-            Lines = new List<Line>();
+            Lines = new List<BaseLine>();
         }
 
         public override string ToString()

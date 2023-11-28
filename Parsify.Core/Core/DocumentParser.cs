@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,9 +15,9 @@ namespace Parsify.Core.Core
 {
     internal class DocumentParser
     {
-        public Document Document { get; set; }
-        public bool Success { get; set; }
-        public int NumberOfErrors { get; }
+        public Document Document { get; private set; }
+        public bool Success { get; private set; }
+        public int NumberOfErrors { get; private set; }
 
         private StringBuilder _errors;
 
@@ -33,6 +35,23 @@ namespace Parsify.Core.Core
                 HasHeader = module.HasTableHeader
             };
 
+            switch ( Document.TextFormat )
+            {
+                case TextFormat.Csv:
+                    ParseCsv( scintilla );
+                    return;
+
+                case TextFormat.Plain:
+                    ParseText( module, scintilla );
+                    return;
+
+                default:
+                    throw new NotImplementedException( "unknown format: " + Document.TextFormat );
+            }
+        }
+
+        private void ParseText( ParsifyModule module, Scintilla scintilla )
+        {
             foreach ( var documentLine in scintilla.GetLines() )
             {
                 var moduleLine = scintilla.GetLineDefinition( documentLine.Line, module.TextLineDefinitions );
@@ -46,7 +65,7 @@ namespace Parsify.Core.Core
                 }
 
                 // Line is defined since we're here
-                Line line = new Line()
+                PlainTextLine line = new PlainTextLine()
                 {
                     DocumentLineNumber = documentLine.LineNo,
                     LineIdentifier = moduleLine.StartsWithIdentifier
@@ -56,7 +75,7 @@ namespace Parsify.Core.Core
 
                 foreach ( var moduleLineFields in moduleLine.Fields.Cast<ParsifyPlain>() )
                 {
-                    Field field = new Field()
+                    PlainTextField field = new PlainTextField()
                     {
                         Name = moduleLineFields.Name,
                         Index = moduleLineFields.Index,
@@ -72,10 +91,67 @@ namespace Parsify.Core.Core
 
             Success = true;
         }
-        
-        private void ParseCsv()
-        {
 
+        private void ParseCsv( Scintilla scintilla )
+        {
+            string[] headerComponents = null;
+            bool skipFirstLine = Document.HasHeader;
+
+            foreach ( var documentLine in scintilla.GetLines(trimCrLf: true) )
+            {
+                if ( skipFirstLine && documentLine.LineNo == 1 )
+                {
+                    CsvLine header = new CsvLine()
+                    {
+                        DocumentLineNumber = documentLine.LineNo,
+                    };
+
+                    // TODO Csv escape stuff
+                    headerComponents = documentLine.Line.Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries );
+
+                    Document.Lines.Add( header );
+
+                    continue;
+                }
+
+                CsvLine line = new CsvLine()
+                {
+                    DocumentLineNumber = documentLine.LineNo,
+                };
+
+                var fields = GetCsvFields( headerComponents, documentLine.Line, Document.CsvSplitDelimeter );
+
+                // yes i know 
+                fields.ForEach( f => f.Parent = line );
+
+                line.Fields.AddRange(fields);
+
+                Document.Lines.Add( line );
+            }
+
+            Success = true;
+        }
+
+        private List<CsvField> GetCsvFields( IEnumerable<string> headerComponents, string currentLine, string splitDelimeter )
+        {
+            List<CsvField> fields = new List<CsvField>();
+
+            // TODO Csv escape stuff
+            var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
+
+            for ( int i = 0; i < values.Length; i++ )
+            {
+                var field = new CsvField()
+                {
+                    DataIndex = i,
+                    Name = headerComponents.ElementAtOrDefault( i ) ?? $"Unknown{i + 1}",
+                    Value = values[ i ],
+                };
+
+                fields.Add( field );
+            }
+
+            return fields;
         }
 
         public string GetErrors()

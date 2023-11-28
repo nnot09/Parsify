@@ -42,11 +42,16 @@ namespace Parsify.Core
             return line;
         }
 
-        public IEnumerable<(string Line, int LineNo)> GetLines()
+        public IEnumerable<(string Line, int LineNo)> GetLines( bool trimCrLf = false )
         {
             for ( int i = 0; i < _gateway.GetLineCount(); i++ )
             {
-                yield return (_gateway.GetLine( i ), i + 1); // i acts as LineNo
+                string currentLine = _gateway.GetLine( i );
+
+                if ( trimCrLf )
+                    currentLine = currentLine.TrimEnd( new[] { '\r', '\n' } );
+
+                yield return (currentLine, i + 1); // i acts as LineNo
             }
         }
 
@@ -64,7 +69,7 @@ namespace Parsify.Core
         }
 
         // TODO Use marking instead of selection
-        public void SelectFieldValue( Field field )
+        public void SelectFieldValue( PlainTextField field )
         {
             _gateway.ClearSelections();
 
@@ -75,13 +80,13 @@ namespace Parsify.Core
         }
 
         // TODO Csv support
-        public void SelectMultiplePlainFieldValues( IEnumerable<Line> lines, Field field )
+        public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, PlainTextField field )
         {
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
 
             // TODO Optimize
-            foreach ( var line in lines.Where( l => l.LineIdentifier == field.Parent.LineIdentifier ) )
+            foreach ( var line in lines.Where( l => l.LineIdentifier == (field.Parent as PlainTextLine).LineIdentifier ) )
             {
                 var area = GetSelectArea( line.DocumentLineNumber, field.Index, field.Length );
 
@@ -112,7 +117,7 @@ namespace Parsify.Core
             return (start, end);
         }
 
-        public void UnhideAll( IEnumerable<Line> lines )
+        public void UnhideAll( IEnumerable<PlainTextLine> lines )
         {
             foreach (var line in lines)
             {

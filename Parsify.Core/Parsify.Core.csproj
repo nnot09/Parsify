@@ -95,6 +95,10 @@
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Models\BaseField.cs" />
+    <Compile Include="Models\BaseLine.cs" />
+    <Compile Include="Models\CsvField.cs" />
+    <Compile Include="Models\CsvLine.cs" />
     <Compile Include="Other\Extensions.cs" />
     <Compile Include="Other\NativeWindowApi.cs" />
     <Compile Include="Forms\NodeControls\NodeField.cs" />
@@ -112,8 +116,8 @@
     <Compile Include="XmlModels\Fields\ParsifyPlain.cs" />
     <Compile Include="Other\TextFormat.cs" />
     <Compile Include="Models\Document.cs" />
-    <Compile Include="Models\Field.cs" />
-    <Compile Include="Models\Line.cs" />
+    <Compile Include="Models\PlainTextField.cs" />
+    <Compile Include="Models\PlainTextLine.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\frmCoreWindow.cs">

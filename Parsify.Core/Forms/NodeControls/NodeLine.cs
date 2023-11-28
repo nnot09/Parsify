@@ -11,9 +11,9 @@ namespace Parsify.Core.Forms.NodeControls
 {
     internal class NodeLine : TreeNode
     {
-        public Line DocumentLine { get; }
+        public BaseLine DocumentLine { get; }
 
-        public NodeLine( Line documentLine ) 
+        public NodeLine( BaseLine documentLine ) 
             : base( documentLine.ToString() )
         {
             this.DocumentLine = documentLine;

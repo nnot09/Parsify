@@ -40,7 +40,7 @@ namespace Kbg.NppPluginNET
             this._scintilla = new Scintilla();
 
             ParsifyModule.DebugCreateDefault( "text.xml", Parsify.Core.Models.TextFormat.Plain );
-            //ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
+            ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
 
             this.Enabled = false;
 
@@ -161,26 +161,49 @@ namespace Kbg.NppPluginNET
             {
                 if ( this.treeDataView.SelectedNode is NodeField field )
                 {
-                    string identifier = field.DocumentField.Parent.LineIdentifier;
-                    var sameValuesCount = CurrentDocument.Lines
-                        .Where( l => l.LineIdentifier == identifier )
-                        .SelectMany( l => l.Fields )
-                        .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
-                        .Count();
+                    if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                    {
+                        int sameValuesCount = GetSameValuesCountPlainTextFormat( field );
 
-                    footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
+                        footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
+                    }
                 }
                 else if ( this.treeDataView.SelectedNode is NodeLine line )
                 {
-                    var sameLinesCount = CurrentDocument.Lines
-                                            .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
-                                            .Count();
+                    if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                    {
+                        int sameLinesCount = GetPlainTextSelectedCount( line );
 
-                    footerlbSelectedCount.Text = $"{line.DocumentLine.LineIdentifier} Count: {sameLinesCount}";
+                        footerlbSelectedCount.Text = $"{(line.DocumentLine as PlainTextLine).LineIdentifier} Count: {sameLinesCount}";
+                    }
                 }
             }
 
             footerlbParsifyErrorsCount.Text = $"Parsify: {_errorsCount} Errors";
+        }
+
+        private int GetPlainTextSelectedCount( NodeLine line )
+        {
+            string identifier = ( line.DocumentLine as PlainTextLine ).LineIdentifier;
+
+            return CurrentDocument.Lines
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier == identifier )
+                        .Count();
+        }
+
+        private int GetSameValuesCountPlainTextFormat( NodeField field )
+        {
+            string identifier = (field.DocumentField.Parent as PlainTextLine).LineIdentifier;
+
+            var sameValuesCount = CurrentDocument.Lines
+                .Cast<PlainTextLine>()
+                .Where( l => l.LineIdentifier == identifier )
+                .SelectMany( l => l.Fields )
+                .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
+                .Count();
+
+            return sameValuesCount;
         }
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
@@ -227,7 +250,13 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                _scintilla.SelectMultiplePlainFieldValues( CurrentDocument.Lines, fieldNode.DocumentField );
+                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectMultiplePlainFieldValues( 
+                        CurrentDocument.Lines.Cast<PlainTextLine>(), 
+                        fieldNode.DocumentField as PlainTextField 
+                    );
+                }
             }
         }
 
@@ -240,7 +269,10 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                _scintilla.SelectFieldValue( fieldNode.DocumentField );
+                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField as PlainTextField );
+                }
             }
         }
 
@@ -251,13 +283,16 @@ namespace Kbg.NppPluginNET
                 return;
             }
 
+            if ( CurrentDocument.TextFormat != TextFormat.Plain )
+                return;
+
             if ( this.treeDataView.SelectedNode is NodeLine lineNode )
             {
                 if ( _toggleShowLines )
                 {
                     ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
 
-                    _scintilla.UnhideAll( CurrentDocument.Lines );
+                    _scintilla.UnhideAll( CurrentDocument.Lines.Cast<PlainTextLine>() );
                 }
                 else
                 {
@@ -265,7 +300,8 @@ namespace Kbg.NppPluginNET
 
                     // TODO More performant way
                     var lineNoList = CurrentDocument.Lines
-                        .Where( l => l.LineIdentifier != lineNode.DocumentLine.LineIdentifier )
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier != ( lineNode.DocumentLine as PlainTextLine ).LineIdentifier )
                         .Select( l => l.DocumentLineNumber );
 
                     _scintilla.HideLines( lineNoList );
@@ -282,11 +318,15 @@ namespace Kbg.NppPluginNET
                 return;
             }
 
+            if ( CurrentDocument.TextFormat != TextFormat.Plain )
+                return;
+
             if ( this.treeDataView.SelectedNode is NodeLine lineNode )
             {
                 // TODO More performant way
                 var lineNoList = CurrentDocument.Lines
-                    .Where( l => l.LineIdentifier == lineNode.DocumentLine.LineIdentifier )
+                    .Cast<PlainTextLine>()
+                    .Where( l => l.LineIdentifier == (lineNode.DocumentLine as PlainTextLine).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
                 _scintilla.SelectLines( lineNoList );
@@ -296,12 +336,14 @@ namespace Kbg.NppPluginNET
         private void treeDataView_AfterSelect( object sender, TreeViewEventArgs e )
         {
             if ( e.Node == null ) return;
+            if ( CurrentDocument.TextFormat != TextFormat.Plain )
+                return;
 
             UpdateStatusBar();
 
             if ( e.Node is NodeField field )
             {
-                _scintilla.SelectFieldValue( field.DocumentField );
+                _scintilla.SelectFieldValue( field.DocumentField as PlainTextField );
 
                 ctxMenuItemShowOnlyLines.Visible = false;
                 ctxMenuItemMarkAllLines.Visible = false;
@@ -311,7 +353,8 @@ namespace Kbg.NppPluginNET
             {
                 // TODO More performant way
                 var lineNoList = CurrentDocument.Lines
-                    .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
+                    .Cast<PlainTextLine>()
+                    .Where( l => l.LineIdentifier == (line.DocumentLine as PlainTextLine).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
                 _scintilla.SelectLines( lineNoList );
