@@ -97,13 +97,20 @@ namespace Kbg.NppPluginNET
 
         private void SyncModulesList()
         {
-            // TODO Don't forget currently selected format so we can re-select when available
+            ParsifyModule currentlySelected = null;
+            if ( this.comboTextFormats.SelectedItem != null )
+                currentlySelected = (ParsifyModule)this.comboTextFormats.SelectedItem;
 
             this.comboTextFormats.Items.Clear();
 
             foreach ( var module in _moduleDefinitions )
-            {
                 this.comboTextFormats.Items.Add( module );
+
+            if ( currentlySelected != null )
+            {
+                this.comboTextFormats.SelectedItem = this.comboTextFormats.Items
+                    .Cast<ParsifyModule>()
+                    .FirstOrDefault( mod => mod.Name == currentlySelected.Name && mod.Version == currentlySelected.Version );
             }
         }
 

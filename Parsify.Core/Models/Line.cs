@@ -17,7 +17,6 @@ namespace Parsify.Core.Models.Values
              Fields = new List<Field>();
         }
 
-        // TODO LineNo as prefix?
         public override string ToString()
             => LineIdentifier; 
     }
