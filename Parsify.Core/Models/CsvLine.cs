@@ -10,7 +10,16 @@ namespace Parsify.Core.Models
 {
     public class CsvLine : BaseLine
     {
+        public bool IsHeader { get; set; }
+
         public override string ToString()
-            => $"Line {base.DocumentLineNumber}";
+        {
+            string toString = $"Line {base.DocumentLineNumber}";
+
+            if ( IsHeader )
+                toString += " (Header)";
+
+            return toString;
+        }
     }
 }

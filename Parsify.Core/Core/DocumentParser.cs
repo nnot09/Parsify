@@ -97,23 +97,27 @@ namespace Parsify.Core.Core
         {
             string[] headerComponents = null;
             bool skipFirstLine = Document.HasHeader;
+            bool skippedFirstLine = false;
 
             foreach ( var documentLine in scintilla.GetLines(trimCrLf: true) )
             {
-                if ( documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
+                if ( Document.CommentLineIdentifier != null && documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
                     continue;
 
-                if ( skipFirstLine && documentLine.LineNo == 1 )
+                if ( skipFirstLine && !skippedFirstLine )
                 {
                     CsvLine header = new CsvLine()
                     {
                         DocumentLineNumber = documentLine.LineNo,
+                        IsHeader = true
                     };
 
                     // TODO Csv escape stuff
                     headerComponents = documentLine.Line.Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries );
 
                     Document.Lines.Add( header );
+
+                    skippedFirstLine = true;
 
                     continue;
                 }
@@ -156,6 +160,11 @@ namespace Parsify.Core.Core
             }
 
             return fields;
+        }
+
+        private void StrongCsvValidation( string line, bool isHeader )
+        {
+
         }
 
         public string GetErrors()

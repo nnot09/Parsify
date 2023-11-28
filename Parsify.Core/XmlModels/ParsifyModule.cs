@@ -20,7 +20,7 @@ namespace Parsify.Core.Config
         public TextFormat TextFormat { get; set; }
 
         [XmlElement( "CsvSplitDelimeter" )]
-        public string CsvSplitDelimeter { get; set; } = ";";
+        public string CsvSplitDelimeter { get; set; }
 
         [XmlElement("HasCsvTableHeader")]
         public bool HasTableHeader { get; set; }
@@ -113,6 +113,7 @@ namespace Parsify.Core.Config
                 TextLineDefinitions = new List<ParsifyLine>(),
                 CsvSplitDelimeter = ";",
                 HasTableHeader = true, 
+                CommentLineIdentifier = "<"
             };
 
             mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );

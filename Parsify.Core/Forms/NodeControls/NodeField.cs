@@ -15,7 +15,7 @@ namespace Parsify.Core.Forms.NodeControls
         public BaseField DocumentField { get; }
 
         public NodeField( BaseField field )
-            : base( field.ToString() )
+            : base( field.Name ) // https://www.youtube.com/watch?v=otCpCn0l4Wo
         {
             this.DocumentField = field;
         }
