@@ -19,6 +19,12 @@ namespace Parsify.Core.Config
         [XmlElement( "TextFormat" )]
         public TextFormat TextFormat { get; set; }
 
+        [XmlElement( "CsvSplitDelimeter" )]
+        public string CsvSplitDelimeter { get; set; } = ";";
+
+        [XmlElement("HasCsvTableHeader")]
+        public bool HasTableHeader { get; set; }
+
         [XmlElement( "Define" )]
         public List<ParsifyLine> TextLineDefinitions { get; set; }
 
@@ -101,10 +107,12 @@ namespace Parsify.Core.Config
                 Name = "TestCsvFormat",
                 Version = "2.5",
                 TextFormat = TextFormat.Csv,
-                TextLineDefinitions = new List<ParsifyLine>()
+                TextLineDefinitions = new List<ParsifyLine>(),
+                CsvSplitDelimeter = ";",
+                HasTableHeader = true, 
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>(), CsvSplitDelimeter = "," } );
+            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
 
             mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
             mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );

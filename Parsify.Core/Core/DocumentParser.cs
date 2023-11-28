@@ -29,6 +29,8 @@ namespace Parsify.Core.Core
                 FormatName = module.Name,
                 Version = module.Version,
                 TextFormat = module.TextFormat,
+                CsvSplitDelimeter = module.CsvSplitDelimeter,
+                HasHeader = module.HasTableHeader
             };
 
             foreach ( var documentLine in scintilla.GetLines() )
@@ -69,6 +71,11 @@ namespace Parsify.Core.Core
             }
 
             Success = true;
+        }
+        
+        private void ParseCsv()
+        {
+
         }
 
         public string GetErrors()
