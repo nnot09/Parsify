@@ -25,6 +25,9 @@ namespace Parsify.Core.Config
         [XmlElement("HasCsvTableHeader")]
         public bool HasTableHeader { get; set; }
 
+        [XmlElement("CommentLineIdentifier")]
+        public string CommentLineIdentifier { get; set; }
+
         [XmlElement( "Define" )]
         public List<ParsifyLine> TextLineDefinitions { get; set; }
 

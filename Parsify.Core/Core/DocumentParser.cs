@@ -32,7 +32,8 @@ namespace Parsify.Core.Core
                 Version = module.Version,
                 TextFormat = module.TextFormat,
                 CsvSplitDelimeter = module.CsvSplitDelimeter,
-                HasHeader = module.HasTableHeader
+                HasHeader = module.HasTableHeader,
+                CommentLineIdentifier = module.CommentLineIdentifier,
             };
 
             switch ( Document.TextFormat )
@@ -99,6 +100,9 @@ namespace Parsify.Core.Core
 
             foreach ( var documentLine in scintilla.GetLines(trimCrLf: true) )
             {
+                if ( documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
+                    continue;
+
                 if ( skipFirstLine && documentLine.LineNo == 1 )
                 {
                     CsvLine header = new CsvLine()
