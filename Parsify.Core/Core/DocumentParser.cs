@@ -39,7 +39,7 @@ namespace Parsify.Core.Core
             switch ( Document.TextFormat )
             {
                 case TextFormat.Csv:
-                    ParseCsv( scintilla );
+                    ParseCsv( module, scintilla );
                     return;
 
                 case TextFormat.Plain:
@@ -93,18 +93,17 @@ namespace Parsify.Core.Core
             Success = true;
         }
 
-        private void ParseCsv( Scintilla scintilla )
+        private void ParseCsv( ParsifyModule module, Scintilla scintilla )
         {
-            string[] headerComponents = null;
-            bool skipFirstLine = Document.HasHeader;
+            List<string> headerComponents = null;
             bool skippedFirstLine = false;
 
-            foreach ( var documentLine in scintilla.GetLines(trimCrLf: true) )
+            foreach ( var documentLine in scintilla.GetLines( trimCrLf: true ) )
             {
                 if ( Document.CommentLineIdentifier != null && documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
                     continue;
 
-                if ( skipFirstLine && !skippedFirstLine )
+                if ( Document.HasHeader && !skippedFirstLine )
                 {
                     CsvLine header = new CsvLine()
                     {
@@ -113,13 +112,34 @@ namespace Parsify.Core.Core
                     };
 
                     // TODO Csv escape stuff
-                    headerComponents = documentLine.Line.Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries );
+                    headerComponents = documentLine.Line
+                        .Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries )
+                        .ToList();
 
                     Document.Lines.Add( header );
 
                     skippedFirstLine = true;
 
                     continue;
+                }
+                else if ( !Document.HasHeader && !skippedFirstLine )
+                {
+                    // get column definition from xml
+                    var headerLine = module.TextLineDefinitions.FirstOrDefault();
+
+                    if ( headerLine == null )
+                        throw new Exception( "Header columns are not defined and there are no present header columns in current document, according to your XML definition." );
+
+                    headerComponents = new List<string>();
+
+                    foreach ( var columnName in headerLine.Fields )
+                        headerComponents.Add( columnName.Name );
+
+                    // validate
+                    var documentColumns = documentLine.Line
+                        .Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries );
+
+                    ValidateColumns( headerComponents, documentColumns );
                 }
 
                 CsvLine line = new CsvLine()
@@ -132,7 +152,7 @@ namespace Parsify.Core.Core
                 // yes i know 
                 fields.ForEach( f => f.Parent = line );
 
-                line.Fields.AddRange(fields);
+                line.Fields.AddRange( fields );
 
                 Document.Lines.Add( line );
             }
@@ -162,9 +182,19 @@ namespace Parsify.Core.Core
             return fields;
         }
 
-        private void StrongCsvValidation( string line, bool isHeader )
+        private void ValidateColumns( List<string> headerComponents, string[] documentColumns )
         {
+            if ( headerComponents.Count != documentColumns.Length )
+                throw new Exception( "Header columns do not match the XML definition." );
 
+            for ( int i = 0; i < headerComponents.Count; i++ )
+            {
+                var headerComponent = headerComponents.ElementAt( i );
+                var documentColumn = documentColumns[ i ];
+
+                if (  headerComponent != documentColumn )
+                    throw new Exception( $"Header columns mismatch: \"{headerComponent}\" on \"{documentColumn}\"" );
+            }
         }
 
         public string GetErrors()
