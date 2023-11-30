@@ -95,7 +95,7 @@ namespace Parsify.Core.Core
 
         private void ParseCsv( ParsifyModule module, Scintilla scintilla )
         {
-            List<string> headerComponents = null;
+            List<string> headerComponents = new List<string>();
             bool skippedFirstLine = false;
 
             foreach ( var documentLine in scintilla.GetLines( trimCrLf: true ) )
@@ -103,7 +103,7 @@ namespace Parsify.Core.Core
                 if ( Document.CommentLineIdentifier != null && documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
                     continue;
 
-                if ( Document.HasHeader && !skippedFirstLine )
+                if ( !skippedFirstLine )
                 {
                     CsvLine header = new CsvLine()
                     {
@@ -112,34 +112,33 @@ namespace Parsify.Core.Core
                     };
 
                     // TODO Csv escape stuff
-                    headerComponents = documentLine.Line
+                    var documentColumns = documentLine.Line
                         .Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries )
                         .ToList();
 
                     Document.Lines.Add( header );
 
+                    if ( !Document.HasHeader )
+                    {
+                        // get column definition from xml
+                        var headerLine = module.TextLineDefinitions.FirstOrDefault();
+
+                        if ( headerLine == null )
+                            throw new Exception( "Header columns are not defined and there are no present header columns in current document, according to your XML definition." );
+
+                        foreach ( var columnName in headerLine.Fields )
+                            headerComponents.Add( columnName.Name );
+
+                        ValidateColumns( headerComponents, documentColumns );
+                    }
+                    else
+                    {
+                        headerComponents.AddRange( documentColumns );
+                    }
+
                     skippedFirstLine = true;
 
                     continue;
-                }
-                else if ( !Document.HasHeader && !skippedFirstLine )
-                {
-                    // get column definition from xml
-                    var headerLine = module.TextLineDefinitions.FirstOrDefault();
-
-                    if ( headerLine == null )
-                        throw new Exception( "Header columns are not defined and there are no present header columns in current document, according to your XML definition." );
-
-                    headerComponents = new List<string>();
-
-                    foreach ( var columnName in headerLine.Fields )
-                        headerComponents.Add( columnName.Name );
-
-                    // validate
-                    var documentColumns = documentLine.Line
-                        .Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries );
-
-                    ValidateColumns( headerComponents, documentColumns );
                 }
 
                 CsvLine line = new CsvLine()
@@ -182,14 +181,14 @@ namespace Parsify.Core.Core
             return fields;
         }
 
-        private void ValidateColumns( List<string> headerComponents, string[] documentColumns )
+        private void ValidateColumns( List<string> headerComponents, List<string> documentColumns )
         {
-            if ( headerComponents.Count != documentColumns.Length )
+            if ( headerComponents.Count != documentColumns.Count )
                 throw new Exception( "Header columns do not match the XML definition." );
 
             for ( int i = 0; i < headerComponents.Count; i++ )
             {
-                var headerComponent = headerComponents.ElementAt( i );
+                var headerComponent = headerComponents[ i ];
                 var documentColumn = documentColumns[ i ];
 
                 if (  headerComponent != documentColumn )
