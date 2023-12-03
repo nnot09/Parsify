@@ -218,12 +218,12 @@ namespace Kbg.NppPluginNET
             return sameValuesCount;
         }
 
-        private int GetIdenticalLinesCount( NodeLine line )
+        private List<int> GetIdenticalLineNumbers( NodeLine line )
         {
-            if ( ( line.DocumentLine as CsvLine ).IsHeader )
-                return 1;
+            List<int> lineNumbers = new List<int>() { line.DocumentLine.DocumentLineNumber };
 
-            int identicalLinesCount = 1;
+            if ( ( line.DocumentLine as CsvLine ).IsHeader )
+                return lineNumbers;
 
             for ( int lineIndex = 0; lineIndex < CurrentDocument.Lines.Count; lineIndex++ )
             {
@@ -260,12 +260,15 @@ namespace Kbg.NppPluginNET
 
                 if ( isIdentical )
                 {
-                    identicalLinesCount++;
+                    lineNumbers.Add( currentLine.DocumentLineNumber );
                 }
             }
 
-            return identicalLinesCount;
+            return lineNumbers;
         }
+
+        private int GetIdenticalLinesCount( NodeLine line )
+            => GetIdenticalLineNumbers( line ).Count;
 
         private int GetSameValuesCountCsv( NodeField field )
         {
@@ -418,7 +421,7 @@ namespace Kbg.NppPluginNET
         private void treeDataView_AfterSelect( object sender, TreeViewEventArgs e )
         {
             if ( e.Node == null ) return;
-         
+
             UpdateStatusBar();
 
             if ( e.Node is NodeField field )
@@ -434,6 +437,7 @@ namespace Kbg.NppPluginNET
 
                 ctxMenuItemShowOnlyLines.Visible = false;
                 ctxMenuItemMarkAllLines.Visible = false;
+                ctxMenuItemMarkAllIdenticalLines.Visible = false;
                 ctxMenuItemMarkSpecificOptions.Visible = true;
             }
             else if ( e.Node is NodeLine line )
@@ -456,7 +460,22 @@ namespace Kbg.NppPluginNET
 
                 ctxMenuItemShowOnlyLines.Visible = true;
                 ctxMenuItemMarkAllLines.Visible = true;
+                ctxMenuItemMarkAllIdenticalLines.Visible = true;
                 ctxMenuItemMarkSpecificOptions.Visible = false;
+            }
+        }
+
+        private void ctxMenuItemMarkAllIdenticalLines_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( this.treeDataView.SelectedNode is NodeLine lineNode )
+            {
+                // TODO More performant way
+                _scintilla.SelectLines( GetIdenticalLineNumbers( lineNode ) );
             }
         }
     }

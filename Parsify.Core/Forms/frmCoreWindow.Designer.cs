@@ -35,7 +35,6 @@
             this.comboTextFormats = new System.Windows.Forms.ComboBox();
             this.btnUpdateModules = new System.Windows.Forms.Button();
             this.panContent = new System.Windows.Forms.Panel();
-            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuItemShowOnlyLines = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkAllLines = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +45,8 @@
             this.footerlbTotalLinesCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbSelectedCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbParsifyErrorsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
+            this.ctxMenuItemMarkAllIdenticalLines = new System.Windows.Forms.ToolStripMenuItem();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
             this.treeNodeContext.SuspendLayout();
@@ -116,26 +117,15 @@
             this.panContent.Size = new System.Drawing.Size(581, 405);
             this.panContent.TabIndex = 1;
             // 
-            // treeDataView
-            // 
-            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
-            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeDataView.Location = new System.Drawing.Point(0, 0);
-            this.treeDataView.Name = "treeDataView";
-            this.treeDataView.ShowNodeToolTips = true;
-            this.treeDataView.Size = new System.Drawing.Size(581, 405);
-            this.treeDataView.TabIndex = 0;
-            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
-            // 
             // treeNodeContext
             // 
             this.treeNodeContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuItemShowOnlyLines,
             this.ctxMenuItemMarkAllLines,
+            this.ctxMenuItemMarkAllIdenticalLines,
             this.ctxMenuItemMarkSpecificOptions});
             this.treeNodeContext.Name = "treeNodeContext";
-            this.treeNodeContext.Size = new System.Drawing.Size(230, 70);
+            this.treeNodeContext.Size = new System.Drawing.Size(230, 114);
             // 
             // ctxMenuItemShowOnlyLines
             // 
@@ -206,6 +196,25 @@
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             // 
+            // treeDataView
+            // 
+            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
+            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeDataView.Location = new System.Drawing.Point(0, 0);
+            this.treeDataView.Name = "treeDataView";
+            this.treeDataView.ShowNodeToolTips = true;
+            this.treeDataView.Size = new System.Drawing.Size(581, 405);
+            this.treeDataView.TabIndex = 0;
+            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
+            // 
+            // ctxMenuItemMarkAllIdenticalLines
+            // 
+            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
+            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
+            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
+            // 
             // frmCoreWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,5 +256,6 @@
         private System.Windows.Forms.ToolStripStatusLabel footerlbTotalLinesCount;
         private System.Windows.Forms.ToolStripStatusLabel footerlbSelectedCount;
         private System.Windows.Forms.ToolStripStatusLabel footerlbParsifyErrorsCount;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkAllIdenticalLines;
     }
 }
