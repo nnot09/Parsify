@@ -96,11 +96,27 @@ namespace Parsify.Core
             _gateway.SetMultipleSelection( true );
 
             // TODO Optimize
-            foreach ( var line in lines.Where( l => l.LineIdentifier == (field.Parent as PlainTextLine).LineIdentifier ) )
+            foreach ( var line in lines.Where( l => l.LineIdentifier == ( field.Parent as PlainTextLine ).LineIdentifier ) )
             {
                 var area = GetSelectArea( line.DocumentLineNumber, field.Index, field.Length );
 
                 _gateway.AddSelection( area.Start, area.End );
+            }
+        }
+
+        public void SelectMultipleCsvFieldValues( IEnumerable<CsvLine> lines, CsvField field )
+        {
+            _gateway.ClearSelections();
+            _gateway.SetMultipleSelection( true );
+
+            foreach ( var line in lines.Where( l => !l.IsHeader ) )
+            {
+                foreach ( var csvField in line.Fields.Where( f => f.Name == field.Name ).Cast<CsvField>() )
+                {
+                    var area = GetSelectArea( line.DocumentLineNumber, csvField.DataIndex, csvField.Length );
+
+                    _gateway.AddSelection( area.Start, area.End );
+                }
             }
         }
 
@@ -129,7 +145,7 @@ namespace Parsify.Core
 
         public void UnhideAll( IEnumerable<PlainTextLine> lines )
         {
-            foreach (var line in lines)
+            foreach ( var line in lines )
             {
                 _gateway.ShowLines( line.DocumentLineNumber - 1, line.DocumentLineNumber - 1 );
             }
