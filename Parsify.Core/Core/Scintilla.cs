@@ -79,6 +79,16 @@ namespace Parsify.Core
             _gateway.SetSelection( area.Start, area.End );
         }
 
+        public void SelectFieldValue( CsvField field )
+        {
+            _gateway.ClearSelections();
+
+            var area = GetSelectArea( field.Parent.DocumentLineNumber, field.DataIndex, field.Length );
+
+            // caret, anchor
+            _gateway.SetSelection( area.Start, area.End );
+        }
+
         // TODO Csv support
         public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, PlainTextField field )
         {
