@@ -99,14 +99,11 @@ namespace Parsify.Core
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
 
-            foreach ( var line in lines.Where( l => !l.IsHeader ) ) // TODO simplify
+            foreach ( var csvField in lines.Where( l => !l.IsHeader ).SelectMany( l => l.Fields ).Where( f => f.Name == field.Name ) )
             {
-                foreach ( var csvField in line.Fields.Where( f => f.Name == field.Name ) )
-                {
-                    var area = GetSelectArea( line.DocumentLineNumber, csvField.Index, csvField.Length );
+                var area = GetSelectArea( csvField.Parent.DocumentLineNumber, csvField.Index, csvField.Length );
 
-                    _gateway.AddSelection( area.Start, area.End );
-                }
+                _gateway.AddSelection( area.Start, area.End );
             }
         }
 
