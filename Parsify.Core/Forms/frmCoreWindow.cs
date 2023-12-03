@@ -177,9 +177,10 @@ namespace Kbg.NppPluginNET
 
                     if ( CurrentDocument.TextFormat == TextFormat.Csv )
                     {
-                        sameLinesCount = 0;// sameLinesCount = GetCsvSelectedCount();
+                        // Since it's Csv the best and logical choice would be to count lines with identical field values
+                        sameLinesCount = GetIdenticalLinesCount( line );
 
-                        footerlbSelectedCount.Text = $"Selected Line Count: {sameLinesCount}";
+                        footerlbSelectedCount.Text = $"Identical Lines Count: {sameLinesCount}";
                     }
                     else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                     {
@@ -215,6 +216,55 @@ namespace Kbg.NppPluginNET
                 .Count();
 
             return sameValuesCount;
+        }
+
+        private int GetIdenticalLinesCount( NodeLine line )
+        {
+            if ( ( line.DocumentLine as CsvLine ).IsHeader )
+                return 1;
+
+            int identicalLinesCount = 1;
+
+            for ( int lineIndex = 0; lineIndex < CurrentDocument.Lines.Count; lineIndex++ )
+            {
+                bool isIdentical = true;
+                var currentLine = CurrentDocument.Lines[ lineIndex ];
+
+                if ( ( currentLine as CsvLine ).IsHeader )
+                    continue;
+
+                if ( line.DocumentLine.DocumentLineNumber == currentLine.DocumentLineNumber )
+                    continue;
+
+                if ( currentLine.Fields.Count != line.DocumentLine.Fields.Count )
+                    continue;
+
+                for ( int fieldIndex = 0; fieldIndex < currentLine.Fields.Count; fieldIndex++ )
+                {
+                    var currentField = currentLine.Fields[ fieldIndex ];
+                    var dataField = line.DocumentLine.Fields.ElementAtOrDefault( fieldIndex );
+
+
+                    if ( dataField == null )
+                    {
+                        isIdentical = false;
+                        break;
+                    }
+
+                    if ( currentField.Name != dataField.Name || currentField.Value != dataField.Value )
+                    {
+                        isIdentical = false;
+                        break;
+                    }
+                }
+
+                if ( isIdentical )
+                {
+                    identicalLinesCount++;
+                }
+            }
+
+            return identicalLinesCount;
         }
 
         private int GetSameValuesCountCsv( NodeField field )
