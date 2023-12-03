@@ -418,9 +418,7 @@ namespace Kbg.NppPluginNET
         private void treeDataView_AfterSelect( object sender, TreeViewEventArgs e )
         {
             if ( e.Node == null ) return;
-            //if ( CurrentDocument.TextFormat != TextFormat.Plain )
-            //    return;
-
+         
             UpdateStatusBar();
 
             if ( e.Node is NodeField field )
@@ -440,8 +438,12 @@ namespace Kbg.NppPluginNET
             }
             else if ( e.Node is NodeLine line )
             {
-                // TODO More performant way
-                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    // Most logical step for Csv would be to mark the entire line.
+                    _scintilla.SelectSingleLine( line.DocumentLine.DocumentLineNumber );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain ) // TODO More performant way
                 {
                     var lineNoList = CurrentDocument.Lines
                         .Cast<PlainTextLine>()
