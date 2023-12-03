@@ -69,7 +69,7 @@ namespace Parsify.Core
         }
 
         // TODO Use marking instead of selection
-        public void SelectFieldValue( PlainTextField field )
+        public void SelectFieldValue( DataField field )
         {
             _gateway.ClearSelections();
 
@@ -79,18 +79,8 @@ namespace Parsify.Core
             _gateway.SetSelection( area.Start, area.End );
         }
 
-        public void SelectFieldValue( CsvField field )
-        {
-            _gateway.ClearSelections();
-
-            var area = GetSelectArea( field.Parent.DocumentLineNumber, field.DataIndex, field.Length );
-
-            // caret, anchor
-            _gateway.SetSelection( area.Start, area.End );
-        }
-
         // TODO Csv support
-        public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, PlainTextField field )
+        public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, DataField field )
         {
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
@@ -104,16 +94,16 @@ namespace Parsify.Core
             }
         }
 
-        public void SelectMultipleCsvFieldValues( IEnumerable<CsvLine> lines, CsvField field )
+        public void SelectMultipleCsvFieldValues( IEnumerable<CsvLine> lines, DataField field )
         {
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
 
-            foreach ( var line in lines.Where( l => !l.IsHeader ) )
+            foreach ( var line in lines.Where( l => !l.IsHeader ) ) // TODO simplify
             {
-                foreach ( var csvField in line.Fields.Where( f => f.Name == field.Name ).Cast<CsvField>() )
+                foreach ( var csvField in line.Fields.Where( f => f.Name == field.Name ) )
                 {
-                    var area = GetSelectArea( line.DocumentLineNumber, csvField.DataIndex, csvField.Length );
+                    var area = GetSelectArea( line.DocumentLineNumber, csvField.Index, csvField.Length );
 
                     _gateway.AddSelection( area.Start, area.End );
                 }

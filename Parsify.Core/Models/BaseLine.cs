@@ -5,12 +5,12 @@ namespace Parsify.Core.Models
 {
     public class BaseLine
     {
-        public List<BaseField> Fields { get; set; }
+        public List<DataField> Fields { get; set; }
         public int DocumentLineNumber { get; set; }
 
         public BaseLine()
         {
-            Fields = new List<BaseField>();
+            Fields = new List<DataField>();
         }
     }
 }

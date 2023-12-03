@@ -76,7 +76,7 @@ namespace Parsify.Core.Core
 
                 foreach ( var moduleLineFields in moduleLine.Fields.Cast<ParsifyPlain>() )
                 {
-                    PlainTextField field = new PlainTextField()
+                    DataField field = new DataField()
                     {
                         Name = moduleLineFields.Name,
                         Index = moduleLineFields.Index,
@@ -159,9 +159,9 @@ namespace Parsify.Core.Core
             Success = true;
         }
 
-        private List<CsvField> GetCsvFields( IEnumerable<string> headerComponents, string currentLine, string splitDelimeter )
+        private List<DataField> GetCsvFields( IEnumerable<string> headerComponents, string currentLine, string splitDelimeter )
         {
-            List<CsvField> fields = new List<CsvField>();
+            List<DataField> fields = new List<DataField>();
 
             // TODO Csv escape stuff
             var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
@@ -169,9 +169,9 @@ namespace Parsify.Core.Core
             int addedLength = 0;
             for ( int i = 0; i < values.Length; i++ )
             {
-                var field = new CsvField()
+                var field = new DataField()
                 {
-                    DataIndex = ( i * splitDelimeter.Length ) + addedLength,
+                    Index = ( i * splitDelimeter.Length ) + addedLength,
                     Name = headerComponents.ElementAtOrDefault( i ) ?? $"Unknown{i + 1}",
                     Value = values[ i ],
                     Length = values[ i ].Length

@@ -273,14 +273,14 @@ namespace Kbg.NppPluginNET
                 {
                     _scintilla.SelectMultipleCsvFieldValues(
                         CurrentDocument.Lines.Cast<CsvLine>(),
-                        fieldNode.DocumentField as CsvField
+                        fieldNode.DocumentField
                     );
                 }
                 else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                 {
                     _scintilla.SelectMultiplePlainFieldValues(
                         CurrentDocument.Lines.Cast<PlainTextLine>(),
-                        fieldNode.DocumentField as PlainTextField
+                        fieldNode.DocumentField
                     );
                 }
             }
@@ -297,11 +297,11 @@ namespace Kbg.NppPluginNET
             {
                 if ( CurrentDocument.TextFormat == TextFormat.Csv )
                 {
-                    _scintilla.SelectFieldValue( fieldNode.DocumentField as CsvField );
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField );
                 }
                 else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                 {
-                    _scintilla.SelectFieldValue( fieldNode.DocumentField as PlainTextField );
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField );
                 }
             }
         }
@@ -377,11 +377,11 @@ namespace Kbg.NppPluginNET
             {
                 if ( CurrentDocument.TextFormat == TextFormat.Csv )
                 {
-                    _scintilla.SelectFieldValue( field.DocumentField as CsvField );
+                    _scintilla.SelectFieldValue( field.DocumentField );
                 }
                 else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                 {
-                    _scintilla.SelectFieldValue( field.DocumentField as PlainTextField );
+                    _scintilla.SelectFieldValue( field.DocumentField );
                 }
 
                 ctxMenuItemShowOnlyLines.Visible = false;
