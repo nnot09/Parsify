@@ -120,8 +120,10 @@
             // 
             this.treeDataView.ContextMenuStrip = this.treeNodeContext;
             this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.treeDataView.Location = new System.Drawing.Point(0, 0);
             this.treeDataView.Name = "treeDataView";
+            this.treeDataView.ShowNodeToolTips = true;
             this.treeDataView.Size = new System.Drawing.Size(581, 405);
             this.treeDataView.TabIndex = 0;
             this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
@@ -161,15 +163,15 @@
             // ctxMenuItemMarkSpecificOptionValue
             // 
             this.ctxMenuItemMarkSpecificOptionValue.Name = "ctxMenuItemMarkSpecificOptionValue";
-            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(210, 22);
+            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(256, 22);
             this.ctxMenuItemMarkSpecificOptionValue.Text = "Value";
             this.ctxMenuItemMarkSpecificOptionValue.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionValue_Click);
             // 
             // ctxMenuItemMarkSpecificOptionAllValues
             // 
             this.ctxMenuItemMarkSpecificOptionAllValues.Name = "ctxMenuItemMarkSpecificOptionAllValues";
-            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(210, 22);
-            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type";
+            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(256, 22);
+            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type/column";
             this.ctxMenuItemMarkSpecificOptionAllValues.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionAllValues_Click);
             // 
             // statusStrip1
@@ -200,7 +202,7 @@
             // footerlbParsifyErrorsCount
             // 
             this.footerlbParsifyErrorsCount.Name = "footerlbParsifyErrorsCount";
-            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(188, 17);
+            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(240, 17);
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             // 

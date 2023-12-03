@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -161,20 +162,30 @@ namespace Kbg.NppPluginNET
             {
                 if ( this.treeDataView.SelectedNode is NodeField field )
                 {
-                    if ( CurrentDocument.TextFormat == TextFormat.Plain )
-                    {
-                        int sameValuesCount = GetSameValuesCountPlainTextFormat( field );
+                    int sameValuesCount = 0;
 
-                        footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
-                    }
+                    if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                        sameValuesCount = GetSameValuesCountCsv( field );
+                    else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                        sameValuesCount = GetSameValuesCountPlainTextFormat( field );
+
+                    footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
                 }
                 else if ( this.treeDataView.SelectedNode is NodeLine line )
                 {
-                    if ( CurrentDocument.TextFormat == TextFormat.Plain )
-                    {
-                        int sameLinesCount = GetPlainTextSelectedCount( line );
+                    int sameLinesCount = 0;
 
-                        footerlbSelectedCount.Text = $"{(line.DocumentLine as PlainTextLine).LineIdentifier} Count: {sameLinesCount}";
+                    if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                    {
+                        sameLinesCount = 0;// sameLinesCount = GetCsvSelectedCount();
+
+                        footerlbSelectedCount.Text = $"Selected Line Count: {sameLinesCount}";
+                    }
+                    else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                    {
+                        sameLinesCount = GetPlainTextSelectedCount( line );
+
+                        footerlbSelectedCount.Text = $"{( line.DocumentLine as PlainTextLine ).LineIdentifier} Count: {sameLinesCount}";
                     }
                 }
             }
@@ -194,7 +205,7 @@ namespace Kbg.NppPluginNET
 
         private int GetSameValuesCountPlainTextFormat( NodeField field )
         {
-            string identifier = (field.DocumentField.Parent as PlainTextLine).LineIdentifier;
+            string identifier = ( field.DocumentField.Parent as PlainTextLine ).LineIdentifier;
 
             var sameValuesCount = CurrentDocument.Lines
                 .Cast<PlainTextLine>()
@@ -204,6 +215,14 @@ namespace Kbg.NppPluginNET
                 .Count();
 
             return sameValuesCount;
+        }
+
+        private int GetSameValuesCountCsv( NodeField field )
+        {
+            return CurrentDocument.Lines
+                .SelectMany( l => l.Fields )
+                .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
+                .Count();
         }
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
@@ -250,11 +269,18 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
                 {
-                    _scintilla.SelectMultiplePlainFieldValues( 
-                        CurrentDocument.Lines.Cast<PlainTextLine>(), 
-                        fieldNode.DocumentField as PlainTextField 
+                    _scintilla.SelectMultipleCsvFieldValues(
+                        CurrentDocument.Lines.Cast<CsvLine>(),
+                        fieldNode.DocumentField as CsvField
+                    );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectMultiplePlainFieldValues(
+                        CurrentDocument.Lines.Cast<PlainTextLine>(),
+                        fieldNode.DocumentField as PlainTextField
                     );
                 }
             }
@@ -269,13 +295,18 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField as CsvField );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                 {
                     _scintilla.SelectFieldValue( fieldNode.DocumentField as PlainTextField );
                 }
             }
         }
 
+        // TODO ShowOnlyColumns variant for Csv
         private void ctxMenuItemShowOnlyLines_Click( object sender, EventArgs e )
         {
             if ( this.treeDataView.SelectedNode == null )
@@ -311,6 +342,7 @@ namespace Kbg.NppPluginNET
             }
         }
 
+        // TODO MarkAllColumns variant for Csv
         private void ctxMenuItemMarkAllLines_Click( object sender, EventArgs e )
         {
             if ( this.treeDataView.SelectedNode == null )
@@ -326,7 +358,7 @@ namespace Kbg.NppPluginNET
                 // TODO More performant way
                 var lineNoList = CurrentDocument.Lines
                     .Cast<PlainTextLine>()
-                    .Where( l => l.LineIdentifier == (lineNode.DocumentLine as PlainTextLine).LineIdentifier )
+                    .Where( l => l.LineIdentifier == ( lineNode.DocumentLine as PlainTextLine ).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
                 _scintilla.SelectLines( lineNoList );
@@ -336,14 +368,21 @@ namespace Kbg.NppPluginNET
         private void treeDataView_AfterSelect( object sender, TreeViewEventArgs e )
         {
             if ( e.Node == null ) return;
-            if ( CurrentDocument.TextFormat != TextFormat.Plain )
-                return;
+            //if ( CurrentDocument.TextFormat != TextFormat.Plain )
+            //    return;
 
             UpdateStatusBar();
 
             if ( e.Node is NodeField field )
             {
-                _scintilla.SelectFieldValue( field.DocumentField as PlainTextField );
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    _scintilla.SelectFieldValue( field.DocumentField as CsvField );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectFieldValue( field.DocumentField as PlainTextField );
+                }
 
                 ctxMenuItemShowOnlyLines.Visible = false;
                 ctxMenuItemMarkAllLines.Visible = false;
@@ -352,12 +391,16 @@ namespace Kbg.NppPluginNET
             else if ( e.Node is NodeLine line )
             {
                 // TODO More performant way
-                var lineNoList = CurrentDocument.Lines
-                    .Cast<PlainTextLine>()
-                    .Where( l => l.LineIdentifier == (line.DocumentLine as PlainTextLine).LineIdentifier )
-                    .Select( l => l.DocumentLineNumber );
+                if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    var lineNoList = CurrentDocument.Lines
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier == ( line.DocumentLine as PlainTextLine ).LineIdentifier )
+                        .Select( l => l.DocumentLineNumber );
 
-                _scintilla.SelectLines( lineNoList );
+
+                    _scintilla.SelectLines( lineNoList );
+                }
 
                 ctxMenuItemShowOnlyLines.Visible = true;
                 ctxMenuItemMarkAllLines.Visible = true;
