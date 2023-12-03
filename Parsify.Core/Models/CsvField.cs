@@ -12,6 +12,8 @@ namespace Parsify.Core.Models
     {
         public int DataIndex { get; set; }
 
+        public int Length { get; set; }
+
         public override string ToString()
             => $"{Name}: {Value}";
     }
