@@ -107,6 +107,17 @@ namespace Parsify.Core
             }
         }
 
+        public void SelectSingleLine( int lineNo )
+        {
+            _gateway.ClearSelections();
+            _gateway.SetMultipleSelection( false );
+
+            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
+            int lineEndIndex = _gateway.GetLineEndPosition( lineNo - 1 );
+
+            _gateway.SetSelection( lineStartIndex, lineEndIndex );
+        }
+
         public void SelectLines( IEnumerable<int> lineNo )
         {
             _gateway.ClearSelections();
