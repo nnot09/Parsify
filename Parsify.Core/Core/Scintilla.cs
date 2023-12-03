@@ -149,11 +149,33 @@ namespace Parsify.Core
             }
         }
 
+        public void ClearSelectionHiding()
+        {
+            _gateway.ClearSelections();
+        }
+
         public void HideLines( IEnumerable<int> lineNumbers )
         {
             foreach ( var lineNo in lineNumbers )
             {
                 _gateway.HideLines( lineNo - 1, lineNo - 1 );
+            }
+        }
+
+        public void CsvShowOnly( Document document, DataField field )
+        {
+            // Dirty workaround: we select other columns and hide.
+
+            _gateway.ClearSelections();
+            _gateway.SetMultipleSelection( true );
+
+            foreach ( var line in document.Lines )
+            {
+                foreach ( var dataField in line.Fields.Where( f => f.Name != field.Name ) )
+                {
+                    var area = GetSelectArea( line.DocumentLineNumber, dataField.Index, dataField.Length );
+                    _gateway.AddSelection( area.Start, area.End );
+                }
             }
         }
     }

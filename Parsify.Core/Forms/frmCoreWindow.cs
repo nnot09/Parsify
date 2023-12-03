@@ -374,7 +374,7 @@ namespace Kbg.NppPluginNET
             {
                 if ( _toggleShowLines )
                 {
-                    ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
+                    ctxMenuItemShowOnlyLines.Text = "Show only selected line identifier";
 
                     _scintilla.UnhideAll( CurrentDocument.Lines.Cast<PlainTextLine>() );
                 }
@@ -395,7 +395,6 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        // TODO MarkAllColumns variant for Csv
         private void ctxMenuItemMarkAllLines_Click( object sender, EventArgs e )
         {
             if ( this.treeDataView.SelectedNode == null )
@@ -428,10 +427,14 @@ namespace Kbg.NppPluginNET
             {
                 if ( CurrentDocument.TextFormat == TextFormat.Csv )
                 {
+                    ctxMenuItemShowOnlyColumnType.Visible = true;
+
                     _scintilla.SelectFieldValue( field.DocumentField );
                 }
                 else if ( CurrentDocument.TextFormat == TextFormat.Plain )
                 {
+                    ctxMenuItemShowOnlyColumnType.Visible = false;
+
                     _scintilla.SelectFieldValue( field.DocumentField );
                 }
 
@@ -444,11 +447,17 @@ namespace Kbg.NppPluginNET
             {
                 if ( CurrentDocument.TextFormat == TextFormat.Csv )
                 {
+                    ctxMenuItemShowOnlyLines.Visible = false;
+                    ctxMenuItemMarkAllLines.Visible = false;
+
                     // Most logical step for Csv would be to mark the entire line.
                     _scintilla.SelectSingleLine( line.DocumentLine.DocumentLineNumber );
                 }
                 else if ( CurrentDocument.TextFormat == TextFormat.Plain ) // TODO More performant way
                 {
+                    ctxMenuItemShowOnlyLines.Visible = true;
+                    ctxMenuItemMarkAllLines.Visible = true;
+
                     var lineNoList = CurrentDocument.Lines
                         .Cast<PlainTextLine>()
                         .Where( l => l.LineIdentifier == ( line.DocumentLine as PlainTextLine ).LineIdentifier )
@@ -457,11 +466,10 @@ namespace Kbg.NppPluginNET
 
                     _scintilla.SelectLines( lineNoList );
                 }
-
-                ctxMenuItemShowOnlyLines.Visible = true;
-                ctxMenuItemMarkAllLines.Visible = true;
+                
                 ctxMenuItemMarkAllIdenticalLines.Visible = true;
                 ctxMenuItemMarkSpecificOptions.Visible = false;
+                ctxMenuItemShowOnlyColumnType.Visible = false;
             }
         }
 
@@ -476,6 +484,35 @@ namespace Kbg.NppPluginNET
             {
                 // TODO More performant way
                 _scintilla.SelectLines( GetIdenticalLineNumbers( lineNode ) );
+            }
+        }
+
+        private void ctxMenuItemShowOnlyColumnType_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( CurrentDocument.TextFormat != TextFormat.Csv )
+                return;
+
+            if ( this.treeDataView.SelectedNode is NodeField nodeField )
+            {
+                if ( _toggleShowLines )
+                {
+                    ctxMenuItemShowOnlyColumnType.Text = "Show only selected column type";
+
+                    _scintilla.ClearSelectionHiding();
+                }
+                else
+                {
+                    ctxMenuItemShowOnlyColumnType.Text = "Show all lines";
+
+                    _scintilla.CsvShowOnly( CurrentDocument, nodeField.DocumentField );
+                }
+
+                _toggleShowLines = !_toggleShowLines;
             }
         }
     }

@@ -45,8 +45,9 @@
             this.footerlbTotalLinesCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbSelectedCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbParsifyErrorsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.ctxMenuItemMarkAllIdenticalLines = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
+            this.ctxMenuItemShowOnlyColumnType = new System.Windows.Forms.ToolStripMenuItem();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
             this.treeNodeContext.SuspendLayout();
@@ -121,11 +122,12 @@
             // 
             this.treeNodeContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuItemShowOnlyLines,
+            this.ctxMenuItemShowOnlyColumnType,
             this.ctxMenuItemMarkAllLines,
             this.ctxMenuItemMarkAllIdenticalLines,
             this.ctxMenuItemMarkSpecificOptions});
             this.treeNodeContext.Name = "treeNodeContext";
-            this.treeNodeContext.Size = new System.Drawing.Size(230, 114);
+            this.treeNodeContext.Size = new System.Drawing.Size(230, 136);
             // 
             // ctxMenuItemShowOnlyLines
             // 
@@ -196,6 +198,13 @@
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             // 
+            // ctxMenuItemMarkAllIdenticalLines
+            // 
+            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
+            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
+            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
+            // 
             // treeDataView
             // 
             this.treeDataView.ContextMenuStrip = this.treeNodeContext;
@@ -208,12 +217,12 @@
             this.treeDataView.TabIndex = 0;
             this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
             // 
-            // ctxMenuItemMarkAllIdenticalLines
+            // ctxMenuItemShowOnlyColumnType
             // 
-            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
-            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
-            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
-            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
+            this.ctxMenuItemShowOnlyColumnType.Name = "ctxMenuItemShowOnlyColumnType";
+            this.ctxMenuItemShowOnlyColumnType.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemShowOnlyColumnType.Text = "Show only column type";
+            this.ctxMenuItemShowOnlyColumnType.Click += new System.EventHandler(this.ctxMenuItemShowOnlyColumnType_Click);
             // 
             // frmCoreWindow
             // 
@@ -257,5 +266,6 @@
         private System.Windows.Forms.ToolStripStatusLabel footerlbSelectedCount;
         private System.Windows.Forms.ToolStripStatusLabel footerlbParsifyErrorsCount;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkAllIdenticalLines;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuItemShowOnlyColumnType;
     }
 }
