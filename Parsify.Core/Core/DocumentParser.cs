@@ -166,16 +166,20 @@ namespace Parsify.Core.Core
             // TODO Csv escape stuff
             var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
 
+            int addedLength = 0;
             for ( int i = 0; i < values.Length; i++ )
             {
                 var field = new CsvField()
                 {
-                    DataIndex = i,
+                    DataIndex = ( i * splitDelimeter.Length ) + addedLength,
                     Name = headerComponents.ElementAtOrDefault( i ) ?? $"Unknown{i + 1}",
                     Value = values[ i ],
+                    Length = values[ i ].Length
                 };
 
                 fields.Add( field );
+
+                addedLength += values[ i ].Length;
             }
 
             return fields;
@@ -191,7 +195,7 @@ namespace Parsify.Core.Core
                 var headerComponent = headerComponents[ i ];
                 var documentColumn = documentColumns[ i ];
 
-                if (  headerComponent != documentColumn )
+                if ( headerComponent != documentColumn )
                     throw new Exception( $"Header columns mismatch: \"{headerComponent}\" on \"{documentColumn}\"" );
             }
         }
