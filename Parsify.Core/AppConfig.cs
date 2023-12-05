@@ -38,7 +38,6 @@ namespace Parsify.Core.Config
 
         public void Save()
         {
-            // TODO: Appends extra char after save for some reason. seems to not be an encoding problem.
             try
             {
                 XmlSerializer serializer = new XmlSerializer( typeof( AppConfig ) );
@@ -52,8 +51,14 @@ namespace Parsify.Core.Config
             }
             catch ( Exception ex )
             {
-                // TODO
-                MessageBox.Show( "Save: " + ex.ToString() );
+                MessageBox.Show( $"Failed to save app configuration at \"{AppConfig.AppConfigFullPath}\".\r\n" +
+                    $"Please try to restart Notepad++ and try again.\r\n" +
+                    $"Make sure you have necessary permissions to write on that path.\r\n" +
+                    $"If the file already exists, delete it and try again.\r\n" +
+                    $"Close any applications that might block this config file.\r\n" +
+                    $"If this problem persists, please create an issue on the Github repository where Parsify is maintained.\r\n" +
+                    "-----------------\r\n" +
+                    $"In-Depth reason:\r\n{ex.ToString()}", "Parsify Start", MessageBoxButtons.OK, MessageBoxIcon.Information ); ;
             }
         }
 
@@ -67,7 +72,7 @@ namespace Parsify.Core.Config
                 using ( StreamReader reader = new StreamReader( fs ) )
                 using ( XmlReader xml = XmlReader.Create( reader ) )
                 {
-                    var appConfig = ( AppConfig )serializer.Deserialize( xml );
+                    var appConfig = (AppConfig)serializer.Deserialize( xml );
                     return appConfig;
                 }
             }
@@ -100,9 +105,13 @@ namespace Parsify.Core.Config
                 if ( File.Exists( AppConfigFullPath ) )
                     File.Delete( AppConfigFullPath );
             }
-            catch 
+            catch
             {
-                MessageBox.Show( $"Parsify restoration has failed. Please delete \"{AppConfigFullPath}\" and restart Notepad++. Then try again." );
+                MessageBox.Show(
+                    $"Parsify restoration has failed. Please delete \"{AppConfigFullPath}\" and restart Notepad++. Then try again.",
+                    "Parsify",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning );
             }
 
             var appConfig = GetDefault();
