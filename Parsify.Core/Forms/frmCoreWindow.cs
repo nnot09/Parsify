@@ -1,5 +1,4 @@
-﻿using Kbg.NppPluginNET.PluginInfrastructure;
-using Parsify.Core;
+﻿using Parsify.Core;
 using Parsify.Core.Config;
 using Parsify.Core.Core;
 using Parsify.Core.Forms;
@@ -8,16 +7,9 @@ using Parsify.Core.Models;
 using Parsify.Core.Models.Values;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Kbg.NppPluginNET
