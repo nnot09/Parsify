@@ -12,10 +12,10 @@ namespace Parsify.Core.Forms.NodeControls
 {
     internal class NodeField : TreeNode
     {
-        public Field DocumentField { get; }
+        public DataField DocumentField { get; }
 
-        public NodeField( Field field )
-            : base( field.Name )
+        public NodeField( DataField field )
+            : base( field.Name ) // https://www.youtube.com/watch?v=otCpCn0l4Wo
         {
             this.DocumentField = field;
         }

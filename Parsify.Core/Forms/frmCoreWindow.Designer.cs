@@ -38,7 +38,9 @@
             this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuItemShowOnlyLines = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuItemShowOnlyColumnType = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkAllLines = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuItemMarkAllIdenticalLines = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionValue = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionAllValues = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,8 +122,10 @@
             // 
             this.treeDataView.ContextMenuStrip = this.treeNodeContext;
             this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.treeDataView.Location = new System.Drawing.Point(0, 0);
             this.treeDataView.Name = "treeDataView";
+            this.treeDataView.ShowNodeToolTips = true;
             this.treeDataView.Size = new System.Drawing.Size(581, 405);
             this.treeDataView.TabIndex = 0;
             this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
@@ -130,10 +134,12 @@
             // 
             this.treeNodeContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ctxMenuItemShowOnlyLines,
+            this.ctxMenuItemShowOnlyColumnType,
             this.ctxMenuItemMarkAllLines,
+            this.ctxMenuItemMarkAllIdenticalLines,
             this.ctxMenuItemMarkSpecificOptions});
             this.treeNodeContext.Name = "treeNodeContext";
-            this.treeNodeContext.Size = new System.Drawing.Size(230, 70);
+            this.treeNodeContext.Size = new System.Drawing.Size(230, 114);
             // 
             // ctxMenuItemShowOnlyLines
             // 
@@ -142,12 +148,27 @@
             this.ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
             this.ctxMenuItemShowOnlyLines.Click += new System.EventHandler(this.ctxMenuItemShowOnlyLines_Click);
             // 
+            // ctxMenuItemShowOnlyColumnType
+            // 
+            this.ctxMenuItemShowOnlyColumnType.Enabled = false;
+            this.ctxMenuItemShowOnlyColumnType.Name = "ctxMenuItemShowOnlyColumnType";
+            this.ctxMenuItemShowOnlyColumnType.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemShowOnlyColumnType.Text = "Show only column type";
+            this.ctxMenuItemShowOnlyColumnType.Click += new System.EventHandler(this.ctxMenuItemShowOnlyColumnType_Click);
+            // 
             // ctxMenuItemMarkAllLines
             // 
             this.ctxMenuItemMarkAllLines.Name = "ctxMenuItemMarkAllLines";
             this.ctxMenuItemMarkAllLines.Size = new System.Drawing.Size(229, 22);
             this.ctxMenuItemMarkAllLines.Text = "Mark all lines from same type";
             this.ctxMenuItemMarkAllLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllLines_Click);
+            // 
+            // ctxMenuItemMarkAllIdenticalLines
+            // 
+            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
+            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
+            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
             // 
             // ctxMenuItemMarkSpecificOptions
             // 
@@ -161,15 +182,15 @@
             // ctxMenuItemMarkSpecificOptionValue
             // 
             this.ctxMenuItemMarkSpecificOptionValue.Name = "ctxMenuItemMarkSpecificOptionValue";
-            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(210, 22);
+            this.ctxMenuItemMarkSpecificOptionValue.Size = new System.Drawing.Size(256, 22);
             this.ctxMenuItemMarkSpecificOptionValue.Text = "Value";
             this.ctxMenuItemMarkSpecificOptionValue.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionValue_Click);
             // 
             // ctxMenuItemMarkSpecificOptionAllValues
             // 
             this.ctxMenuItemMarkSpecificOptionAllValues.Name = "ctxMenuItemMarkSpecificOptionAllValues";
-            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(210, 22);
-            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type";
+            this.ctxMenuItemMarkSpecificOptionAllValues.Size = new System.Drawing.Size(256, 22);
+            this.ctxMenuItemMarkSpecificOptionAllValues.Text = "All values of selected type/column";
             this.ctxMenuItemMarkSpecificOptionAllValues.Click += new System.EventHandler(this.ctxMenuItemMarkSpecificOptionAllValues_Click);
             // 
             // statusStrip1
@@ -200,7 +221,7 @@
             // footerlbParsifyErrorsCount
             // 
             this.footerlbParsifyErrorsCount.Name = "footerlbParsifyErrorsCount";
-            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(188, 17);
+            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(240, 17);
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             // 
@@ -245,5 +266,7 @@
         private System.Windows.Forms.ToolStripStatusLabel footerlbTotalLinesCount;
         private System.Windows.Forms.ToolStripStatusLabel footerlbSelectedCount;
         private System.Windows.Forms.ToolStripStatusLabel footerlbParsifyErrorsCount;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuItemMarkAllIdenticalLines;
+        private System.Windows.Forms.ToolStripMenuItem ctxMenuItemShowOnlyColumnType;
     }
 }

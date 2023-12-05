@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -40,7 +41,7 @@ namespace Kbg.NppPluginNET
             this._scintilla = new Scintilla();
 
             ParsifyModule.DebugCreateDefault( "text.xml", Parsify.Core.Models.TextFormat.Plain );
-            //ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
+            ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
 
             this.Enabled = false;
 
@@ -97,13 +98,20 @@ namespace Kbg.NppPluginNET
 
         private void SyncModulesList()
         {
-            // TODO Don't forget currently selected format so we can re-select when available
+            ParsifyModule currentlySelected = null;
+            if ( this.comboTextFormats.SelectedItem != null )
+                currentlySelected = (ParsifyModule)this.comboTextFormats.SelectedItem;
 
             this.comboTextFormats.Items.Clear();
 
             foreach ( var module in _moduleDefinitions )
-            {
                 this.comboTextFormats.Items.Add( module );
+
+            if ( currentlySelected != null )
+            {
+                this.comboTextFormats.SelectedItem = this.comboTextFormats.Items
+                    .Cast<ParsifyModule>()
+                    .FirstOrDefault( mod => mod.Name == currentlySelected.Name && mod.Version == currentlySelected.Version );
             }
         }
 
@@ -154,26 +162,120 @@ namespace Kbg.NppPluginNET
             {
                 if ( this.treeDataView.SelectedNode is NodeField field )
                 {
-                    string identifier = field.DocumentField.Parent.LineIdentifier;
-                    var sameValuesCount = CurrentDocument.Lines
-                        .Where( l => l.LineIdentifier == identifier )
-                        .SelectMany( l => l.Fields )
-                        .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
-                        .Count();
+                    int sameValuesCount = 0;
+
+                    if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                        sameValuesCount = GetSameValuesCountCsv( field );
+                    else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                        sameValuesCount = GetSameValuesCountPlainTextFormat( field );
 
                     footerlbSelectedCount.Text = $"Selected same values: {sameValuesCount}";
                 }
                 else if ( this.treeDataView.SelectedNode is NodeLine line )
                 {
-                    var sameLinesCount = CurrentDocument.Lines
-                                            .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
-                                            .Count();
+                    int sameLinesCount = 0;
 
-                    footerlbSelectedCount.Text = $"{line.DocumentLine.LineIdentifier} Count: {sameLinesCount}";
+                    if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                    {
+                        // Since it's Csv the best and logical choice would be to count lines with identical field values
+                        sameLinesCount = GetIdenticalLinesCount( line );
+
+                        footerlbSelectedCount.Text = $"Identical Lines Count: {sameLinesCount}";
+                    }
+                    else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                    {
+                        sameLinesCount = GetPlainTextSelectedCount( line );
+
+                        footerlbSelectedCount.Text = $"{( line.DocumentLine as PlainTextLine ).LineIdentifier} Count: {sameLinesCount}";
+                    }
                 }
             }
 
             footerlbParsifyErrorsCount.Text = $"Parsify: {_errorsCount} Errors";
+        }
+
+        private int GetPlainTextSelectedCount( NodeLine line )
+        {
+            string identifier = ( line.DocumentLine as PlainTextLine ).LineIdentifier;
+
+            return CurrentDocument.Lines
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier == identifier )
+                        .Count();
+        }
+
+        private int GetSameValuesCountPlainTextFormat( NodeField field )
+        {
+            string identifier = ( field.DocumentField.Parent as PlainTextLine ).LineIdentifier;
+
+            var sameValuesCount = CurrentDocument.Lines
+                .Cast<PlainTextLine>()
+                .Where( l => l.LineIdentifier == identifier )
+                .SelectMany( l => l.Fields )
+                .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
+                .Count();
+
+            return sameValuesCount;
+        }
+
+        private List<int> GetIdenticalLineNumbers( NodeLine line )
+        {
+            List<int> lineNumbers = new List<int>() { line.DocumentLine.DocumentLineNumber };
+
+            if ( ( line.DocumentLine as CsvLine ).IsHeader )
+                return lineNumbers;
+
+            for ( int lineIndex = 0; lineIndex < CurrentDocument.Lines.Count; lineIndex++ )
+            {
+                bool isIdentical = true;
+                var currentLine = CurrentDocument.Lines[ lineIndex ];
+
+                if ( ( currentLine as CsvLine ).IsHeader )
+                    continue;
+
+                if ( line.DocumentLine.DocumentLineNumber == currentLine.DocumentLineNumber )
+                    continue;
+
+                if ( currentLine.Fields.Count != line.DocumentLine.Fields.Count )
+                    continue;
+
+                for ( int fieldIndex = 0; fieldIndex < currentLine.Fields.Count; fieldIndex++ )
+                {
+                    var currentField = currentLine.Fields[ fieldIndex ];
+                    var dataField = line.DocumentLine.Fields.ElementAtOrDefault( fieldIndex );
+
+
+                    if ( dataField == null )
+                    {
+                        isIdentical = false;
+                        break;
+                    }
+
+                    if ( currentField.Name != dataField.Name || currentField.Value != dataField.Value )
+                    {
+                        isIdentical = false;
+                        break;
+                    }
+                }
+
+                if ( isIdentical )
+                {
+                    lineNumbers.Add( currentLine.DocumentLineNumber );
+                }
+            }
+
+            return lineNumbers;
+        }
+
+        private int GetIdenticalLinesCount( NodeLine line )
+            => GetIdenticalLineNumbers( line ).Count;
+
+        private int GetSameValuesCountCsv( NodeField field )
+        {
+            return CurrentDocument.Lines
+                .SelectMany( l => l.Fields )
+                .Where( f => f.Name == field.DocumentField.Name && f.Value == field.DocumentField.Value )
+                .Count();
         }
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
@@ -220,7 +322,20 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                _scintilla.SelectMultiplePlainFieldValues( CurrentDocument.Lines, fieldNode.DocumentField );
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    _scintilla.SelectMultipleCsvFieldValues(
+                        CurrentDocument.Lines.Cast<CsvLine>(),
+                        fieldNode.DocumentField
+                    );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectMultiplePlainFieldValues(
+                        CurrentDocument.Lines.Cast<PlainTextLine>(),
+                        fieldNode.DocumentField
+                    );
+                }
             }
         }
 
@@ -233,10 +348,18 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                _scintilla.SelectFieldValue( fieldNode.DocumentField );
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    _scintilla.SelectFieldValue( fieldNode.DocumentField );
+                }
             }
         }
 
+        // TODO ShowOnlyColumns variant for Csv
         private void ctxMenuItemShowOnlyLines_Click( object sender, EventArgs e )
         {
             if ( this.treeDataView.SelectedNode == null )
@@ -244,13 +367,16 @@ namespace Kbg.NppPluginNET
                 return;
             }
 
+            if ( CurrentDocument.TextFormat != TextFormat.Plain )
+                return;
+
             if ( this.treeDataView.SelectedNode is NodeLine lineNode )
             {
                 if ( _toggleShowLines )
                 {
-                    ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
+                    ctxMenuItemShowOnlyLines.Text = "Show only selected line identifier";
 
-                    _scintilla.UnhideAll( CurrentDocument.Lines );
+                    _scintilla.UnhideAll( CurrentDocument.Lines.Cast<PlainTextLine>() );
                 }
                 else
                 {
@@ -258,7 +384,8 @@ namespace Kbg.NppPluginNET
 
                     // TODO More performant way
                     var lineNoList = CurrentDocument.Lines
-                        .Where( l => l.LineIdentifier != lineNode.DocumentLine.LineIdentifier )
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier != ( lineNode.DocumentLine as PlainTextLine ).LineIdentifier )
                         .Select( l => l.DocumentLineNumber );
 
                     _scintilla.HideLines( lineNoList );
@@ -275,11 +402,15 @@ namespace Kbg.NppPluginNET
                 return;
             }
 
+            if ( CurrentDocument.TextFormat != TextFormat.Plain )
+                return;
+
             if ( this.treeDataView.SelectedNode is NodeLine lineNode )
             {
                 // TODO More performant way
                 var lineNoList = CurrentDocument.Lines
-                    .Where( l => l.LineIdentifier == lineNode.DocumentLine.LineIdentifier )
+                    .Cast<PlainTextLine>()
+                    .Where( l => l.LineIdentifier == ( lineNode.DocumentLine as PlainTextLine ).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
                 _scintilla.SelectLines( lineNoList );
@@ -294,25 +425,95 @@ namespace Kbg.NppPluginNET
 
             if ( e.Node is NodeField field )
             {
-                _scintilla.SelectFieldValue( field.DocumentField );
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    ctxMenuItemShowOnlyColumnType.Visible = true;
+
+                    _scintilla.SelectFieldValue( field.DocumentField );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain )
+                {
+                    ctxMenuItemShowOnlyColumnType.Visible = false;
+
+                    _scintilla.SelectFieldValue( field.DocumentField );
+                }
 
                 ctxMenuItemShowOnlyLines.Visible = false;
                 ctxMenuItemMarkAllLines.Visible = false;
+                ctxMenuItemMarkAllIdenticalLines.Visible = false;
                 ctxMenuItemMarkSpecificOptions.Visible = true;
             }
             else if ( e.Node is NodeLine line )
             {
-                // TODO More performant way
-                var lineNoList = CurrentDocument.Lines
-                    .Where( l => l.LineIdentifier == line.DocumentLine.LineIdentifier )
-                    .Select( l => l.DocumentLineNumber );
+                if ( CurrentDocument.TextFormat == TextFormat.Csv )
+                {
+                    ctxMenuItemShowOnlyLines.Visible = false;
+                    ctxMenuItemMarkAllLines.Visible = false;
 
-                _scintilla.SelectLines( lineNoList );
+                    // Most logical step for Csv would be to mark the entire line.
+                    _scintilla.SelectSingleLine( line.DocumentLine.DocumentLineNumber );
+                }
+                else if ( CurrentDocument.TextFormat == TextFormat.Plain ) // TODO More performant way
+                {
+                    ctxMenuItemShowOnlyLines.Visible = true;
+                    ctxMenuItemMarkAllLines.Visible = true;
 
-                ctxMenuItemShowOnlyLines.Visible = true;
-                ctxMenuItemMarkAllLines.Visible = true;
+                    var lineNoList = CurrentDocument.Lines
+                        .Cast<PlainTextLine>()
+                        .Where( l => l.LineIdentifier == ( line.DocumentLine as PlainTextLine ).LineIdentifier )
+                        .Select( l => l.DocumentLineNumber );
+
+
+                    _scintilla.SelectLines( lineNoList );
+                }
+                
+                ctxMenuItemMarkAllIdenticalLines.Visible = true;
                 ctxMenuItemMarkSpecificOptions.Visible = false;
+                ctxMenuItemShowOnlyColumnType.Visible = false;
             }
+        }
+
+        private void ctxMenuItemMarkAllIdenticalLines_Click( object sender, EventArgs e )
+        {
+            if ( this.treeDataView.SelectedNode == null )
+            {
+                return;
+            }
+
+            if ( this.treeDataView.SelectedNode is NodeLine lineNode )
+            {
+                // TODO More performant way
+                _scintilla.SelectLines( GetIdenticalLineNumbers( lineNode ) );
+            }
+        }
+
+        private void ctxMenuItemShowOnlyColumnType_Click( object sender, EventArgs e )
+        {
+            //if ( this.treeDataView.SelectedNode == null )
+            //{
+            //    return;
+            //}
+
+            //if ( CurrentDocument.TextFormat != TextFormat.Csv )
+            //    return;
+
+            //if ( this.treeDataView.SelectedNode is NodeField nodeField )
+            //{
+            //    if ( _toggleShowLines )
+            //    {
+            //        ctxMenuItemShowOnlyColumnType.Text = "Show only selected column type";
+
+            //        _scintilla.ClearSelectionHiding();
+            //    }
+            //    else
+            //    {
+            //        ctxMenuItemShowOnlyColumnType.Text = "Show all lines";
+
+            //        _scintilla.CsvShowOnly( CurrentDocument, nodeField.DocumentField );
+            //    }
+
+            //    _toggleShowLines = !_toggleShowLines;
+            // }
         }
     }
 }

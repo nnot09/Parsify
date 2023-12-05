@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,9 +15,9 @@ namespace Parsify.Core.Core
 {
     internal class DocumentParser
     {
-        public Document Document { get; set; }
-        public bool Success { get; set; }
-        public int NumberOfErrors { get; }
+        public Document Document { get; private set; }
+        public bool Success { get; private set; }
+        public int NumberOfErrors { get; private set; }
 
         private StringBuilder _errors;
 
@@ -29,8 +31,28 @@ namespace Parsify.Core.Core
                 FormatName = module.Name,
                 Version = module.Version,
                 TextFormat = module.TextFormat,
+                CsvSplitDelimeter = module.CsvSplitDelimeter,
+                HasHeader = module.HasTableHeader,
+                CommentLineIdentifier = module.CommentLineIdentifier,
             };
 
+            switch ( Document.TextFormat )
+            {
+                case TextFormat.Csv:
+                    ParseCsv( module, scintilla );
+                    return;
+
+                case TextFormat.Plain:
+                    ParseText( module, scintilla );
+                    return;
+
+                default:
+                    throw new NotImplementedException( "unknown format: " + Document.TextFormat );
+            }
+        }
+
+        private void ParseText( ParsifyModule module, Scintilla scintilla )
+        {
             foreach ( var documentLine in scintilla.GetLines() )
             {
                 var moduleLine = scintilla.GetLineDefinition( documentLine.Line, module.TextLineDefinitions );
@@ -44,7 +66,7 @@ namespace Parsify.Core.Core
                 }
 
                 // Line is defined since we're here
-                Line line = new Line()
+                PlainTextLine line = new PlainTextLine()
                 {
                     DocumentLineNumber = documentLine.LineNo,
                     LineIdentifier = moduleLine.StartsWithIdentifier
@@ -54,7 +76,7 @@ namespace Parsify.Core.Core
 
                 foreach ( var moduleLineFields in moduleLine.Fields.Cast<ParsifyPlain>() )
                 {
-                    Field field = new Field()
+                    DataField field = new DataField()
                     {
                         Name = moduleLineFields.Name,
                         Index = moduleLineFields.Index,
@@ -69,6 +91,113 @@ namespace Parsify.Core.Core
             }
 
             Success = true;
+        }
+
+        private void ParseCsv( ParsifyModule module, Scintilla scintilla )
+        {
+            List<string> headerComponents = new List<string>();
+            bool skippedFirstLine = false;
+
+            foreach ( var documentLine in scintilla.GetLines( trimCrLf: true ) )
+            {
+                if ( Document.CommentLineIdentifier != null && documentLine.Line.StartsWith( Document.CommentLineIdentifier ) )
+                    continue;
+
+                if ( !skippedFirstLine )
+                {
+                    CsvLine header = new CsvLine()
+                    {
+                        DocumentLineNumber = documentLine.LineNo,
+                        IsHeader = true
+                    };
+
+                    // TODO Csv escape stuff
+                    var documentColumns = documentLine.Line
+                        .Split( new[] { Document.CsvSplitDelimeter }, StringSplitOptions.RemoveEmptyEntries )
+                        .ToList();
+
+                    Document.Lines.Add( header );
+
+                    if ( !Document.HasHeader )
+                    {
+                        // get column definition from xml
+                        var headerLine = module.TextLineDefinitions.FirstOrDefault();
+
+                        if ( headerLine == null )
+                            throw new Exception( "Header columns are not defined and there are no present header columns in current document, according to your XML definition." );
+
+                        foreach ( var columnName in headerLine.Fields )
+                            headerComponents.Add( columnName.Name );
+
+                        ValidateColumns( headerComponents, documentColumns );
+                    }
+                    else
+                    {
+                        headerComponents.AddRange( documentColumns );
+                    }
+
+                    skippedFirstLine = true;
+
+                    continue;
+                }
+
+                CsvLine line = new CsvLine()
+                {
+                    DocumentLineNumber = documentLine.LineNo,
+                };
+
+                var fields = GetCsvFields( headerComponents, documentLine.Line, Document.CsvSplitDelimeter );
+
+                // yes i know 
+                fields.ForEach( f => f.Parent = line );
+
+                line.Fields.AddRange( fields );
+
+                Document.Lines.Add( line );
+            }
+
+            Success = true;
+        }
+
+        private List<DataField> GetCsvFields( IEnumerable<string> headerComponents, string currentLine, string splitDelimeter )
+        {
+            List<DataField> fields = new List<DataField>();
+
+            // TODO Csv escape stuff
+            var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
+
+            int addedLength = 0;
+            for ( int i = 0; i < values.Length; i++ )
+            {
+                var field = new DataField()
+                {
+                    Index = ( i * splitDelimeter.Length ) + addedLength,
+                    Name = headerComponents.ElementAtOrDefault( i ) ?? $"Unknown{i + 1}",
+                    Value = values[ i ],
+                    Length = values[ i ].Length
+                };
+
+                fields.Add( field );
+
+                addedLength += values[ i ].Length;
+            }
+
+            return fields;
+        }
+
+        private void ValidateColumns( List<string> headerComponents, List<string> documentColumns )
+        {
+            if ( headerComponents.Count != documentColumns.Count )
+                throw new Exception( "Header columns do not match the XML definition." );
+
+            for ( int i = 0; i < headerComponents.Count; i++ )
+            {
+                var headerComponent = headerComponents[ i ];
+                var documentColumn = documentColumns[ i ];
+
+                if ( headerComponent != documentColumn )
+                    throw new Exception( $"Header columns mismatch: \"{headerComponent}\" on \"{documentColumn}\"" );
+            }
         }
 
         public string GetErrors()
