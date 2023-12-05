@@ -83,6 +83,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -91,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
+    <Compile Include="Core\DocumentCsvHelper.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>

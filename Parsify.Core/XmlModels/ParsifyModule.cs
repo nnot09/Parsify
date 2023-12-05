@@ -28,9 +28,6 @@ namespace Parsify.Core.Config
         [XmlElement("CsvCommentLineIdentifier")]
         public string CsvCommentLineIdentifier { get; set; }
 
-        [XmlElement( "CsvEscapeCharacter" )]
-        public string CsvEscapeCharacter { get; set; } = "\"";
-
         [XmlElement( "Define" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
 

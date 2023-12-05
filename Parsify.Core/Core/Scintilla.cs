@@ -3,6 +3,7 @@ using Parsify.Core.Models;
 using Parsify.Core.Models.Values;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Parsify.Core
 {
@@ -33,6 +34,16 @@ namespace Parsify.Core
                 .SingleOrDefault( l => l.StartsWithIdentifier == documentLine.Substring( 0, l.StartsWithIdentifier.Length ) );
 
             return line;
+        }
+
+        public string CompileLines( bool trimCrLf = false )
+        {
+            StringBuilder compiled = new StringBuilder();
+
+            foreach ( var line in GetLines( trimCrLf ) )
+                compiled.AppendLine( line.Line );
+
+            return compiled.ToString();
         }
 
         public IEnumerable<(string Line, int LineNo)> GetLines( bool trimCrLf = false )
