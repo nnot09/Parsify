@@ -25,8 +25,8 @@ namespace Parsify.Core.Config
         [XmlElement("HasCsvTableHeader")]
         public bool HasTableHeader { get; set; }
 
-        [XmlElement("CommentLineIdentifier")]
-        public string CommentLineIdentifier { get; set; }
+        [XmlElement("CsvCommentLineIdentifier")]
+        public string CsvCommentLineIdentifier { get; set; }
 
         [XmlElement( "Define" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
@@ -114,7 +114,7 @@ namespace Parsify.Core.Config
                 LineDefinitions = new List<ParsifyLine>(),
                 CsvSplitDelimeter = ";",
                 HasTableHeader = true, 
-                CommentLineIdentifier = "<"
+                CsvCommentLineIdentifier = "<"
             };
 
             mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
