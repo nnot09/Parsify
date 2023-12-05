@@ -47,7 +47,8 @@ namespace Parsify.Core.Core
                     return;
 
                 default:
-                    throw new NotImplementedException( $"Format \"{Document.TextFormat}\" is currently not supported." );
+                    _errors.AppendLine( $"Format \"{Document.TextFormat}\" is currently not supported." );
+                    return;
             }
         }
 
