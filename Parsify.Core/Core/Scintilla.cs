@@ -72,7 +72,6 @@ namespace Parsify.Core
             _gateway.SetSelection( area.Start, area.End );
         }
 
-        // TODO Csv support
         public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, DataField field )
         {
             _gateway.ClearSelections();
@@ -125,15 +124,6 @@ namespace Parsify.Core
             }
         }
 
-        private (int Start, int End) GetSelectArea( int lineNo, int index, int length )
-        {
-            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
-            int start = lineStartIndex + index;
-            int end = lineStartIndex + index + length;
-
-            return (start, end);
-        }
-
         public void UnhideAll( IEnumerable<PlainTextLine> lines )
         {
             foreach ( var line in lines )
@@ -153,6 +143,15 @@ namespace Parsify.Core
             {
                 _gateway.HideLines( lineNo - 1, lineNo - 1 );
             }
+        }
+
+        private (int Start, int End) GetSelectArea( int lineNo, int index, int length )
+        {
+            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
+            int start = lineStartIndex + index;
+            int end = lineStartIndex + index + length;
+
+            return (start, end);
         }
 
         //public void CsvShowOnly( Document document, DataField field )
