@@ -16,8 +16,5 @@ namespace Parsify.Core.Models
 
         [XmlAttribute( "Name" )]
         public string Name { get; set; } = "unknown";
-
-        [XmlIgnore]
-        public string Value { get; set; }
     }
 }
