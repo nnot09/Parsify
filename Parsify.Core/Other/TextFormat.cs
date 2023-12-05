@@ -10,6 +10,5 @@ namespace Parsify.Core.Models
     {
         Plain,
         Csv,
-        Mixed
     }
 }
