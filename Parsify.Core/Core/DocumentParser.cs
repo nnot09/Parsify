@@ -47,7 +47,7 @@ namespace Parsify.Core.Core
                     return;
 
                 default:
-                    throw new NotImplementedException( "unknown format: " + Document.TextFormat );
+                    throw new NotImplementedException( $"Format \"{Document.TextFormat}\" is currently not supported." );
             }
         }
 
