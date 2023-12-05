@@ -4,12 +4,8 @@ using Parsify.Core.Models;
 using Parsify.Core.Models.Values;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Parsify.Core.Core
 {
