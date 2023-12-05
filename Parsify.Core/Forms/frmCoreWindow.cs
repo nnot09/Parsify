@@ -353,7 +353,6 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        // TODO ShowOnlyColumns variant for Csv
         private void ctxMenuItemShowOnlyLines_Click( object sender, EventArgs e )
         {
             if ( this.treeDataView.SelectedNode == null )
