@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
-    <Compile Include="Core\DocumentCsvHelper.cs" />
+    <Compile Include="Core\CsvReader.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>

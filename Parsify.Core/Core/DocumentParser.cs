@@ -96,13 +96,16 @@ namespace Parsify.Core.Core
             List<string> headerNames = new List<string>();
             bool skippedHeader = false;
 
-            using ( var csvDocument = new DocumentCsvHelper(
+            using ( var csvDocument = new CsvReader(
                 scintilla.CompileLines( trimCrLf: true ),
                 Document.CsvSplitDelimeter,
                 Document.CsvCommentLineIdentifier ) )
             {
                 foreach ( var documentLine in csvDocument.ReadFields() )
                 {
+                    if ( documentLine.Fields == null )
+                        continue; // Comment line
+
                     if ( !skippedHeader )
                     {
                         CsvLine header = new CsvLine()
@@ -157,9 +160,6 @@ namespace Parsify.Core.Core
         {
             List<DataField> dataFields = new List<DataField>();
 
-            // TODO Csv escape stuff
-            // var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
-
             int addedLength = 0;
             for ( int i = 0; i < fields.Length; i++ )
             {
@@ -177,32 +177,6 @@ namespace Parsify.Core.Core
             }
 
             return dataFields;
-        }
-
-        private List<DataField> GetCsvFields( IEnumerable<string> headerComponents, string currentLine, string splitDelimeter )
-        {
-            List<DataField> fields = new List<DataField>();
-
-            // TODO Csv escape stuff
-            var values = currentLine.Split( new[] { splitDelimeter }, StringSplitOptions.None );
-
-            int addedLength = 0;
-            for ( int i = 0; i < values.Length; i++ )
-            {
-                var field = new DataField()
-                {
-                    Index = ( i * splitDelimeter.Length ) + addedLength,
-                    Name = headerComponents.ElementAtOrDefault( i ) ?? $"Unknown{i + 1}",
-                    Value = values[ i ],
-                    Length = values[ i ].Length
-                };
-
-                fields.Add( field );
-
-                addedLength += values[ i ].Length;
-            }
-
-            return fields;
         }
 
         private void ValidateColumns( List<string> headerComponents, string[] documentColumns )
