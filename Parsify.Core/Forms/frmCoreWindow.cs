@@ -489,31 +489,31 @@ namespace Kbg.NppPluginNET
 
         private void ctxMenuItemShowOnlyColumnType_Click( object sender, EventArgs e )
         {
-            if ( this.treeDataView.SelectedNode == null )
-            {
-                return;
-            }
+            //if ( this.treeDataView.SelectedNode == null )
+            //{
+            //    return;
+            //}
 
-            if ( CurrentDocument.TextFormat != TextFormat.Csv )
-                return;
+            //if ( CurrentDocument.TextFormat != TextFormat.Csv )
+            //    return;
 
-            if ( this.treeDataView.SelectedNode is NodeField nodeField )
-            {
-                if ( _toggleShowLines )
-                {
-                    ctxMenuItemShowOnlyColumnType.Text = "Show only selected column type";
+            //if ( this.treeDataView.SelectedNode is NodeField nodeField )
+            //{
+            //    if ( _toggleShowLines )
+            //    {
+            //        ctxMenuItemShowOnlyColumnType.Text = "Show only selected column type";
 
-                    _scintilla.ClearSelectionHiding();
-                }
-                else
-                {
-                    ctxMenuItemShowOnlyColumnType.Text = "Show all lines";
+            //        _scintilla.ClearSelectionHiding();
+            //    }
+            //    else
+            //    {
+            //        ctxMenuItemShowOnlyColumnType.Text = "Show all lines";
 
-                    _scintilla.CsvShowOnly( CurrentDocument, nodeField.DocumentField );
-                }
+            //        _scintilla.CsvShowOnly( CurrentDocument, nodeField.DocumentField );
+            //    }
 
-                _toggleShowLines = !_toggleShowLines;
-            }
+            //    _toggleShowLines = !_toggleShowLines;
+            // }
         }
     }
 }

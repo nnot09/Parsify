@@ -35,9 +35,12 @@
             this.comboTextFormats = new System.Windows.Forms.ComboBox();
             this.btnUpdateModules = new System.Windows.Forms.Button();
             this.panContent = new System.Windows.Forms.Panel();
+            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuItemShowOnlyLines = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuItemShowOnlyColumnType = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkAllLines = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctxMenuItemMarkAllIdenticalLines = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionValue = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemMarkSpecificOptionAllValues = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,9 +48,6 @@
             this.footerlbTotalLinesCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbSelectedCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbParsifyErrorsCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ctxMenuItemMarkAllIdenticalLines = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
-            this.ctxMenuItemShowOnlyColumnType = new System.Windows.Forms.ToolStripMenuItem();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
             this.treeNodeContext.SuspendLayout();
@@ -118,6 +118,18 @@
             this.panContent.Size = new System.Drawing.Size(581, 405);
             this.panContent.TabIndex = 1;
             // 
+            // treeDataView
+            // 
+            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
+            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeDataView.Location = new System.Drawing.Point(0, 0);
+            this.treeDataView.Name = "treeDataView";
+            this.treeDataView.ShowNodeToolTips = true;
+            this.treeDataView.Size = new System.Drawing.Size(581, 405);
+            this.treeDataView.TabIndex = 0;
+            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
+            // 
             // treeNodeContext
             // 
             this.treeNodeContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -127,7 +139,7 @@
             this.ctxMenuItemMarkAllIdenticalLines,
             this.ctxMenuItemMarkSpecificOptions});
             this.treeNodeContext.Name = "treeNodeContext";
-            this.treeNodeContext.Size = new System.Drawing.Size(230, 136);
+            this.treeNodeContext.Size = new System.Drawing.Size(230, 114);
             // 
             // ctxMenuItemShowOnlyLines
             // 
@@ -136,12 +148,27 @@
             this.ctxMenuItemShowOnlyLines.Text = "Show only selected line type";
             this.ctxMenuItemShowOnlyLines.Click += new System.EventHandler(this.ctxMenuItemShowOnlyLines_Click);
             // 
+            // ctxMenuItemShowOnlyColumnType
+            // 
+            this.ctxMenuItemShowOnlyColumnType.Enabled = false;
+            this.ctxMenuItemShowOnlyColumnType.Name = "ctxMenuItemShowOnlyColumnType";
+            this.ctxMenuItemShowOnlyColumnType.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemShowOnlyColumnType.Text = "Show only column type";
+            this.ctxMenuItemShowOnlyColumnType.Click += new System.EventHandler(this.ctxMenuItemShowOnlyColumnType_Click);
+            // 
             // ctxMenuItemMarkAllLines
             // 
             this.ctxMenuItemMarkAllLines.Name = "ctxMenuItemMarkAllLines";
             this.ctxMenuItemMarkAllLines.Size = new System.Drawing.Size(229, 22);
             this.ctxMenuItemMarkAllLines.Text = "Mark all lines from same type";
             this.ctxMenuItemMarkAllLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllLines_Click);
+            // 
+            // ctxMenuItemMarkAllIdenticalLines
+            // 
+            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
+            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
+            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
+            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
             // 
             // ctxMenuItemMarkSpecificOptions
             // 
@@ -197,32 +224,6 @@
             this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(240, 17);
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
-            // 
-            // ctxMenuItemMarkAllIdenticalLines
-            // 
-            this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
-            this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
-            this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
-            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
-            // 
-            // treeDataView
-            // 
-            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
-            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeDataView.Location = new System.Drawing.Point(0, 0);
-            this.treeDataView.Name = "treeDataView";
-            this.treeDataView.ShowNodeToolTips = true;
-            this.treeDataView.Size = new System.Drawing.Size(581, 405);
-            this.treeDataView.TabIndex = 0;
-            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
-            // 
-            // ctxMenuItemShowOnlyColumnType
-            // 
-            this.ctxMenuItemShowOnlyColumnType.Name = "ctxMenuItemShowOnlyColumnType";
-            this.ctxMenuItemShowOnlyColumnType.Size = new System.Drawing.Size(229, 22);
-            this.ctxMenuItemShowOnlyColumnType.Text = "Show only column type";
-            this.ctxMenuItemShowOnlyColumnType.Click += new System.EventHandler(this.ctxMenuItemShowOnlyColumnType_Click);
             // 
             // frmCoreWindow
             // 

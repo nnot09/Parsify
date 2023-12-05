@@ -162,21 +162,21 @@ namespace Parsify.Core
             }
         }
 
-        public void CsvShowOnly( Document document, DataField field )
-        {
-            // Dirty workaround: we select other columns and hide.
+        //public void CsvShowOnly( Document document, DataField field )
+        //{
+        //    // Dirty workaround: we select other columns and hide.
 
-            _gateway.ClearSelections();
-            _gateway.SetMultipleSelection( true );
+        //    _gateway.ClearSelections();
+        //    _gateway.SetMultipleSelection( true );
 
-            foreach ( var line in document.Lines )
-            {
-                foreach ( var dataField in line.Fields.Where( f => f.Name != field.Name ) )
-                {
-                    var area = GetSelectArea( line.DocumentLineNumber, dataField.Index, dataField.Length );
-                    _gateway.AddSelection( area.Start, area.End );
-                }
-            }
-        }
+        //    foreach ( var line in document.Lines )
+        //    {
+        //        foreach ( var dataField in line.Fields.Where( f => f.Name != field.Name ) )
+        //        {
+        //            var area = GetSelectArea( line.DocumentLineNumber, dataField.Index, dataField.Length );
+        //            _gateway.AddSelection( area.Start, area.End );
+        //        }
+        //    }
+        //}
     }
 }
