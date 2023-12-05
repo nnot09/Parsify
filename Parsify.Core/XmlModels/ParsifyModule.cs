@@ -59,7 +59,7 @@ namespace Parsify.Core.Config
             }
         }
 
-        // TODO Remove
+#if DEBUG
         public static void DebugCreateDefault( string name, TextFormat type )
         {
             try
@@ -123,5 +123,6 @@ namespace Parsify.Core.Config
 
             return mod;
         }
+#endif
     }
 }

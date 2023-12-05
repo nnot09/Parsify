@@ -40,8 +40,10 @@ namespace Kbg.NppPluginNET
             this.Configuration = AppConfig.LoadOrCreate();
             this._scintilla = new Scintilla();
 
+#if DEBUG
             ParsifyModule.DebugCreateDefault( "text.xml", Parsify.Core.Models.TextFormat.Plain );
             ParsifyModule.DebugCreateDefault( "csv.xml", Parsify.Core.Models.TextFormat.Csv );
+#endif
 
             this.Enabled = false;
 
