@@ -29,7 +29,7 @@ namespace Parsify.Core.Config
         public string CommentLineIdentifier { get; set; }
 
         [XmlElement( "Define" )]
-        public List<ParsifyLine> TextLineDefinitions { get; set; }
+        public List<ParsifyLine> LineDefinitions { get; set; }
 
         public override string ToString()
             => $"{Name} ({Version})";
@@ -50,7 +50,8 @@ namespace Parsify.Core.Config
             catch ( Exception ex )
             {
                 MessageBox.Show(
-                    "Parsify error when trying to read app configuration: " + ex.ToString(),
+                    $"Parsify error when trying to read app configuration \"{path}\". The XML-Definition might be corrupted.\r\n" +
+                    $"In-depth reason:\r\n{ex.ToString()}",
                     "Parsify Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );
@@ -78,10 +79,10 @@ namespace Parsify.Core.Config
             }
             catch (Exception ex)
             {
+                MessageBox.Show( $"Error at DebugCreateDefault({name}, {type}): {ex.ToString()}"  );
             }
         }
 
-        // TODO Remove
         private static ParsifyModule DebugGetDefault()
         {
             var mod = new ParsifyModule()
@@ -89,16 +90,16 @@ namespace Parsify.Core.Config
                 Name = "TestTextFormat",
                 Version = "1.6",
                 TextFormat = TextFormat.Plain,
-                TextLineDefinitions = new List<ParsifyLine>()
+                LineDefinitions = new List<ParsifyLine>()
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyBaseField>() } );
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyBaseField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyBaseField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyBaseField>() } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "NOTE", Index = 4, Length = 10 } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "NOTE", Index = 4, Length = 10 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
 
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
+            mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
 
             return mod;
         }
@@ -110,16 +111,16 @@ namespace Parsify.Core.Config
                 Name = "TestCsvFormat",
                 Version = "2.5",
                 TextFormat = TextFormat.Csv,
-                TextLineDefinitions = new List<ParsifyLine>(),
+                LineDefinitions = new List<ParsifyLine>(),
                 CsvSplitDelimeter = ";",
                 HasTableHeader = true, 
                 CommentLineIdentifier = "<"
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );
 
             return mod;
         }

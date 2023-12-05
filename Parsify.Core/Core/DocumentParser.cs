@@ -55,7 +55,7 @@ namespace Parsify.Core.Core
         {
             foreach ( var documentLine in scintilla.GetLines() )
             {
-                var moduleLine = scintilla.GetLineDefinition( documentLine.Line, module.TextLineDefinitions );
+                var moduleLine = scintilla.GetLineDefinition( documentLine.Line, module.LineDefinitions );
 
                 // Current document line isn't defined in our module XML
                 if ( moduleLine == null )
@@ -121,7 +121,7 @@ namespace Parsify.Core.Core
                     if ( !Document.HasHeader )
                     {
                         // get column definition from xml
-                        var headerLine = module.TextLineDefinitions.FirstOrDefault();
+                        var headerLine = module.LineDefinitions.FirstOrDefault();
 
                         if ( headerLine == null )
                             throw new Exception( "Header columns are not defined and there are no present header columns in current document, according to your XML definition." );
