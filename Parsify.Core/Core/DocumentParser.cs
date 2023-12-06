@@ -31,6 +31,7 @@ namespace Parsify.Core.Core
                 CsvSplitDelimeter = module.CsvSplitDelimeter,
                 HasHeader = module.HasTableHeader,
                 CsvCommentLineIdentifier = module.CsvCommentLineIdentifier,
+                CsvEscapeCharacter = module.CsvEscapeCharacter,
             };
 
             switch ( Document.TextFormat )

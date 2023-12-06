@@ -18,8 +18,9 @@ namespace Parsify.Core.Models.Values
         public string Version { get; set; }
         public TextFormat TextFormat { get; set; }
         public bool HasHeader { get; set; }
-        public string CsvSplitDelimeter { get; set; }
-        public string CsvCommentLineIdentifier { get; set; }
+        public char CsvSplitDelimeter { get; set; }
+        public char CsvCommentLineIdentifier { get; set; }
+        public char CsvEscapeCharacter { get; set; }
         public List<BaseLine> Lines { get; set; }
 
         public Document()

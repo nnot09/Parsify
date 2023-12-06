@@ -20,13 +20,16 @@ namespace Parsify.Core.Config
         public TextFormat TextFormat { get; set; }
 
         [XmlElement( "CsvSplitDelimeter" )]
-        public char CsvSplitDelimeter { get; set; }
+        public char CsvSplitDelimeter { get; set; } = ',';
 
         [XmlElement("HasCsvTableHeader")]
         public bool HasTableHeader { get; set; }
 
         [XmlElement("CsvCommentLineIdentifier")]
         public char CsvCommentLineIdentifier { get; set; }
+
+        [XmlElement( "CsvEscapeCharacter" )]
+        public char CsvEscapeCharacter { get; set; } = '"';
 
         [XmlElement( "Define" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
