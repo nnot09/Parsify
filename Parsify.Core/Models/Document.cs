@@ -16,16 +16,11 @@ namespace Parsify.Core.Models.Values
         public string FileName => Path.GetFileName( FilePath );
         public string FormatName { get; set; }
         public string Version { get; set; }
-        public TextFormat TextFormat { get; set; }
-        public bool HasHeader { get; set; }
-        public char CsvSplitDelimeter { get; set; }
-        public char CsvCommentLineIdentifier { get; set; }
-        public char CsvEscapeCharacter { get; set; }
-        public List<BaseLine> Lines { get; set; }
+        public List<TextLine> Lines { get; set; }
 
         public Document()
         {
-            Lines = new List<BaseLine>();
+            Lines = new List<TextLine>();
         }
 
         public override string ToString()

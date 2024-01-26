@@ -16,21 +16,6 @@ namespace Parsify.Core.Config
         [XmlElement( "Version" )]
         public string Version { get; set; }
 
-        [XmlElement( "TextFormat" )]
-        public TextFormat TextFormat { get; set; }
-
-        [XmlElement( "CsvSplitDelimeter" )]
-        public char CsvSplitDelimeter { get; set; } = ',';
-
-        [XmlElement("HasCsvTableHeader")]
-        public bool HasTableHeader { get; set; }
-
-        [XmlElement("CsvCommentLineIdentifier")]
-        public char CsvCommentLineIdentifier { get; set; }
-
-        [XmlElement( "CsvEscapeCharacter" )]
-        public char CsvEscapeCharacter { get; set; } = '"';
-
         [XmlElement( "Define" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
 
@@ -47,7 +32,7 @@ namespace Parsify.Core.Config
                 using ( StreamReader reader = new StreamReader( fs ) )
                 using ( XmlReader xml = XmlReader.Create( reader ) )
                 {
-                    return ( ParsifyModule )serializer.Deserialize( xml );
+                    return (ParsifyModule)serializer.Deserialize( xml );
                 }
             }
             catch ( Exception ex )
@@ -64,7 +49,7 @@ namespace Parsify.Core.Config
         }
 
 #if DEBUG
-        public static void DebugCreateDefault( string name, TextFormat type )
+        public static void DebugCreateDefault( string name )
         {
             try
             {
@@ -74,15 +59,12 @@ namespace Parsify.Core.Config
                 using ( StreamWriter writer = new StreamWriter( fs ) )
                 using ( XmlWriter xml = XmlWriter.Create( writer, new XmlWriterSettings() { Indent = true } ) )
                 {
-                    if ( type == TextFormat.Plain )
-                        serializer.Serialize( xml, DebugGetDefault() );
-                    else
-                        serializer.Serialize( xml, DebugGetDefaultCsv() );
+                    serializer.Serialize( xml, DebugGetDefault() );
                 }
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
-                MessageBox.Show( $"Error at DebugCreateDefault({name}, {type}): {ex.ToString()}"  );
+                MessageBox.Show( $"Error at DebugCreateDefault({name}): {ex.ToString()}" );
             }
         }
 
@@ -92,7 +74,6 @@ namespace Parsify.Core.Config
             {
                 Name = "TestTextFormat",
                 Version = "1.6",
-                TextFormat = TextFormat.Plain,
                 LineDefinitions = new List<ParsifyLine>()
             };
 
@@ -103,27 +84,6 @@ namespace Parsify.Core.Config
             mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
 
             mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
-
-            return mod;
-        }
-
-        private static ParsifyModule DebugGetDefaultCsv()
-        {
-            var mod = new ParsifyModule()
-            {
-                Name = "TestCsvFormat",
-                Version = "2.5",
-                TextFormat = TextFormat.Csv,
-                LineDefinitions = new List<ParsifyLine>(),
-                CsvSplitDelimeter = ";",
-                HasTableHeader = true, 
-                CsvCommentLineIdentifier = "<"
-            };
-
-            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
-
-            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
-            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );
 
             return mod;
         }

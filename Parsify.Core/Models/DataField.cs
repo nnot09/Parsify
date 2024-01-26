@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Parsify.Core.Models.Values;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Parsify.Core.Models
 {
     public class DataField
     {
-        public BaseLine Parent { get; set; }
+        public TextLine Parent { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
         public int Index { get; set; }
