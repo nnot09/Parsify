@@ -1,4 +1,5 @@
 ﻿using Parsify.Core.Models;
+using Parsify.Core.XmlModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,7 @@ namespace Parsify.Core.Config
         [XmlElement( "Version" )]
         public string Version { get; set; }
 
-        [XmlElement( "Define" )]
+        [XmlElement( "LineDefinition" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
 
         public override string ToString()
@@ -77,13 +78,13 @@ namespace Parsify.Core.Config
                 LineDefinitions = new List<ParsifyLine>()
             };
 
-            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyBaseField>() } );
-            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyBaseField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyField>() } );
 
-            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "NOTE", Index = 4, Length = 10 } );
-            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "NOTE", Position = 5, Length = 10 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "FLAG", Position = 15, Length = 2 } );
 
-            mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
+            mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyField() { Name = "QUANTITY", Position = 4, Length = 2, DataType = "int" } );
 
             return mod;
         }

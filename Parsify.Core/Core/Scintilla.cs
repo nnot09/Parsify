@@ -1,6 +1,7 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
 using Parsify.Core.Models;
 using Parsify.Core.Models.Values;
+using Parsify.Core.XmlModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

@@ -58,12 +58,12 @@ namespace Parsify.Core.Core
 
                 Document.Lines.Add( line );
 
-                foreach ( var moduleLineFields in moduleLine.Fields.Cast<ParsifyPlain>() )
+                foreach ( var moduleLineFields in moduleLine.Fields )
                 {
                     DataField field = new DataField()
                     {
                         Name = moduleLineFields.Name,
-                        Index = moduleLineFields.Index,
+                        Index = moduleLineFields.Position - 1,
                         Length = moduleLineFields.Length,
                         Parent = line
                     };
