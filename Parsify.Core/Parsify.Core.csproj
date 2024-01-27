@@ -102,6 +102,7 @@
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
     <Compile Include="XmlModels\ParsifyField.cs" />
+    <Compile Include="XmlModels\ParsifyFieldValueTranslate.cs" />
     <Compile Include="XmlModels\ParsifyLine.cs" />
     <Compile Include="XmlModels\ParsifyModule.cs" />
     <Compile Include="Forms\frmConfig.cs">

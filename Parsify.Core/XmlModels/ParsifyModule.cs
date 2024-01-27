@@ -15,7 +15,7 @@ namespace Parsify.Core.XmlModels
         [XmlElement( "Version" )]
         public string Version { get; set; }
 
-        [XmlElement( "LineDefinition" )]
+        [XmlElement( "Line" )]
         public List<ParsifyLine> LineDefinitions { get; set; }
 
         public override string ToString()
@@ -79,10 +79,27 @@ namespace Parsify.Core.XmlModels
             mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyField>() } );
             mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyField>() } );
 
+            // HEAD
             mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "NOTE", Position = 5, Length = 10 } );
             mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "FLAG", Position = 15, Length = 2 } );
 
-            mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyField() { Name = "QUANTITY", Position = 4, Length = 2, DataType = "int" } );
+            // POS
+            var posQtyField = new ParsifyField() { Name = "QUANTITY", Position = 4, Length = 2, DataType = "int" };
+            mod.LineDefinitions[ 1 ].Fields.Add( posQtyField );
+            posQtyField.Translations = new List<ParsifyFieldValueTranslate>()
+            {
+                new ParsifyFieldValueTranslate()
+                {
+                    Value = "42",
+                    DisplayValue = "answer to everything",
+                    IgnoreCase = true
+                },
+                new ParsifyFieldValueTranslate()
+                {
+                    Value = "43",
+                    DisplayValue = "missed the answer"
+                }
+            };
 
             return mod;
         }

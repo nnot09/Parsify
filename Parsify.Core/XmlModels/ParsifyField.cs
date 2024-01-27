@@ -20,5 +20,8 @@ namespace Parsify.Core.XmlModels
 
         [XmlAttribute( "Length" )]
         public int Length { get; set; }
+
+        [XmlElement( "Translate" )]
+        public List<ParsifyFieldValueTranslate> Translations { get; set; }
     }
 }

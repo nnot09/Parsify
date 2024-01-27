@@ -93,6 +93,9 @@ namespace Parsify.Core.Forms.NodeControls
             string name = node.DocumentField.Name ?? string.Empty;
             string value = node.DocumentField.Value ?? string.Empty;
 
+            if ( node.DocumentField.CustomDisplayValue != null && value != string.Empty )
+                value = $"{value} ({node.DocumentField.CustomDisplayValue})";
+
             this.CheckPaintObjects();
 
             Font font = e.Node.NodeFont ?? this.Font;

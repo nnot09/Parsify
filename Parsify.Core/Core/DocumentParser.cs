@@ -1,6 +1,7 @@
 ﻿using Parsify.Core.Models;
 using Parsify.Core.Other;
 using Parsify.Core.XmlModels;
+using System.Linq;
 using System.Text;
 
 namespace Parsify.Core.Core
@@ -50,17 +51,37 @@ namespace Parsify.Core.Core
 
                 Document.Lines.Add( line );
 
-                foreach ( var moduleLineFields in moduleLine.Fields )
+                foreach ( var moduleLineField in moduleLine.Fields )
                 {
                     DataField field = new DataField()
                     {
-                        Name = moduleLineFields.Name,
-                        Index = moduleLineFields.Position - 1,
-                        Length = moduleLineFields.Length,
-                        Parent = line
+                        Name = moduleLineField.Name,
+                        Index = moduleLineField.Position - 1,
+                        Length = moduleLineField.Length,
+                        Parent = line,
                     };
 
                     field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length );
+
+                    foreach ( var translatedFieldValueDef in moduleLineField.Translations )
+                    {
+                        if ( translatedFieldValueDef.IgnoreCase )
+                        {
+                            if ( field.Value.Equals( translatedFieldValueDef.Value, System.StringComparison.OrdinalIgnoreCase ) )
+                            {
+                                field.CustomDisplayValue = translatedFieldValueDef.DisplayValue;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if ( field.Value.Equals( translatedFieldValueDef.Value ) )
+                            {
+                                field.CustomDisplayValue = translatedFieldValueDef.DisplayValue;
+                                break;
+                            }
+                        }
+                    }
 
                     line.Fields.Add( field );
                 }
