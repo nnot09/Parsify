@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Parsify.Core.Forms
+namespace Parsify.Core.Other
 {
     internal static class Extensions
     {
@@ -18,7 +18,7 @@ namespace Parsify.Core.Forms
                 return line;
 
             if ( line.Length < index + length )
-                return line.Substring(index);
+                return line.Substring( index );
 
             return line.Substring( index, length );
         }

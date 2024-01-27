@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsify.Core.Models.Values // TODO ns
+namespace Parsify.Core.Models
 {
     public class TextLine
     {
-        public string LineIdentifier {  get; set; }
+        public string LineIdentifier { get; set; }
         public List<DataField> Fields { get; set; }
         public int DocumentLineNumber { get; set; }
 
@@ -19,6 +19,6 @@ namespace Parsify.Core.Models.Values // TODO ns
         }
 
         public override string ToString()
-            => LineIdentifier; 
+            => LineIdentifier;
     }
 }

@@ -1,15 +1,7 @@
-﻿using Parsify.Core.Config;
-using Parsify.Core.Forms;
-using Parsify.Core.Models;
-using Parsify.Core.Models.Values;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
+﻿using Parsify.Core.Models;
+using Parsify.Core.Other;
+using Parsify.Core.XmlModels;
 using System.Text;
-using System.Windows.Forms;
-using TinyCsvParser.NetFramework20.Readers;
 
 namespace Parsify.Core.Core
 {

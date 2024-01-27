@@ -1,13 +1,11 @@
-﻿using Parsify.Core.Models;
-using Parsify.Core.XmlModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Parsify.Core.Config
+namespace Parsify.Core.XmlModels
 {
     public class ParsifyModule
     {

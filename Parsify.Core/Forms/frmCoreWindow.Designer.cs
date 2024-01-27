@@ -154,7 +154,6 @@
             this.ctxMenuItemShowOnlyColumnType.Name = "ctxMenuItemShowOnlyColumnType";
             this.ctxMenuItemShowOnlyColumnType.Size = new System.Drawing.Size(229, 22);
             this.ctxMenuItemShowOnlyColumnType.Text = "Show only column type";
-            this.ctxMenuItemShowOnlyColumnType.Click += new System.EventHandler(this.ctxMenuItemShowOnlyColumnType_Click);
             // 
             // ctxMenuItemMarkAllLines
             // 
@@ -168,7 +167,6 @@
             this.ctxMenuItemMarkAllIdenticalLines.Name = "ctxMenuItemMarkAllIdenticalLines";
             this.ctxMenuItemMarkAllIdenticalLines.Size = new System.Drawing.Size(229, 22);
             this.ctxMenuItemMarkAllIdenticalLines.Text = "Mark all identical lines";
-            this.ctxMenuItemMarkAllIdenticalLines.Click += new System.EventHandler(this.ctxMenuItemMarkAllIdenticalLines_Click);
             // 
             // ctxMenuItemMarkSpecificOptions
             // 

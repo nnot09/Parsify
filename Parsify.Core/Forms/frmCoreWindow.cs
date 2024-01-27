@@ -4,7 +4,8 @@ using Parsify.Core.Core;
 using Parsify.Core.Forms;
 using Parsify.Core.Forms.NodeControls;
 using Parsify.Core.Models;
-using Parsify.Core.Models.Values;
+using Parsify.Core.Other;
+using Parsify.Core.XmlModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -337,16 +338,6 @@ namespace Kbg.NppPluginNET
                 ctxMenuItemMarkSpecificOptions.Visible = false;
                 ctxMenuItemShowOnlyColumnType.Visible = false;
             }
-        }
-
-        private void ctxMenuItemMarkAllIdenticalLines_Click( object sender, EventArgs e )
-        {
-           
-        }
-
-        private void ctxMenuItemShowOnlyColumnType_Click( object sender, EventArgs e )
-        {
-          
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Parsify.Core.Models
+namespace Parsify.Core.XmlModels
 {
     public class ParsifyField
     {

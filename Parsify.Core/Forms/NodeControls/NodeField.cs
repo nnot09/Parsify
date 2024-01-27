@@ -1,5 +1,4 @@
 ﻿using Parsify.Core.Models;
-using Parsify.Core.Models.Values;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

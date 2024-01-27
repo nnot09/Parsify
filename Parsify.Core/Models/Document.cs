@@ -8,7 +8,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsify.Core.Models.Values
+namespace Parsify.Core.Models
 {
     public class Document
     {
