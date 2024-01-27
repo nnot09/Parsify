@@ -1,15 +1,9 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
 using Parsify.Core.Models;
-using Parsify.Core.Models.Values;
-using System;
+using Parsify.Core.XmlModels;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Parsify.Core
 {
@@ -55,19 +49,6 @@ namespace Parsify.Core
             }
         }
 
-        public IEnumerable<(string Line, int LineNo)> ReadLines( string lineStartIdentifier )
-        {
-            for ( int i = 0; i < _gateway.GetLineCount(); i++ )
-            {
-                var line = _gateway.GetLine( i );
-
-                if ( line.StartsWith( lineStartIdentifier ) )
-                {
-                    yield return (line, i + 1); // i acts as LineNo
-                }
-            }
-        }
-
         // TODO Use marking instead of selection
         public void SelectFieldValue( DataField field )
         {
@@ -79,43 +60,18 @@ namespace Parsify.Core
             _gateway.SetSelection( area.Start, area.End );
         }
 
-        // TODO Csv support
-        public void SelectMultiplePlainFieldValues( IEnumerable<PlainTextLine> lines, DataField field )
+        public void SelectMultiplePlainFieldValues( IEnumerable<TextLine> lines, DataField field )
         {
             _gateway.ClearSelections();
             _gateway.SetMultipleSelection( true );
 
             // TODO Optimize
-            foreach ( var line in lines.Where( l => l.LineIdentifier == ( field.Parent as PlainTextLine ).LineIdentifier ) )
+            foreach ( var line in lines.Where( l => l.LineIdentifier == ( field.Parent as TextLine ).LineIdentifier ) )
             {
                 var area = GetSelectArea( line.DocumentLineNumber, field.Index, field.Length );
 
                 _gateway.AddSelection( area.Start, area.End );
             }
-        }
-
-        public void SelectMultipleCsvFieldValues( IEnumerable<CsvLine> lines, DataField field )
-        {
-            _gateway.ClearSelections();
-            _gateway.SetMultipleSelection( true );
-
-            foreach ( var csvField in lines.Where( l => !l.IsHeader ).SelectMany( l => l.Fields ).Where( f => f.Name == field.Name ) )
-            {
-                var area = GetSelectArea( csvField.Parent.DocumentLineNumber, csvField.Index, csvField.Length );
-
-                _gateway.AddSelection( area.Start, area.End );
-            }
-        }
-
-        public void SelectSingleLine( int lineNo )
-        {
-            _gateway.ClearSelections();
-            _gateway.SetMultipleSelection( false );
-
-            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
-            int lineEndIndex = _gateway.GetLineEndPosition( lineNo - 1 );
-
-            _gateway.SetSelection( lineStartIndex, lineEndIndex );
         }
 
         public void SelectLines( IEnumerable<int> lineNo )
@@ -132,16 +88,7 @@ namespace Parsify.Core
             }
         }
 
-        private (int Start, int End) GetSelectArea( int lineNo, int index, int length )
-        {
-            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
-            int start = lineStartIndex + index;
-            int end = lineStartIndex + index + length;
-
-            return (start, end);
-        }
-
-        public void UnhideAll( IEnumerable<PlainTextLine> lines )
+        public void UnhideAll( IEnumerable<TextLine> lines )
         {
             foreach ( var line in lines )
             {
@@ -162,21 +109,13 @@ namespace Parsify.Core
             }
         }
 
-        //public void CsvShowOnly( Document document, DataField field )
-        //{
-        //    // Dirty workaround: we select other columns and hide.
+        private (int Start, int End) GetSelectArea( int lineNo, int index, int length )
+        {
+            int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );
+            int start = lineStartIndex + index;
+            int end = lineStartIndex + index + length;
 
-        //    _gateway.ClearSelections();
-        //    _gateway.SetMultipleSelection( true );
-
-        //    foreach ( var line in document.Lines )
-        //    {
-        //        foreach ( var dataField in line.Fields.Where( f => f.Name != field.Name ) )
-        //        {
-        //            var area = GetSelectArea( line.DocumentLineNumber, dataField.Index, dataField.Length );
-        //            _gateway.AddSelection( area.Start, area.End );
-        //        }
-        //    }
-        //}
+            return (start, end);
+        }
     }
 }

@@ -2,15 +2,12 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Parsify.Core.Models
+namespace Parsify.Core.XmlModels
 {
     public class ParsifyLine
     {
-        [XmlAttribute( "Identifier" )]
+        [XmlAttribute( "StartsWith" )]
         public string StartsWithIdentifier { get; set; }
-
-        [XmlElement("Plain", typeof( ParsifyPlain ))]
-        [XmlElement("Csv", typeof( ParsifyCsv ))]
-        public List<ParsifyBaseField> Fields { get; set; }
+        public List<ParsifyField> Fields { get; set; }
     }
 }

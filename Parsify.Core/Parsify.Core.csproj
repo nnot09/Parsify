@@ -83,6 +83,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -96,14 +97,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Models\DataField.cs" />
-    <Compile Include="Models\BaseLine.cs" />
-    <Compile Include="Models\CsvLine.cs" />
     <Compile Include="Other\Extensions.cs" />
     <Compile Include="Other\NativeWindowApi.cs" />
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
-    <Compile Include="XmlModels\Fields\ParsifyBaseField.cs" />
-    <Compile Include="XmlModels\Fields\ParsifyCsv.cs" />
+    <Compile Include="XmlModels\ParsifyField.cs" />
     <Compile Include="XmlModels\ParsifyLine.cs" />
     <Compile Include="XmlModels\ParsifyModule.cs" />
     <Compile Include="Forms\frmConfig.cs">
@@ -112,10 +110,8 @@
     <Compile Include="Forms\frmConfig.Designer.cs">
       <DependentUpon>frmConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="XmlModels\Fields\ParsifyPlain.cs" />
-    <Compile Include="Other\TextFormat.cs" />
     <Compile Include="Models\Document.cs" />
-    <Compile Include="Models\PlainTextLine.cs" />
+    <Compile Include="Models\TextLine.cs" />
     <Compile Include="PluginInfrastructure\ClikeStringArray.cs" />
     <Compile Include="PluginInfrastructure\DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\frmCoreWindow.cs">

@@ -5,11 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Parsify.Core.Models
+namespace Parsify.Core.XmlModels
 {
-    [XmlInclude( typeof( ParsifyPlain ) )]
-    [XmlInclude( typeof( ParsifyCsv ) )]
-    public class ParsifyBaseField
+    public class ParsifyField
     {
         [XmlAttribute( "Type" )]
         public string DataType { get; set; } = "string";
@@ -17,7 +15,10 @@ namespace Parsify.Core.Models
         [XmlAttribute( "Name" )]
         public string Name { get; set; } = "unknown";
 
-        [XmlIgnore]
-        public string Value { get; set; }
+        [XmlAttribute( "Position" )]
+        public int Position { get; set; }
+
+        [XmlAttribute( "Length" )]
+        public int Length { get; set; }
     }
 }

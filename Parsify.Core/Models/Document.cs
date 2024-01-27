@@ -8,7 +8,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsify.Core.Models.Values
+namespace Parsify.Core.Models
 {
     public class Document
     {
@@ -16,15 +16,11 @@ namespace Parsify.Core.Models.Values
         public string FileName => Path.GetFileName( FilePath );
         public string FormatName { get; set; }
         public string Version { get; set; }
-        public TextFormat TextFormat { get; set; }
-        public bool HasHeader { get; set; }
-        public string CsvSplitDelimeter { get; set; }
-        public string CommentLineIdentifier { get; set; }
-        public List<BaseLine> Lines { get; set; }
+        public List<TextLine> Lines { get; set; }
 
         public Document()
         {
-            Lines = new List<BaseLine>();
+            Lines = new List<TextLine>();
         }
 
         public override string ToString()

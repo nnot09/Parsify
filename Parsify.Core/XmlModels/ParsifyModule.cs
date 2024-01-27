@@ -1,12 +1,11 @@
-﻿using Parsify.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Parsify.Core.Config
+namespace Parsify.Core.XmlModels
 {
     public class ParsifyModule
     {
@@ -16,20 +15,8 @@ namespace Parsify.Core.Config
         [XmlElement( "Version" )]
         public string Version { get; set; }
 
-        [XmlElement( "TextFormat" )]
-        public TextFormat TextFormat { get; set; }
-
-        [XmlElement( "CsvSplitDelimeter" )]
-        public string CsvSplitDelimeter { get; set; }
-
-        [XmlElement("HasCsvTableHeader")]
-        public bool HasTableHeader { get; set; }
-
-        [XmlElement("CommentLineIdentifier")]
-        public string CommentLineIdentifier { get; set; }
-
-        [XmlElement( "Define" )]
-        public List<ParsifyLine> TextLineDefinitions { get; set; }
+        [XmlElement( "LineDefinition" )]
+        public List<ParsifyLine> LineDefinitions { get; set; }
 
         public override string ToString()
             => $"{Name} ({Version})";
@@ -44,13 +31,14 @@ namespace Parsify.Core.Config
                 using ( StreamReader reader = new StreamReader( fs ) )
                 using ( XmlReader xml = XmlReader.Create( reader ) )
                 {
-                    return ( ParsifyModule )serializer.Deserialize( xml );
+                    return (ParsifyModule)serializer.Deserialize( xml );
                 }
             }
             catch ( Exception ex )
             {
                 MessageBox.Show(
-                    "Parsify error when trying to read app configuration: " + ex.ToString(),
+                    $"Parsify error when trying to read app configuration \"{path}\". The XML-Definition might be corrupted.\r\n" +
+                    $"In-depth reason:\r\n{ex.ToString()}",
                     "Parsify Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );
@@ -59,8 +47,8 @@ namespace Parsify.Core.Config
             }
         }
 
-        // TODO Remove
-        public static void DebugCreateDefault( string name, TextFormat type )
+#if DEBUG
+        public static void DebugCreateDefault( string name )
         {
             try
             {
@@ -70,58 +58,34 @@ namespace Parsify.Core.Config
                 using ( StreamWriter writer = new StreamWriter( fs ) )
                 using ( XmlWriter xml = XmlWriter.Create( writer, new XmlWriterSettings() { Indent = true } ) )
                 {
-                    if ( type == TextFormat.Plain )
-                        serializer.Serialize( xml, DebugGetDefault() );
-                    else
-                        serializer.Serialize( xml, DebugGetDefaultCsv() );
+                    serializer.Serialize( xml, DebugGetDefault() );
                 }
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
+                MessageBox.Show( $"Error at DebugCreateDefault({name}): {ex.ToString()}" );
             }
         }
 
-        // TODO Remove
         private static ParsifyModule DebugGetDefault()
         {
             var mod = new ParsifyModule()
             {
                 Name = "TestTextFormat",
                 Version = "1.6",
-                TextFormat = TextFormat.Plain,
-                TextLineDefinitions = new List<ParsifyLine>()
+                LineDefinitions = new List<ParsifyLine>()
             };
 
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyBaseField>() } );
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyBaseField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "HEAD", Fields = new List<ParsifyField>() } );
+            mod.LineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "POS", Fields = new List<ParsifyField>() } );
 
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "NOTE", Index = 4, Length = 10 } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyPlain() { Name = "FLAG", Index = 14, Length = 2 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "NOTE", Position = 5, Length = 10 } );
+            mod.LineDefinitions[ 0 ].Fields.Add( new ParsifyField() { Name = "FLAG", Position = 15, Length = 2 } );
 
-            mod.TextLineDefinitions[ 1 ].Fields.Add( new ParsifyPlain() { Name = "QUANTITY", Index = 3, Length = 2, DataType = "int" } );
+            mod.LineDefinitions[ 1 ].Fields.Add( new ParsifyField() { Name = "QUANTITY", Position = 4, Length = 2, DataType = "int" } );
 
             return mod;
         }
-
-        private static ParsifyModule DebugGetDefaultCsv()
-        {
-            var mod = new ParsifyModule()
-            {
-                Name = "TestCsvFormat",
-                Version = "2.5",
-                TextFormat = TextFormat.Csv,
-                TextLineDefinitions = new List<ParsifyLine>(),
-                CsvSplitDelimeter = ";",
-                HasTableHeader = true, 
-                CommentLineIdentifier = "<"
-            };
-
-            mod.TextLineDefinitions.Add( new ParsifyLine() { StartsWithIdentifier = "Order", Fields = new List<ParsifyBaseField>() } );
-
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderId", DataType = "string" } );
-            mod.TextLineDefinitions[ 0 ].Fields.Add( new ParsifyCsv() { Name = "OrderDescription" } );
-
-            return mod;
-        }
+#endif
     }
 }

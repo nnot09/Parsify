@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
+using Parsify.Core.Core;
 
 namespace Kbg.NppPluginNET
 {
