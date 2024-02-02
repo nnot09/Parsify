@@ -90,14 +90,16 @@ namespace Parsify.Core.XmlModels
             {
                 new ParsifyFieldValueTranslate()
                 {
-                    Value = "42",
+                    Value = "4",
                     DisplayValue = "answer to everything",
-                    IgnoreCase = true
+                    IgnoreCase = true,
+                    SearchMode = ParsifyFieldValueTranslateSearchMode.Contains
                 },
                 new ParsifyFieldValueTranslate()
                 {
                     Value = "43",
-                    DisplayValue = "missed the answer"
+                    DisplayValue = "missed the answer",
+                    SearchMode = ParsifyFieldValueTranslateSearchMode.StartsWith
                 }
             };
 
