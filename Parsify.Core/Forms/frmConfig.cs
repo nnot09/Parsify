@@ -24,7 +24,10 @@ namespace Parsify.Core.Forms
             this._configuration = configuration;
 
             this.txtDirectoryPath.Text = _configuration.ModulesDirectoryPath;
-            this.checkAutoDetect.Checked = _configuration.AutoDetectTextFormat;
+            this.comboHighlightingMode.SelectedIndex = (int)_configuration.HighlightingMode;
+            this.colorDiag.Color = Color.FromArgb( (int)_configuration.Color );
+            this.panColor.BackColor = this.colorDiag.Color;
+            this.numTransparency.Value = _configuration.Transparency;
         }
 
         protected override void OnHandleCreated( EventArgs e )
@@ -45,14 +48,16 @@ namespace Parsify.Core.Forms
 
         private void btnConfirm_Click( object sender, EventArgs e )
         {
-            if ( this.txtDirectoryPath == null || !Directory.Exists(this.txtDirectoryPath.Text) )
+            if ( this.txtDirectoryPath == null || !Directory.Exists( this.txtDirectoryPath.Text ) )
             {
                 MessageBox.Show( "Given directory is invalid or does not exist." );
                 return;
             }
 
             this._configuration.ModulesDirectoryPath = this.txtDirectoryPath.Text.Trim();
-            this._configuration.AutoDetectTextFormat = this.checkAutoDetect.Checked;
+            this._configuration.Transparency = (int)this.numTransparency.Value;
+            this._configuration.Color = (uint)this.panColor.BackColor.ToArgb();
+            this._configuration.HighlightingMode = (AppHighlightingMode)this.comboHighlightingMode.SelectedIndex;
 
             this.DialogResult = DialogResult.OK;
         }
@@ -63,6 +68,19 @@ namespace Parsify.Core.Forms
             {
                 if ( fbd.ShowDialog() == DialogResult.OK )
                     this.txtDirectoryPath.Text = fbd.SelectedPath;
+            }
+        }
+
+        private void comboHighlightingMode_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            this.panColorConfiguration.Enabled = comboHighlightingMode.SelectedIndex == 1;
+        }
+
+        private void panColor_MouseClick( object sender, MouseEventArgs e )
+        {
+            if ( colorDiag.ShowDialog() == DialogResult.OK )
+            {
+                this.panColor.BackColor = colorDiag.Color;
             }
         }
     }

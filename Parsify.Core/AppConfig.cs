@@ -22,8 +22,14 @@ namespace Parsify.Core.Config
         [XmlIgnore]
         public static string AppConfigFullPath = Path.Combine( AppData, AppConfigFileName );
 
-        [XmlElement( "AutoDetect" )]
-        public bool AutoDetectTextFormat { get; set; }
+        [XmlElement( "HighlightingMode" )]
+        public AppHighlightingMode HighlightingMode { get; set; }
+
+        [XmlElement("HighlightingColor")]
+        public uint Color { get; set; }
+
+        [XmlElement("HighlightingTransparency")]
+        public int Transparency { get; set; }
 
         [XmlElement( "ModulesFilePath" )]
         public string ModulesDirectoryPath { get; set; }
@@ -123,8 +129,10 @@ namespace Parsify.Core.Config
         private static AppConfig GetDefault()
             => new AppConfig()
             {
-                AutoDetectTextFormat = false,
-                ModulesDirectoryPath = @"C:\Parsify\Modules"
+                ModulesDirectoryPath = @"C:\Parsify\Modules",
+                Color = 0xff2d8fcc,
+                HighlightingMode = AppHighlightingMode.Default,
+                Transparency = 50
             };
     }
 }
