@@ -1,7 +1,9 @@
 ﻿using Parsify.Core.Models;
 using Parsify.Core.Other;
 using Parsify.Core.XmlModels;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Parsify.Core.Core
 {
@@ -50,17 +52,75 @@ namespace Parsify.Core.Core
 
                 Document.Lines.Add( line );
 
-                foreach ( var moduleLineFields in moduleLine.Fields )
+                foreach ( var moduleLineField in moduleLine.Fields )
                 {
                     DataField field = new DataField()
                     {
-                        Name = moduleLineFields.Name,
-                        Index = moduleLineFields.Position - 1,
-                        Length = moduleLineFields.Length,
-                        Parent = line
+                        Name = moduleLineField.Name,
+                        Index = moduleLineField.Position - 1,
+                        Length = moduleLineField.Length,
+                        Parent = line,
                     };
 
                     field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length );
+
+                    foreach ( var translatedFieldValueDef in moduleLineField.Translations )
+                    {
+                        bool expression = false;
+
+                        if ( translatedFieldValueDef.IgnoreCase )
+                        {
+                            switch ( translatedFieldValueDef.SearchMode )
+                            {
+                                default:
+                                case ParsifyFieldValueTranslateSearchMode.Default:
+                                    expression = field.Value.Equals( translatedFieldValueDef.Value, System.StringComparison.OrdinalIgnoreCase );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.Contains:
+                                    expression = field.Value.ToLower().Contains( translatedFieldValueDef.Value.ToLower() );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.StartsWith:
+                                    expression = field.Value.StartsWith( translatedFieldValueDef.Value, System.StringComparison.OrdinalIgnoreCase );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.EndsWith:
+                                    expression = field.Value.EndsWith( translatedFieldValueDef.Value, System.StringComparison.OrdinalIgnoreCase );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.Regex:
+                                    expression = new Regex( translatedFieldValueDef.Value, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant )
+                                                            .Match( field.Value ).Success;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch ( translatedFieldValueDef.SearchMode )
+                            {
+                                default:
+                                case ParsifyFieldValueTranslateSearchMode.Default:
+                                    expression = field.Value.Equals( translatedFieldValueDef.Value );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.Contains:
+                                    expression = field.Value.Contains( translatedFieldValueDef.Value );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.StartsWith:
+                                    expression = field.Value.StartsWith( translatedFieldValueDef.Value );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.EndsWith:
+                                    expression = field.Value.EndsWith( translatedFieldValueDef.Value );
+                                    break;
+                                case ParsifyFieldValueTranslateSearchMode.Regex:
+                                    expression = new Regex( translatedFieldValueDef.Value, RegexOptions.Singleline | RegexOptions.CultureInvariant )
+                                                            .Match( field.Value ).Success;
+                                    break;
+                            }
+                        }
+
+                        if ( translatedFieldValueDef.InvertCondition )
+                            expression = !expression;
+
+                        if ( expression )
+                            field.CustomDisplayValue = translatedFieldValueDef.DisplayValue;
+                    }
 
                     line.Fields.Add( field );
                 }

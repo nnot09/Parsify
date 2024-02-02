@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
+    <Compile Include="AppHighlightingMode.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>
@@ -102,6 +103,8 @@
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
     <Compile Include="XmlModels\ParsifyField.cs" />
+    <Compile Include="XmlModels\ParsifyFieldValueTranslate.cs" />
+    <Compile Include="XmlModels\ParsifyFieldValueTranslateSearchMode.cs" />
     <Compile Include="XmlModels\ParsifyLine.cs" />
     <Compile Include="XmlModels\ParsifyModule.cs" />
     <Compile Include="Forms\frmConfig.cs">
