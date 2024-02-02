@@ -36,13 +36,13 @@
             this.label2 = new System.Windows.Forms.Label();
             this.comboHighlightingMode = new System.Windows.Forms.ComboBox();
             this.grpHighlighting = new System.Windows.Forms.GroupBox();
-            this.colorDiag = new System.Windows.Forms.ColorDialog();
             this.panColorConfiguration = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.panColor = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.numTransparency = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.numTransparency = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.panColor = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.colorDiag = new System.Windows.Forms.ColorDialog();
             this.grpHighlighting.SuspendLayout();
             this.panColorConfiguration.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTransparency)).BeginInit();
@@ -140,32 +140,14 @@
             this.panColorConfiguration.Size = new System.Drawing.Size(211, 71);
             this.panColorConfiguration.TabIndex = 8;
             // 
-            // label3
+            // label5
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 14);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Select Color";
-            // 
-            // panColor
-            // 
-            this.panColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panColor.Location = new System.Drawing.Point(173, 9);
-            this.panColor.Name = "panColor";
-            this.panColor.Size = new System.Drawing.Size(25, 24);
-            this.panColor.TabIndex = 1;
-            this.panColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panColor_MouseClick);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 41);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(72, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Transparency";
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(179, 43);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(15, 13);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "%";
             // 
             // numTransparency
             // 
@@ -184,14 +166,32 @@
             0,
             0});
             // 
-            // label5
+            // label4
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(179, 43);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(15, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "%";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 41);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(72, 13);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Transparency";
+            // 
+            // panColor
+            // 
+            this.panColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panColor.Location = new System.Drawing.Point(173, 9);
+            this.panColor.Name = "panColor";
+            this.panColor.Size = new System.Drawing.Size(25, 24);
+            this.panColor.TabIndex = 1;
+            this.panColor.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panColor_MouseClick);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 14);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Select Color";
             // 
             // frmConfig
             // 
@@ -204,8 +204,10 @@
             this.Controls.Add(this.btnBrowseNewPath);
             this.Controls.Add(this.txtDirectoryPath);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmConfig";
-            this.Text = "frmConfig";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "App configuration";
             this.grpHighlighting.ResumeLayout(false);
             this.grpHighlighting.PerformLayout();
             this.panColorConfiguration.ResumeLayout(false);
