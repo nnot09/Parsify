@@ -1,4 +1,5 @@
-﻿using Parsify.Core.Config;
+﻿using Kbg.NppPluginNET;
+using Parsify.Core.Config;
 using Parsify.Core.Other;
 using System;
 using System.Collections.Generic;
@@ -15,19 +16,15 @@ namespace Parsify.Core.Forms
 {
     public partial class frmConfig : Form
     {
-        private readonly AppConfig _configuration;
-
-        public frmConfig( AppConfig configuration )
+        public frmConfig()
         {
             InitializeComponent();
 
-            this._configuration = configuration;
-
-            this.txtDirectoryPath.Text = _configuration.ModulesDirectoryPath;
-            this.comboHighlightingMode.SelectedIndex = (int)_configuration.HighlightingMode;
-            this.colorDiag.Color = Color.FromArgb( (int)_configuration.Color );
+            this.txtDirectoryPath.Text = Main.Configuration.ModulesDirectoryPath;
+            this.comboHighlightingMode.SelectedIndex = (int)Main.Configuration.HighlightingMode;
+            this.colorDiag.Color = Color.FromArgb( (int)Main.Configuration.Color );
             this.panColor.BackColor = this.colorDiag.Color;
-            this.numTransparency.Value = _configuration.Transparency;
+            this.numTransparency.Value = Main.Configuration.Transparency;
         }
 
         protected override void OnHandleCreated( EventArgs e )
@@ -54,10 +51,10 @@ namespace Parsify.Core.Forms
                 return;
             }
 
-            this._configuration.ModulesDirectoryPath = this.txtDirectoryPath.Text.Trim();
-            this._configuration.Transparency = (int)this.numTransparency.Value;
-            this._configuration.Color = (uint)this.panColor.BackColor.ToArgb();
-            this._configuration.HighlightingMode = (AppHighlightingMode)this.comboHighlightingMode.SelectedIndex;
+            Main.Configuration.ModulesDirectoryPath = this.txtDirectoryPath.Text.Trim();
+            Main.Configuration.Transparency = (int)this.numTransparency.Value;
+            Main.Configuration.Color = (uint)this.panColor.BackColor.ToArgb();
+            Main.Configuration.HighlightingMode = (AppHighlightingMode)this.comboHighlightingMode.SelectedIndex;
 
             this.DialogResult = DialogResult.OK;
         }

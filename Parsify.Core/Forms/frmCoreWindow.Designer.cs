@@ -30,12 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panToolbar = new System.Windows.Forms.Panel();
-            this.btnOpenConfig = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.comboTextFormats = new System.Windows.Forms.ComboBox();
             this.btnUpdateModules = new System.Windows.Forms.Button();
             this.panContent = new System.Windows.Forms.Panel();
-            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.treeNodeContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ctxMenuItemShowOnlyLines = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxMenuItemShowOnlyColumnType = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,6 +46,7 @@
             this.footerlbTotalLinesCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbSelectedCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.footerlbParsifyErrorsCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.treeDataView = new Parsify.Core.Forms.NodeControls.FieldTreeView();
             this.panToolbar.SuspendLayout();
             this.panContent.SuspendLayout();
             this.treeNodeContext.SuspendLayout();
@@ -56,7 +55,6 @@
             // 
             // panToolbar
             // 
-            this.panToolbar.Controls.Add(this.btnOpenConfig);
             this.panToolbar.Controls.Add(this.label1);
             this.panToolbar.Controls.Add(this.comboTextFormats);
             this.panToolbar.Controls.Add(this.btnUpdateModules);
@@ -65,17 +63,6 @@
             this.panToolbar.Name = "panToolbar";
             this.panToolbar.Size = new System.Drawing.Size(581, 33);
             this.panToolbar.TabIndex = 0;
-            // 
-            // btnOpenConfig
-            // 
-            this.btnOpenConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOpenConfig.Location = new System.Drawing.Point(519, 6);
-            this.btnOpenConfig.Name = "btnOpenConfig";
-            this.btnOpenConfig.Size = new System.Drawing.Size(58, 21);
-            this.btnOpenConfig.TabIndex = 3;
-            this.btnOpenConfig.Text = "Config";
-            this.btnOpenConfig.UseVisualStyleBackColor = true;
-            this.btnOpenConfig.Click += new System.EventHandler(this.btnOpenConfig_Click);
             // 
             // label1
             // 
@@ -94,14 +81,14 @@
             this.comboTextFormats.FormattingEnabled = true;
             this.comboTextFormats.Location = new System.Drawing.Point(58, 6);
             this.comboTextFormats.Name = "comboTextFormats";
-            this.comboTextFormats.Size = new System.Drawing.Size(391, 21);
+            this.comboTextFormats.Size = new System.Drawing.Size(456, 21);
             this.comboTextFormats.TabIndex = 1;
             this.comboTextFormats.SelectedIndexChanged += new System.EventHandler(this.comboTextFormats_SelectedIndexChanged);
             // 
             // btnUpdateModules
             // 
             this.btnUpdateModules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateModules.Location = new System.Drawing.Point(455, 6);
+            this.btnUpdateModules.Location = new System.Drawing.Point(520, 6);
             this.btnUpdateModules.Name = "btnUpdateModules";
             this.btnUpdateModules.Size = new System.Drawing.Size(58, 21);
             this.btnUpdateModules.TabIndex = 0;
@@ -117,18 +104,6 @@
             this.panContent.Name = "panContent";
             this.panContent.Size = new System.Drawing.Size(581, 405);
             this.panContent.TabIndex = 1;
-            // 
-            // treeDataView
-            // 
-            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
-            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeDataView.Location = new System.Drawing.Point(0, 0);
-            this.treeDataView.Name = "treeDataView";
-            this.treeDataView.ShowNodeToolTips = true;
-            this.treeDataView.Size = new System.Drawing.Size(581, 405);
-            this.treeDataView.TabIndex = 0;
-            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
             // 
             // treeNodeContext
             // 
@@ -223,6 +198,18 @@
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             // 
+            // treeDataView
+            // 
+            this.treeDataView.ContextMenuStrip = this.treeNodeContext;
+            this.treeDataView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeDataView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeDataView.Location = new System.Drawing.Point(0, 0);
+            this.treeDataView.Name = "treeDataView";
+            this.treeDataView.ShowNodeToolTips = true;
+            this.treeDataView.Size = new System.Drawing.Size(581, 405);
+            this.treeDataView.TabIndex = 0;
+            this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
+            // 
             // frmCoreWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -252,7 +239,6 @@
         private System.Windows.Forms.Button btnUpdateModules;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboTextFormats;
-        private System.Windows.Forms.Button btnOpenConfig;
         Parsify.Core.Forms.NodeControls.FieldTreeView treeDataView;
         private System.Windows.Forms.ContextMenuStrip treeNodeContext;
         private System.Windows.Forms.ToolStripMenuItem ctxMenuItemShowOnlyLines;

@@ -18,7 +18,6 @@ namespace Kbg.NppPluginNET
     public partial class frmCoreWindow : Form
     {
         public Document CurrentDocument { get; set; }
-        public AppConfig Configuration { get; set; }
 
         private List<ParsifyModule> _moduleDefinitions;
         private Scintilla _scintilla;
@@ -30,7 +29,6 @@ namespace Kbg.NppPluginNET
             InitializeComponent();
 
             this._moduleDefinitions = new List<ParsifyModule>();
-            this.Configuration = AppConfig.LoadOrCreate();
             this._scintilla = new Scintilla();
 
 #if DEBUG
@@ -71,7 +69,7 @@ namespace Kbg.NppPluginNET
 
             _moduleDefinitions.Clear();
 
-            foreach ( var module in Directory.GetFiles( this.Configuration.ModulesDirectoryPath, "*.xml", SearchOption.TopDirectoryOnly ) )
+            foreach ( var module in Directory.GetFiles( Main.Configuration.ModulesDirectoryPath, "*.xml", SearchOption.TopDirectoryOnly ) )
             {
                 var parsifyModuleDef = ParsifyModule.Load( module );
 
@@ -195,13 +193,7 @@ namespace Kbg.NppPluginNET
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
         {
-            using ( frmConfig configWindow = new frmConfig( this.Configuration ) )
-            {
-                if ( configWindow.ShowDialog() == DialogResult.OK )
-                {
-                    this.Configuration.Save();
-                }
-            }
+            
         }
 
         private void btnUpdateModules_Click( object sender, EventArgs e )
