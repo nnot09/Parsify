@@ -21,10 +21,11 @@ namespace Parsify.Core.Forms
             InitializeComponent();
 
             this.txtDirectoryPath.Text = Main.Configuration.ModulesDirectoryPath;
-            this.comboHighlightingMode.SelectedIndex = (int)Main.Configuration.HighlightingMode;
-            this.colorDiag.Color = Color.FromArgb( (int)Main.Configuration.Color );
+            this.comboHighlightingMode.SelectedIndex = (int)Main.Configuration.MarkerMode;
+            this.colorDiag.Color = Color.FromArgb( (int)Main.Configuration.MarkerColor );
             this.panColor.BackColor = this.colorDiag.Color;
-            this.numTransparency.Value = Main.Configuration.Transparency;
+            this.rdBackground.Checked = Main.Configuration.HighlightingMode == AppHighlightingMode.Background;
+            this.rdForeground.Checked = Main.Configuration.HighlightingMode == AppHighlightingMode.Foreground;
         }
 
         protected override void OnHandleCreated( EventArgs e )
@@ -52,9 +53,9 @@ namespace Parsify.Core.Forms
             }
 
             Main.Configuration.ModulesDirectoryPath = this.txtDirectoryPath.Text.Trim();
-            Main.Configuration.Transparency = (int)this.numTransparency.Value;
-            Main.Configuration.Color = (uint)this.panColor.BackColor.ToArgb();
-            Main.Configuration.HighlightingMode = (AppHighlightingMode)this.comboHighlightingMode.SelectedIndex;
+            Main.Configuration.MarkerColor = (uint)this.panColor.BackColor.ToArgb();
+            Main.Configuration.MarkerMode = (AppMarkerMode)this.comboHighlightingMode.SelectedIndex;
+            Main.Configuration.HighlightingMode = rdForeground.Checked ? AppHighlightingMode.Foreground : AppHighlightingMode.Background;
 
             this.DialogResult = DialogResult.OK;
         }

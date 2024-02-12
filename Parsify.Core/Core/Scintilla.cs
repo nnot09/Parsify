@@ -109,6 +109,19 @@ namespace Parsify.Core
             }
         }
 
+        public void SwitchLanguage()
+        {
+            var lexer = _gateway.GetLexerLanguage();
+            if ( lexer == "Parsify" )
+            {
+                _gateway.SetLexerLanguage( "null" );
+            }
+            else
+            {
+                _gateway.SetLexerLanguage( "Parsify" );
+            }
+        }
+
         private (int Start, int End) GetSelectArea( int lineNo, int index, int length )
         {
             int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );

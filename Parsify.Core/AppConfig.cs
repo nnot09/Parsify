@@ -17,22 +17,25 @@ namespace Parsify.Core.Config
         public static string AppData = Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData );
 
         [XmlIgnore]
-        public static string AppConfigFileName = "Parsify.xml";
+        public static string AppConfigDirectory = Path.Combine( AppData, "Notepad++", "plugins", "config" );
 
         [XmlIgnore]
-        public static string AppConfigFullPath = Path.Combine( AppData, AppConfigFileName );
+        public static string AppConfigFileName = "ParsifyAppConfig.xml";
 
-        [XmlElement( "HighlightingMode" )]
-        public AppHighlightingMode HighlightingMode { get; set; }
+        [XmlIgnore]
+        public static string AppConfigFullPath = Path.Combine( AppConfigDirectory, AppConfigFileName );
 
-        [XmlElement("HighlightingColor")]
-        public uint Color { get; set; }
+        [XmlElement( "MarkerMode" )]
+        public AppMarkerMode MarkerMode { get; set; }
 
-        [XmlElement("HighlightingTransparency")]
-        public int Transparency { get; set; }
+        [XmlElement( "MarkerColor" )]
+        public uint MarkerColor { get; set; }
 
         [XmlElement( "ModulesFilePath" )]
         public string ModulesDirectoryPath { get; set; }
+
+        [XmlElement( "HighlightMode" )]
+        public AppHighlightingMode HighlightingMode { get; set; }
 
         public static AppConfig LoadOrCreate()
         {
@@ -130,9 +133,9 @@ namespace Parsify.Core.Config
             => new AppConfig()
             {
                 ModulesDirectoryPath = @"C:\Parsify\Modules",
-                Color = 0xff2d8fcc,
-                HighlightingMode = AppHighlightingMode.Default,
-                Transparency = 50
+                MarkerColor = 0xff2d8fcc,
+                MarkerMode = AppMarkerMode.Default,
+                HighlightingMode = AppHighlightingMode.Background,
             };
     }
 }

@@ -37,15 +37,15 @@
             this.comboHighlightingMode = new System.Windows.Forms.ComboBox();
             this.grpHighlighting = new System.Windows.Forms.GroupBox();
             this.panColorConfiguration = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.numTransparency = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
             this.panColor = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.colorDiag = new System.Windows.Forms.ColorDialog();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rdBackground = new System.Windows.Forms.RadioButton();
+            this.rdForeground = new System.Windows.Forms.RadioButton();
             this.grpHighlighting.SuspendLayout();
             this.panColorConfiguration.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTransparency)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -77,7 +77,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(118, 264);
+            this.btnCancel.Location = new System.Drawing.Point(118, 336);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 4;
@@ -86,7 +86,7 @@
             // 
             // btnConfirm
             // 
-            this.btnConfirm.Location = new System.Drawing.Point(199, 264);
+            this.btnConfirm.Location = new System.Drawing.Point(199, 336);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(75, 23);
             this.btnConfirm.TabIndex = 5;
@@ -108,7 +108,7 @@
             this.comboHighlightingMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboHighlightingMode.FormattingEnabled = true;
             this.comboHighlightingMode.Items.AddRange(new object[] {
-            "Default Marker",
+            "Default (Cursor)",
             "Colored Marker"});
             this.comboHighlightingMode.Location = new System.Drawing.Point(16, 44);
             this.comboHighlightingMode.Name = "comboHighlightingMode";
@@ -123,57 +123,19 @@
             this.grpHighlighting.Controls.Add(this.label2);
             this.grpHighlighting.Location = new System.Drawing.Point(28, 75);
             this.grpHighlighting.Name = "grpHighlighting";
-            this.grpHighlighting.Size = new System.Drawing.Size(246, 169);
+            this.grpHighlighting.Size = new System.Drawing.Size(246, 135);
             this.grpHighlighting.TabIndex = 8;
             this.grpHighlighting.TabStop = false;
-            this.grpHighlighting.Text = "Highlighting";
+            this.grpHighlighting.Text = "Text Marker";
             // 
             // panColorConfiguration
             // 
-            this.panColorConfiguration.Controls.Add(this.label5);
-            this.panColorConfiguration.Controls.Add(this.numTransparency);
-            this.panColorConfiguration.Controls.Add(this.label4);
             this.panColorConfiguration.Controls.Add(this.panColor);
             this.panColorConfiguration.Controls.Add(this.label3);
             this.panColorConfiguration.Location = new System.Drawing.Point(16, 76);
             this.panColorConfiguration.Name = "panColorConfiguration";
-            this.panColorConfiguration.Size = new System.Drawing.Size(211, 71);
+            this.panColorConfiguration.Size = new System.Drawing.Size(211, 44);
             this.panColorConfiguration.TabIndex = 8;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(179, 43);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(15, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "%";
-            // 
-            // numTransparency
-            // 
-            this.numTransparency.Location = new System.Drawing.Point(118, 39);
-            this.numTransparency.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numTransparency.Name = "numTransparency";
-            this.numTransparency.Size = new System.Drawing.Size(55, 20);
-            this.numTransparency.TabIndex = 3;
-            this.numTransparency.Value = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 41);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(72, 13);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Transparency";
             // 
             // panColor
             // 
@@ -193,11 +155,45 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Select Color";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rdForeground);
+            this.groupBox1.Controls.Add(this.rdBackground);
+            this.groupBox1.Location = new System.Drawing.Point(28, 216);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(246, 97);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Highlighter Mode";
+            // 
+            // rdBackground
+            // 
+            this.rdBackground.AutoSize = true;
+            this.rdBackground.Location = new System.Drawing.Point(16, 34);
+            this.rdBackground.Name = "rdBackground";
+            this.rdBackground.Size = new System.Drawing.Size(126, 17);
+            this.rdBackground.TabIndex = 0;
+            this.rdBackground.TabStop = true;
+            this.rdBackground.Text = "Background (Default)";
+            this.rdBackground.UseVisualStyleBackColor = true;
+            // 
+            // rdForeground
+            // 
+            this.rdForeground.AutoSize = true;
+            this.rdForeground.Location = new System.Drawing.Point(16, 57);
+            this.rdForeground.Name = "rdForeground";
+            this.rdForeground.Size = new System.Drawing.Size(79, 17);
+            this.rdForeground.TabIndex = 1;
+            this.rdForeground.TabStop = true;
+            this.rdForeground.Text = "Foreground";
+            this.rdForeground.UseVisualStyleBackColor = true;
+            // 
             // frmConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(298, 307);
+            this.ClientSize = new System.Drawing.Size(298, 382);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpHighlighting);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.btnCancel);
@@ -212,7 +208,8 @@
             this.grpHighlighting.PerformLayout();
             this.panColorConfiguration.ResumeLayout(false);
             this.panColorConfiguration.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTransparency)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,11 +225,11 @@
         private System.Windows.Forms.ComboBox comboHighlightingMode;
         private System.Windows.Forms.GroupBox grpHighlighting;
         private System.Windows.Forms.Panel panColorConfiguration;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.NumericUpDown numTransparency;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Panel panColor;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ColorDialog colorDiag;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton rdForeground;
+        private System.Windows.Forms.RadioButton rdBackground;
     }
 }

@@ -203,6 +203,7 @@ namespace Kbg.NppPluginNET
             try
             {
                 UpdateModulesList();
+                _scintilla.SwitchLanguage();
             }
             finally
             {

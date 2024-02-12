@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Parsify.Core.Forms;
 using Parsify.Core.Config;
+using Parsify.Core;
 
 namespace Kbg.NppPluginNET
 {
@@ -50,6 +51,8 @@ namespace Kbg.NppPluginNET
                 Directory.CreateDirectory( iniFilePath );
 
             Configuration = AppConfig.LoadOrCreate();
+            CustomUDL.Initialize();
+            new ScintillaGateway( PluginBase.GetCurrentScintilla() ).SetIdleStyling( IdleStyling.ALL );
 
             iniFilePath = Path.Combine( iniFilePath, PluginName + ".ini" );
             toggleParsify = ( Win32.GetPrivateProfileInt( "Parsify", "Toggle", 0, iniFilePath ) != 0 );

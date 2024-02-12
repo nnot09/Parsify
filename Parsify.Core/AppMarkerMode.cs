@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace Parsify.Core
 {
-    public enum AppHighlightingMode
+    public enum AppMarkerMode
     {
         Default, 
         Colored
+    }
+
+    public enum AppHighlightingMode
+    {
+        None,
+        Background,
+        Foreground
     }
 }
