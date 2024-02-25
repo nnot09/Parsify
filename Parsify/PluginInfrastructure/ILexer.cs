@@ -1,14 +1,10 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
-using Parsify.Models;
 using Parsify.XmlModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Parsify.PluginInfrastructure
 {
