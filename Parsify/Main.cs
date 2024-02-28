@@ -13,6 +13,8 @@ using Parsify.UDL;
 using Parsify.Forms;
 using Parsify;
 using Parsify.PluginInfrastructure;
+using Parsify.Core;
+using Parsify.Models;
 
 namespace Kbg.NppPluginNET
 {
@@ -27,7 +29,10 @@ namespace Kbg.NppPluginNET
         static Bitmap tbBmp = Parsify.Properties.Resources.star;
         static Bitmap tbBmp_tbTab = Parsify.Properties.Resources.star_bmp;
         static Icon tbIcon = null;
+        
         public static AppConfig Configuration { get; set; }
+        public static Scintilla Scintilla { get; set; }
+        public static DocumentFactory DocumentFactory { get; set; }
 
         public static void OnNotification( ScNotification notification )
         {
@@ -39,7 +44,15 @@ namespace Kbg.NppPluginNET
             //
             // if (notification.Header.Code == (uint)SciMsg.SCNxxx)
             // { ... }
-        }
+            if ( notification.Header.Code == (uint)NppMsg.NPPN_BUFFERACTIVATED )
+            {
+            }
+
+            if ( notification.Header.Code == (uint)NppMsg.NPPN_LANGCHANGED )
+            {
+                Debug.WriteLine( $"[{DateTime.Now}] Lang changed" );
+            }
+        } 
 
         internal static void CommandMenuInit()
         {
@@ -50,18 +63,17 @@ namespace Kbg.NppPluginNET
             if ( !Directory.Exists( iniFilePath ) )
                 Directory.CreateDirectory( iniFilePath );
 
+            Scintilla = new Scintilla();
+            DocumentFactory = new DocumentFactory( Scintilla );
             Configuration = AppConfig.LoadOrCreate();
             LexerColorConfiguration.Initialize();
             new ScintillaGateway( PluginBase.GetCurrentScintilla() ).SetIdleStyling( IdleStyling.ALL );
 
-
             iniFilePath = Path.Combine( iniFilePath, PluginName + ".ini" );
             toggleParsify = ( Win32.GetPrivateProfileInt( "Parsify", "Toggle", 0, iniFilePath ) != 0 );
 
-            var scintilla = new ScintillaGateway( PluginBase.GetCurrentScintilla() );
-
             PluginBase.SetCommand( 0, "Open", StartCoreWindow ); parsifyId = 0;
-            PluginBase.SetCommand( 0, "Settings", StartConfigWindowFloatDiag ); 
+            PluginBase.SetCommand( 0, "Settings", StartConfigWindowFloatDiag );
         }
 
         internal static void SetToolBarIcon()

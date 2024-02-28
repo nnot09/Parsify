@@ -2,8 +2,10 @@
 using Parsify.Models;
 using Parsify.PluginInfrastructure;
 using Parsify.XmlModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,6 +24,13 @@ namespace Parsify.Core
 
             _notepad = new NotepadPPGateway();
             _gateway = new ScintillaGateway( ptr );
+        }
+
+        private int _currentLanguage;
+        public int CurrentLanguage
+        {
+            get => _currentLanguage;
+            private set => _currentLanguage = value;
         }
 
         public string GetFilePath()
@@ -113,42 +122,24 @@ namespace Parsify.Core
             }
         }
 
-        public void ForceStyleUpdate( ParsifyModule module )
+        public void GatewaySetProperty( string propertyName, string value )
         {
-            //StringBuilder buffer = new StringBuilder();
-
-            //foreach ( var line in module.LineDefinitions )
-            //{
-            //    buffer.Append( "StartsWith:" );
-            //    buffer.Append( line.StartsWithIdentifier );
-            //    buffer.Append( ";" );
-
-            //    foreach ( var field in line.Fields )
-            //    {
-            //        buffer.Append( field.Name );
-            //        buffer.Append( "," );
-            //        buffer.Append( field.Position );
-            //        buffer.Append( "," );
-            //        buffer.Append( field.Length );
-            //        buffer.Append( ";" );
-            //    }
-
-            //    buffer.Append( "#" );
-            //}
-
-            //_gateway.SetProperty( "ModuleDefinition", buffer.ToString() );
-
-            ILexer.Lines.Clear();
-            ILexer.Lines.AddRange( module.LineDefinitions );
-            _gateway.SetProperty( "refreshLexer", ILexer.RefreshLexerState ? "0" : "1" );
+            _gateway.SetProperty( propertyName, value );
             _gateway.SetIdleStyling( IdleStyling.ALL );
-            _gateway.SetFocus( true );
-
-            ILexer.RefreshLexerState = !ILexer.RefreshLexerState;
-
-            SwitchLanguage();
         }
-        
+
+        public void UpdateLexerStyle( ParsifyModule module )
+        {
+            PluginInfrastructure.Lexer.Lines.Clear();
+            PluginInfrastructure.Lexer.Lines.AddRange( module.LineDefinitions );
+
+            _gateway.SetProperty( "nnot09", "0" );
+            _gateway.SetIdleStyling( IdleStyling.ALL );
+            // _gateway.SetFocus( true );
+
+            PluginInfrastructure.Lexer.RefreshLexerState = !PluginInfrastructure.Lexer.RefreshLexerState;
+        }
+
         int defaultLang = 0;
         public void SwitchLanguage()
         {
@@ -157,17 +148,38 @@ namespace Parsify.Core
             int parsifyLexerId = GetLexerId( "Parsify" );
             int newLangId = 0;
 
+            Debug.WriteLine( $"[{DateTime.Now}] Current Language Id: {currentLanguageId}" );
+            Debug.WriteLine( $"[{DateTime.Now}] Parsify Language Id: {parsifyLexerId}" );
+
             if ( currentLanguageId == parsifyLexerId )
             {
+                Debug.WriteLine( $"[{DateTime.Now}] Activating Default Language." );
+
                 newLangId = defaultLang;
             }
             else
             {
+                Debug.WriteLine( $"[{DateTime.Now}] Activating Parsify Language." );
+
                 defaultLang = currentLanguageId;
                 newLangId = parsifyLexerId;
             }
 
             Win32.SendMessage( PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_SETCURRENTLANGTYPE, 0, newLangId );
+            CurrentLanguage = newLangId;
+        }
+
+        public void SetParsifyLanguage()
+        {
+            int parsifyLexerId = GetLexerId( "Parsify" );
+            Win32.SendMessage( PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_SETCURRENTLANGTYPE, 0, parsifyLexerId );
+            CurrentLanguage = parsifyLexerId;
+        }
+
+        public void SetDefaultLanguage()
+        {
+            Win32.SendMessage( PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_SETCURRENTLANGTYPE, 0, 0 /*Default*/ );
+            CurrentLanguage = 0;
         }
 
         public int GetLexerId( string name )
@@ -189,7 +201,6 @@ namespace Parsify.Core
                 lastLanguage = language;
             }
         }
-
         private Area GetSelectArea( int lineNo, int index, int length )
         {
             int lineStartIndex = _gateway.PositionFromLine( lineNo - 1 );

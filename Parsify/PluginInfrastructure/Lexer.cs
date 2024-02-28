@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Parsify.PluginInfrastructure
 {
-    internal static class ILexer
+    internal static class Lexer
     {
         public static readonly string Name = "Parsify\0";
         public static readonly string StatusText = "Parsify - Text parser highlighting\0";
@@ -19,16 +19,16 @@ namespace Parsify.PluginInfrastructure
 
         static readonly Dictionary<string, bool> SupportedProperties = new Dictionary<string, bool>
         {
-            { "refreshLexer", false }
+            { "nnot09", false }
         };
 
         static readonly Dictionary<string, string> PropertyDescription = new Dictionary<string, string>
         {
-            { "refreshLexer", "Refreshes scintilla lexer. ghetto." }
+            { "nnot09", "Refreshes scintilla lexer ghetto approach" }
         };
         static readonly Dictionary<string, int> PropertyTypes = new Dictionary<string, int>
         {
-            { "refreshLexer", (int)SciMsg.SC_TYPE_BOOLEAN }
+            { "nnot09", (int)SciMsg.SC_TYPE_BOOLEAN }
         };
 
         static List<string> NamedStylesList = new List<string> { "SCE_TEXTFORMAT_DEFAULT" };
@@ -349,6 +349,11 @@ namespace Parsify.PluginInfrastructure
             string name = Marshal.PtrToStringAnsi( key );
             string value = Marshal.PtrToStringAnsi( val );
 
+            if ( !SupportedProperties.ContainsKey( name ) )
+                return IntPtr.Zero;
+
+            Debug.WriteLine( $"[{DateTime.Now}] PropertySet: {name} Value: {value}" );
+
             SupportedProperties[ name ] = value == "0" ? false : true;
 
             return IntPtr.Zero;
@@ -396,6 +401,8 @@ namespace Parsify.PluginInfrastructure
         // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
         public static void Lex( IntPtr instance, UIntPtr start_pos, IntPtr length_doc, int init_style, IntPtr p_access )
         {
+            Debug.WriteLine( "Lex Called!" );
+
             /* main lexing method. 
              * start_pos is always the startposition of a line
              * length_doc is NOT the total length of a document but the size of the text to be styled
@@ -428,11 +435,11 @@ namespace Parsify.PluginInfrastructure
             int styleId = 2;
             for ( int i = 0; i < length; i++ )
             {
+
                 if ( content[ i ] == '\n' )
                 {
                     vtable.StartStyling( p_access, (IntPtr)( i ) );
                     vtable.SetStyleFor( p_access, (IntPtr)( i + 1 ), (char)0 );
-
                     continue;
                 }
 
@@ -443,6 +450,8 @@ namespace Parsify.PluginInfrastructure
 
                 if ( dataLine == null )
                     continue;
+
+                styleId = 2;
 
                 i += dataLine.StartsWithIdentifier.Length;
 
@@ -455,10 +464,10 @@ namespace Parsify.PluginInfrastructure
                 foreach ( var field in dataLine.Fields )
                 {
 #if DEBUG
-                    int from = i;
-                    int to = i + field.Length;
-                    string value = content.Substring( from, to - from );
-                    Debug.WriteLine( value );
+                    //int from = i;
+                    //int to = i + field.Length;
+                    //string value = content.Substring( from, to - from );
+                    //Debug.WriteLine( value );
 #endif
                     int fromDocumentFieldPosition = i;
                     int toDocumentFieldPosition = i + field.Length;
@@ -474,7 +483,7 @@ namespace Parsify.PluginInfrastructure
                 }
 
                 int remaining = i;
-                for ( ; content[ remaining ] != '\n'; remaining++ )
+                for ( ; remaining < length && content[ remaining ] != '\n'; remaining++ )
                 {
                     vtable.StartStyling( p_access, (IntPtr)( i ) );
                 }
@@ -510,96 +519,96 @@ namespace Parsify.PluginInfrastructure
              *      so it is easy to see when something breaks.
              */
 
-            int length = (int)length_doc;
-            int start = (int)start_pos;
+            //int length = (int)length_doc;
+            //int start = (int)start_pos;
 
-            // allocate a buffer
-            IntPtr buffer_ptr = Marshal.AllocHGlobal( length );
-            if ( buffer_ptr == IntPtr.Zero ) { return; }
+            //// allocate a buffer
+            //IntPtr buffer_ptr = Marshal.AllocHGlobal( length );
+            //if ( buffer_ptr == IntPtr.Zero ) { return; }
 
-            IDocument idoc = (IDocument)Marshal.PtrToStructure( p_access, typeof( IDocument ) );
-            IDocumentVtable vtable = (IDocumentVtable)Marshal.PtrToStructure( (IntPtr)idoc.VTable, typeof( IDocumentVtable ) );
+            //IDocument idoc = (IDocument)Marshal.PtrToStructure( p_access, typeof( IDocument ) );
+            //IDocumentVtable vtable = (IDocumentVtable)Marshal.PtrToStructure( (IntPtr)idoc.VTable, typeof( IDocumentVtable ) );
 
-            // scintilla fills the allocated buffer
-            vtable.GetCharRange( p_access, buffer_ptr, (IntPtr)start, (IntPtr)length );
-            if ( buffer_ptr == IntPtr.Zero ) { return; }
+            //// scintilla fills the allocated buffer
+            //vtable.GetCharRange( p_access, buffer_ptr, (IntPtr)start, (IntPtr)length );
+            //if ( buffer_ptr == IntPtr.Zero ) { return; }
 
-            // convert the buffer into a managed string
-            string content = Marshal.PtrToStringAnsi( buffer_ptr, length );
+            //// convert the buffer into a managed string
+            //string content = Marshal.PtrToStringAnsi( buffer_ptr, length );
 
 
-            int cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
-            int cur_line = (int)vtable.LineFromPosition( p_access, (IntPtr)start );
+            //int cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
+            //int cur_line = (int)vtable.LineFromPosition( p_access, (IntPtr)start );
 
-            if ( cur_line > 0 )
-            {
-                int prev_level = (int)vtable.GetLevel( p_access, (IntPtr)( cur_line - 1 ) );
-                bool header_flag_set = ( prev_level & (int)SciMsg.SC_FOLDLEVELHEADERFLAG ) == (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
+            //if ( cur_line > 0 )
+            //{
+            //    int prev_level = (int)vtable.GetLevel( p_access, (IntPtr)( cur_line - 1 ) );
+            //    bool header_flag_set = ( prev_level & (int)SciMsg.SC_FOLDLEVELHEADERFLAG ) == (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
 
-                if ( header_flag_set )
-                {
-                    cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK ) + 1;
-                }
-                else
-                {
-                    cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK );
-                }
-            }
+            //    if ( header_flag_set )
+            //    {
+            //        cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK ) + 1;
+            //    }
+            //    else
+            //    {
+            //        cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK );
+            //    }
+            //}
 
-            int next_level = cur_level;
+            //int next_level = cur_level;
 
-            for ( int i = 0; i < length; i++ )
-            {
+            //for ( int i = 0; i < length; i++ )
+            //{
 
-                if ( !SupportedProperties[ "fold" ] )
-                {
-                    vtable.SetLevel( p_access, (IntPtr)cur_line, (int)SciMsg.SC_FOLDLEVELBASE );
-                    while ( i < length )
-                    {
-                        // read rest of the line
-                        if ( content[ i ] == '\n' ) { break; }
-                        i++;
-                    }
-                    cur_line++;
-                    continue;
-                }
+            //    if ( !SupportedProperties[ "fold" ] )
+            //    {
+            //        vtable.SetLevel( p_access, (IntPtr)cur_line, (int)SciMsg.SC_FOLDLEVELBASE );
+            //        while ( i < length )
+            //        {
+            //            // read rest of the line
+            //            if ( content[ i ] == '\n' ) { break; }
+            //            i++;
+            //        }
+            //        cur_line++;
+            //        continue;
+            //    }
 
-                string tag = "";
-                if ( i + 2 < length ) { tag = content.Substring( i, 3 ); }
+            //    string tag = "";
+            //    if ( i + 2 < length ) { tag = content.Substring( i, 3 ); }
 
-                //if ( FoldOpeningTags.Contains( tag ) )
-                //{
-                //    next_level++;
-                //    cur_level |= (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
-                //}
-                //else if ( FoldClosingTags.Contains( tag ) )
-                //{
-                //    next_level--;
-                //    if ( SupportedProperties[ "fold.compact" ] ) { cur_level--; }
-                //    cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
-                //}
-                //else
-                {
-                    cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
-                }
+            //    //if ( FoldOpeningTags.Contains( tag ) )
+            //    //{
+            //    //    next_level++;
+            //    //    cur_level |= (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
+            //    //}
+            //    //else if ( FoldClosingTags.Contains( tag ) )
+            //    //{
+            //    //    next_level--;
+            //    //    if ( SupportedProperties[ "fold.compact" ] ) { cur_level--; }
+            //    //    cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
+            //    //}
+            //    //else
+            //    {
+            //        cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
+            //    }
 
-                while ( i < length )
-                {
-                    // read rest of the line
-                    if ( content[ i ] == '\n' ) { break; }
-                    i++;
-                }
-                // set fold level
-                if ( cur_level < (int)SciMsg.SC_FOLDLEVELBASE )
-                {
-                    cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
-                }
-                vtable.SetLevel( p_access, (IntPtr)cur_line, cur_level );
-                cur_line++;
-                cur_level = next_level;
-            }
-            // free allocated buffer
-            Marshal.FreeHGlobal( buffer_ptr );
+            //    while ( i < length )
+            //    {
+            //        // read rest of the line
+            //        if ( content[ i ] == '\n' ) { break; }
+            //        i++;
+            //    }
+            //    // set fold level
+            //    if ( cur_level < (int)SciMsg.SC_FOLDLEVELBASE )
+            //    {
+            //        cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
+            //    }
+            //    vtable.SetLevel( p_access, (IntPtr)cur_line, cur_level );
+            //    cur_line++;
+            //    cur_level = next_level;
+            //}
+            //// free allocated buffer
+            //Marshal.FreeHGlobal( buffer_ptr );
         }
 
         // virtual int SCI_METHOD NamedStyles() = 0;

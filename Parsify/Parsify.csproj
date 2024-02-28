@@ -97,7 +97,17 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="AppMarkerMode.cs" />
     <Compile Include="Core\DocumentParser.cs" />
-    <Compile Include="PluginInfrastructure\ILexer.cs" />
+    <Compile Include="Core\DocumentFactory.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentChangedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentChangingEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentInitializedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentParsedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentParseFailedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentParsingEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentPreInitializeEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentUnloadedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentUnloadingEventArgs.cs" />
+    <Compile Include="PluginInfrastructure\Lexer.cs" />
     <Compile Include="UDL\LexerColorConfiguration.cs" />
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>

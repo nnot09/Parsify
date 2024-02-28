@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Parsify.Core
 {
-    internal class DocumentParser
+    public class DocumentParser
     {
         public Document Document { get; private set; }
         public bool Success { get; private set; }

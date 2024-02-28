@@ -1,4 +1,5 @@
-﻿using Parsify.XmlModels;
+﻿using Parsify.Models.Events.EArgs;
+using Parsify.XmlModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,15 @@ namespace Parsify.Models
 {
     public class Document
     {
+        public static Document Current { get; private set; }
+
+        public event EventHandler<DocumentParsingEventArgs> DocumentParsingEvent;
+        public event EventHandler<DocumentParsedEventArgs> DocumentParsedEvent;
+        public event EventHandler<DocumentChangingEventArgs> DocumentChangingEvent;
+        public event EventHandler<DocumentChangedEventArgs> DocumentChangedEvent;
+        public event EventHandler<DocumentUnloadingEventArgs> DocumentUnloadingEvent;
+        public event EventHandler<DocumentUnloadedEventArgs> DocumentUnloadedEvent;
+
         public string FilePath { get; set; }
         public string FileName => Path.GetFileName( FilePath );
         public string FormatName { get; set; }

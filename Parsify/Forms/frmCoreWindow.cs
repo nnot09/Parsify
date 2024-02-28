@@ -17,19 +17,18 @@ namespace Kbg.NppPluginNET
 {
     public partial class frmCoreWindow : Form
     {
-        public Document CurrentDocument { get; set; }
-
         private List<ParsifyModule> _moduleDefinitions;
-        private Scintilla _scintilla;
         private bool _toggleShowLines;
         private int _errorsCount;
 
         public frmCoreWindow()
         {
             InitializeComponent();
+            Main.DocumentFactory.DocumentParseFailedEvent += this.DocumentFactory_DocumentParseFailedEvent;
+            Main.DocumentFactory.DocumentInitializedEvent += this.DocumentFactory_DocumentInitializedEvent;
+            Main.DocumentFactory.DocumentUnloadedEvent += this.DocumentFactory_DocumentUnloadedEvent;
 
             this._moduleDefinitions = new List<ParsifyModule>();
-            this._scintilla = new Scintilla();
 
 #if DEBUG
             ParsifyModule.DebugCreateDefault( "text.xml" );
@@ -45,6 +44,23 @@ namespace Kbg.NppPluginNET
             {
                 this.Enabled = true;
             }
+        }
+
+        private void DocumentFactory_DocumentUnloadedEvent( object sender, Parsify.Models.Events.EArgs.DocumentUnloadedEventArgs e )
+        {
+            this.treeDataView.Nodes.Clear();
+            this.comboTextFormats.SelectedItem = null;
+        }
+
+        private void DocumentFactory_DocumentInitializedEvent( object sender, Parsify.Models.Events.EArgs.DocumentInitializedEventArgs e )
+        {
+            GenerateTree();
+            UpdateStatusBar();
+        }
+
+        private void DocumentFactory_DocumentParseFailedEvent( object sender, Parsify.Models.Events.EArgs.DocumentParseFailedEventArgs e )
+        {
+            MessageBox.Show( $"Document parsing failed:\r\n{e.ErrorText}", "Partially parsed", MessageBoxButtons.OK, MessageBoxIcon.Error );
         }
 
         protected override void OnHandleCreated( EventArgs e )
@@ -107,32 +123,11 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        private void ApplySelectedModule( ParsifyModule module )
-        {
-            var documentParser = new DocumentParser( _scintilla, module );
-
-            if ( !documentParser.Success )
-            {
-                MessageBox.Show( $"Document parsing failed:\r\n{documentParser.GetErrors()}", "Partially parsed", MessageBoxButtons.OK, MessageBoxIcon.Error );
-                return;
-            }
-
-            if ( documentParser.NumberOfErrors > 0 )
-                MessageBox.Show( $"Text document could not be parsed entirely:\r\n{documentParser.GetErrors()}", "Partially parsed", MessageBoxButtons.OK, MessageBoxIcon.Warning );
-
-            this.CurrentDocument = documentParser.Document;
-            _scintilla.ForceStyleUpdate( CurrentDocument.Parser );
-            this._errorsCount = documentParser.NumberOfErrors;
-
-            GenerateTree();
-            UpdateStatusBar();
-        }
-
         private void GenerateTree()
         {
-            this.treeDataView.Nodes.Add( this.CurrentDocument.ToString() );
+            this.treeDataView.Nodes.Add( Main.DocumentFactory.Active.ToString() );
 
-            foreach ( var line in this.CurrentDocument.Lines )
+            foreach ( var line in Main.DocumentFactory.Active.Lines )
             {
                 var lineNode = new NodeLine( line );
 
@@ -149,7 +144,7 @@ namespace Kbg.NppPluginNET
 
         private void UpdateStatusBar()
         {
-            footerlbTotalLinesCount.Text = $"Total Lines: {CurrentDocument.Lines.Count}";
+            footerlbTotalLinesCount.Text = $"Total Lines: {Main.DocumentFactory.Active.Lines.Count}";
 
             if ( this.treeDataView.SelectedNode != null )
             {
@@ -172,7 +167,7 @@ namespace Kbg.NppPluginNET
         {
             string identifier = ( line.DocumentLine as TextLine ).LineIdentifier;
 
-            return CurrentDocument.Lines
+            return Main.DocumentFactory.Active.Lines
                         .Cast<TextLine>()
                         .Where( l => l.LineIdentifier == identifier )
                         .Count();
@@ -182,7 +177,7 @@ namespace Kbg.NppPluginNET
         {
             string identifier = ( field.DocumentField.Parent as TextLine ).LineIdentifier;
 
-            var sameValuesCount = CurrentDocument.Lines
+            var sameValuesCount = Main.DocumentFactory.Active.Lines
                 .Cast<TextLine>()
                 .Where( l => l.LineIdentifier == identifier )
                 .SelectMany( l => l.Fields )
@@ -194,7 +189,7 @@ namespace Kbg.NppPluginNET
 
         private void btnOpenConfig_Click( object sender, EventArgs e )
         {
-            
+
         }
 
         private void btnUpdateModules_Click( object sender, EventArgs e )
@@ -216,9 +211,14 @@ namespace Kbg.NppPluginNET
             this.treeDataView.Nodes.Clear();
 
             if ( comboTextFormats.SelectedItem == null )
+            {
+                btnHighlightSwitch.Enabled = false;
                 return;
+            }
 
-            ApplySelectedModule( comboTextFormats.SelectedItem as ParsifyModule );
+            btnHighlightSwitch.Enabled = true;
+
+            Main.DocumentFactory.Update( comboTextFormats.SelectedItem as ParsifyModule );
         }
 
         private void ctxMenuItemMarkSpecificOptionAllValues_Click( object sender, EventArgs e )
@@ -230,8 +230,8 @@ namespace Kbg.NppPluginNET
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
             {
-                _scintilla.SelectMultiplePlainFieldValues(
-                    CurrentDocument.Lines.Cast<TextLine>(),
+                Main.Scintilla.SelectMultiplePlainFieldValues(
+                    Main.DocumentFactory.Active.Lines.Cast<TextLine>(),
                     fieldNode.DocumentField
                 );
             }
@@ -245,7 +245,7 @@ namespace Kbg.NppPluginNET
             }
 
             if ( this.treeDataView.SelectedNode is NodeField fieldNode )
-                _scintilla.SelectFieldValue( fieldNode.DocumentField );
+                Main.Scintilla.SelectFieldValue( fieldNode.DocumentField );
         }
 
         private void ctxMenuItemShowOnlyLines_Click( object sender, EventArgs e )
@@ -261,19 +261,19 @@ namespace Kbg.NppPluginNET
                 {
                     ctxMenuItemShowOnlyLines.Text = "Show only selected line identifier";
 
-                    _scintilla.UnhideAll( CurrentDocument.Lines.Cast<TextLine>() );
+                    Main.Scintilla.UnhideAll( Main.DocumentFactory.Active.Lines.Cast<TextLine>() );
                 }
                 else
                 {
                     ctxMenuItemShowOnlyLines.Text = "Show all lines";
 
                     // TODO More performant way
-                    var lineNoList = CurrentDocument.Lines
+                    var lineNoList = Main.DocumentFactory.Active.Lines
                         .Cast<TextLine>()
                         .Where( l => l.LineIdentifier != ( lineNode.DocumentLine as TextLine ).LineIdentifier )
                         .Select( l => l.DocumentLineNumber );
 
-                    _scintilla.HideLines( lineNoList );
+                    Main.Scintilla.HideLines( lineNoList );
                 }
 
                 _toggleShowLines = !_toggleShowLines;
@@ -290,12 +290,12 @@ namespace Kbg.NppPluginNET
             if ( this.treeDataView.SelectedNode is NodeLine lineNode )
             {
                 // TODO More performant way
-                var lineNoList = CurrentDocument.Lines
+                var lineNoList = Main.DocumentFactory.Active.Lines
                     .Cast<TextLine>()
                     .Where( l => l.LineIdentifier == ( lineNode.DocumentLine as TextLine ).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
-                _scintilla.SelectLines( lineNoList );
+                Main.Scintilla.SelectLines( lineNoList );
             }
         }
 
@@ -307,7 +307,7 @@ namespace Kbg.NppPluginNET
 
             if ( e.Node is NodeField field )
             {
-                _scintilla.SelectFieldValue( field.DocumentField );
+                Main.Scintilla.SelectFieldValue( field.DocumentField );
 
                 ctxMenuItemShowOnlyColumnType.Visible = false;
                 ctxMenuItemShowOnlyLines.Visible = false;
@@ -317,13 +317,13 @@ namespace Kbg.NppPluginNET
             }
             else if ( e.Node is NodeLine line )
             {
-                var lineNoList = CurrentDocument.Lines
+                var lineNoList = Main.DocumentFactory.Active.Lines
                     .Cast<TextLine>()
                     .Where( l => l.LineIdentifier == ( line.DocumentLine as TextLine ).LineIdentifier )
                     .Select( l => l.DocumentLineNumber );
 
 
-                _scintilla.SelectLines( lineNoList );
+                Main.Scintilla.SelectLines( lineNoList );
 
                 ctxMenuItemShowOnlyLines.Visible = true;
                 ctxMenuItemMarkAllLines.Visible = true;
@@ -331,6 +331,11 @@ namespace Kbg.NppPluginNET
                 ctxMenuItemMarkSpecificOptions.Visible = false;
                 ctxMenuItemShowOnlyColumnType.Visible = false;
             }
+        }
+
+        private void btnHighlightSwitch_Click( object sender, EventArgs e )
+        {
+            Main.Scintilla.SwitchLanguage();
         }
     }
 }

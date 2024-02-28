@@ -1,9 +1,11 @@
 ﻿// NPP plugin platform for .Net v0.94.00 by Kasper B. Graversen etc.
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using NppPlugin.DllExport;
+using Parsify.Core;
 using Parsify.PluginInfrastructure;
 
 namespace Kbg.NppPluginNET
@@ -82,9 +84,17 @@ namespace Kbg.NppPluginNET
 
             string sName = Marshal.PtrToStringAnsi( pName );
 
-            if ( sName == ILexer.Name.Trim( '\0' ) )
+            Debug.WriteLine( $"[{DateTime.Now}] CreateLexer: " + sName );
+
+            if ( sName == Parsify.PluginInfrastructure.Lexer.Name.Trim( '\0' ) )
             {
-                return ILexer.ILexerImplementation();
+                if ( Main.DocumentFactory.Active == null )
+                {
+                    Main.Scintilla.SetDefaultLanguage();
+                    return IntPtr.Zero;
+                }
+
+                return Parsify.PluginInfrastructure.Lexer.ILexerImplementation();
             }
             return IntPtr.Zero;
         }
@@ -97,7 +107,7 @@ namespace Kbg.NppPluginNET
             // name is a pointer to memory provided by npp and scintilla InsertMenuA is used, hence byte array
             // buffer_length is the size of the provided memory
             // use zero-terminated string to interface with C++
-            byte[] lexer_name = Encoding.ASCII.GetBytes( ILexer.Name );
+            byte[] lexer_name = Encoding.ASCII.GetBytes( Parsify.PluginInfrastructure.Lexer.Name );
             Marshal.Copy( lexer_name, 0, name, lexer_name.Length );
         }
 
@@ -110,7 +120,7 @@ namespace Kbg.NppPluginNET
             // buffer_length is the size of the provided memory
             // use zero-terminated string to interface with C++
 
-            char[] lexer_status_text = ILexer.StatusText.ToCharArray(); // SendMessageW is used, hence ToCharArray as this returns utf16 strings
+            char[] lexer_status_text = Parsify.PluginInfrastructure.Lexer.StatusText.ToCharArray(); // SendMessageW is used, hence ToCharArray as this returns utf16 strings
             Marshal.Copy( lexer_status_text, 0, name, lexer_status_text.Length );
         }
 
@@ -119,7 +129,7 @@ namespace Kbg.NppPluginNET
 
         //static ILexerImpDelegate ILexerImplementation;
 
-        private static Delegate ilexer_implementation = new ILexerImpDelegate( ILexer.ILexerImplementation );
+        private static Delegate ilexer_implementation = new ILexerImpDelegate( Parsify.PluginInfrastructure.Lexer.ILexerImplementation );
 
 
         [DllExport( CallingConvention = CallingConvention.StdCall )]
