@@ -22,11 +22,13 @@ namespace Parsify.Core
 
         public Document Active { get; private set; }
         public DocumentParser DocumentReader { get; set; }
+        public DocumentParserCache DocumentParserCache { get; set; }
         private readonly Scintilla _scintilla;
         
         public DocumentFactory( Scintilla scintilla )
         {
             _scintilla = scintilla;
+            DocumentParserCache = new DocumentParserCache();
         }
 
         public void UpdateParser( ParsifyModule parser )
@@ -50,6 +52,8 @@ namespace Parsify.Core
             }
 
             OnDocumentParsed( DocumentReader.Document );
+
+            DocumentParserCache.AddOrUpdate( parser, DocumentReader.Document );
 
             var oldDoc = Unload();
 
