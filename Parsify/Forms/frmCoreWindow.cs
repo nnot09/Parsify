@@ -47,11 +47,12 @@ namespace Kbg.NppPluginNET
 
         private void DocumentFactory_DocumentChanged( object sender, EventArgs e )
         {
-            this.treeDataView.Nodes.Clear();
-            this.comboTextFormats.SelectedItem = null;
-
             footerlbTotalLinesCount.Text = $"Total Lines: n/a";
             footerlbSelectedCount.Text = string.Empty;
+
+            this.treeDataView.Nodes.Clear();
+            this.comboTextFormats.SelectedItem = null;
+            this.comboTextFormats.SelectedItem = Main.DocumentFactory.DocumentParserCache.GetCachedModuleOrNull( Main.Scintilla.CurrentDocumentHash() );
         }
 
         private void DocumentFactory_DocumentParserChangedEvent( object sender, Parsify.Models.Events.EArgs.DocumentParserChangedEventArgs e )
