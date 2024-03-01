@@ -12,12 +12,13 @@ namespace Parsify.Core
         public event EventHandler<DocumentParsingEventArgs> DocumentParsingEvent;
         public event EventHandler<DocumentParsedEventArgs> DocumentParsedEvent;
         public event EventHandler<DocumentParseFailedEventArgs> DocumentParseFailedEvent;
-        public event EventHandler<DocumentChangingEventArgs> DocumentChangingEvent;
-        public event EventHandler<DocumentChangedEventArgs> DocumentChangedEvent;
+        public event EventHandler<DocumentParserChangingEventArgs> DocumentParserChangingEvent;
+        public event EventHandler<DocumentParserChangedEventArgs> DocumentParserChangedEvent;
         public event EventHandler<DocumentUnloadingEventArgs> DocumentUnloadingEvent;
         public event EventHandler<DocumentUnloadedEventArgs> DocumentUnloadedEvent;
         public event EventHandler<DocumentPreInitializeEventArgs> DocumentPreInitializeEvent;
         public event EventHandler<DocumentInitializedEventArgs> DocumentInitializedEvent;
+        public event EventHandler DocumentChanged;
 
         public Document Active { get; private set; }
         public DocumentParser DocumentReader { get; set; }
@@ -28,13 +29,13 @@ namespace Parsify.Core
             _scintilla = scintilla;
         }
 
-        public void Update( ParsifyModule parser )
+        public void UpdateParser( ParsifyModule parser )
         {
 #if DEBUG
             Debug.WriteLine( $"[{DateTime.Now}] Executing Update" );
 #endif
 
-            if ( OnDocumentChanging( Active ).Cancel )
+            if ( OnDocumentParserChanging().Cancel )
                 return;
 
             if ( OnDocumentParsing( _scintilla.GetFilePath(), parser ).Cancel )
@@ -56,7 +57,7 @@ namespace Parsify.Core
 
             Initialize( Active );
 
-            OnDocumentChanged( oldDoc );
+            OnDocumentParserChanged( oldDoc?.Parser );
         }
 
         private Document Unload()
@@ -95,6 +96,15 @@ namespace Parsify.Core
             _scintilla.GatewaySetProperty( "nnot09", "0" );
 
             OnDocumentInitialized();
+        }
+
+        public void OnDocumentChanged()
+        {
+#if DEBUG
+            Debug.WriteLine( $"[{DateTime.Now}] OnDocumentChanged" );
+#endif
+
+            DocumentChanged?.Invoke( this, EventArgs.Empty );
         }
 
         public DocumentPreInitializeEventArgs OnDocumentPreInitalize( Document document )
@@ -171,36 +181,40 @@ namespace Parsify.Core
             return args;
         }
 
-        public DocumentChangingEventArgs OnDocumentChanging( Document current )
+        public DocumentParserChangingEventArgs OnDocumentParserChanging()
         {
 #if DEBUG
-            Debug.WriteLine( $"[{DateTime.Now}] OnDocumentChanging" );
+            Debug.WriteLine( $"[{DateTime.Now}] OnDocumentParserChanging" );
 #endif
 
-            var args = new DocumentChangingEventArgs()
+            var args = new DocumentParserChangingEventArgs()
             {
                 Cancel = false,
-                Current = current
+                Parser = Active?.Parser,
+                Document = Active,
             };
 
-            DocumentChangingEvent?.Invoke( this, args );
+            args.SetIsFirst();
+
+            DocumentParserChangingEvent?.Invoke( this, args );
 
             return args;
         }
 
-        public void OnDocumentChanged( Document old )
+        public void OnDocumentParserChanged( ParsifyModule old )
         {
 #if DEBUG
-            Debug.WriteLine( $"[{DateTime.Now}] OnDocumentChanged" );
+            Debug.WriteLine( $"[{DateTime.Now}] OnDocumentParserChanged" );
 #endif
 
-            var args = new DocumentChangedEventArgs()
+            var args = new DocumentParserChangedEventArgs()
             {
-                NewDocument = Active,
-                OldDocument = old
+                Document = Active,
+                NewParser = Active.Parser,
+                OldParser = old
             };
 
-            DocumentChangedEvent?.Invoke( this, args );
+            DocumentParserChangedEvent?.Invoke( this, args );
 
             return;
         }
