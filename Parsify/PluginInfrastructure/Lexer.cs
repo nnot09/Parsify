@@ -435,13 +435,12 @@ namespace Parsify.PluginInfrastructure
             int styleId = 2;
             for ( int i = 0; i < length; i++ )
             {
-
-                if ( content[ i ] == '\n' )
-                {
-                    vtable.StartStyling( p_access, (IntPtr)( i ) );
-                    vtable.SetStyleFor( p_access, (IntPtr)( i + 1 ), (char)0 );
-                    continue;
-                }
+                //if ( content[ i ] == '\n' || content[ i ] == '\r' )
+                //{
+                //    vtable.StartStyling( p_access, (IntPtr)( i ) );
+                //    vtable.SetStyleFor( p_access, (IntPtr)( i + 1 ), (char)0 );
+                //    continue;
+                //}
 
                 int startPosition = i;
                 string indexedContent = content.Substring( i );
