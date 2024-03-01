@@ -13,15 +13,6 @@ namespace Parsify.Models
 {
     public class Document
     {
-        public static Document Current { get; private set; }
-
-        public event EventHandler<DocumentParsingEventArgs> DocumentParsingEvent;
-        public event EventHandler<DocumentParsedEventArgs> DocumentParsedEvent;
-        public event EventHandler<DocumentParserChangingEventArgs> DocumentChangingEvent;
-        public event EventHandler<DocumentParserChangedEventArgs> DocumentChangedEvent;
-        public event EventHandler<DocumentUnloadingEventArgs> DocumentUnloadingEvent;
-        public event EventHandler<DocumentUnloadedEventArgs> DocumentUnloadedEvent;
-
         public string FilePath { get; set; }
         public string FileName => Path.GetFileName( FilePath );
         public string FormatName { get; set; }
