@@ -26,14 +26,13 @@ namespace Kbg.NppPluginNET
             InitializeComponent();
             Main.DocumentFactory.DocumentParseFailedEvent += this.DocumentFactory_DocumentParseFailedEvent;
             Main.DocumentFactory.DocumentInitializedEvent += this.DocumentFactory_DocumentInitializedEvent;
-            Main.DocumentFactory.DocumentUnloadedEvent += this.DocumentFactory_DocumentUnloadedEvent;
+            Main.DocumentFactory.DocumentParserChangedEvent += this.DocumentFactory_DocumentParserChangedEvent;
+            Main.DocumentFactory.DocumentChanged += this.DocumentFactory_DocumentChanged;
 
             this._moduleDefinitions = new List<ParsifyModule>();
-
 #if DEBUG
             ParsifyModule.DebugCreateDefault( "text.xml" );
 #endif
-
             this.Enabled = false;
 
             try
@@ -46,10 +45,19 @@ namespace Kbg.NppPluginNET
             }
         }
 
-        private void DocumentFactory_DocumentUnloadedEvent( object sender, Parsify.Models.Events.EArgs.DocumentUnloadedEventArgs e )
+        private void DocumentFactory_DocumentChanged( object sender, EventArgs e )
         {
             this.treeDataView.Nodes.Clear();
             this.comboTextFormats.SelectedItem = null;
+
+            footerlbTotalLinesCount.Text = $"Total Lines: n/a";
+            footerlbSelectedCount.Text = string.Empty;
+        }
+
+        private void DocumentFactory_DocumentParserChangedEvent( object sender, Parsify.Models.Events.EArgs.DocumentParserChangedEventArgs e )
+        {
+            GenerateTree();
+            UpdateStatusBar();
         }
 
         private void DocumentFactory_DocumentInitializedEvent( object sender, Parsify.Models.Events.EArgs.DocumentInitializedEventArgs e )
@@ -125,6 +133,7 @@ namespace Kbg.NppPluginNET
 
         private void GenerateTree()
         {
+            this.treeDataView.Nodes.Clear();
             this.treeDataView.Nodes.Add( Main.DocumentFactory.Active.ToString() );
 
             foreach ( var line in Main.DocumentFactory.Active.Lines )
@@ -218,7 +227,7 @@ namespace Kbg.NppPluginNET
 
             btnHighlightSwitch.Enabled = true;
 
-            Main.DocumentFactory.Update( comboTextFormats.SelectedItem as ParsifyModule );
+            Main.DocumentFactory.UpdateParser( comboTextFormats.SelectedItem as ParsifyModule );
         }
 
         private void ctxMenuItemMarkSpecificOptionAllValues_Click( object sender, EventArgs e )

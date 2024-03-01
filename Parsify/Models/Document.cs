@@ -17,8 +17,8 @@ namespace Parsify.Models
 
         public event EventHandler<DocumentParsingEventArgs> DocumentParsingEvent;
         public event EventHandler<DocumentParsedEventArgs> DocumentParsedEvent;
-        public event EventHandler<DocumentChangingEventArgs> DocumentChangingEvent;
-        public event EventHandler<DocumentChangedEventArgs> DocumentChangedEvent;
+        public event EventHandler<DocumentParserChangingEventArgs> DocumentChangingEvent;
+        public event EventHandler<DocumentParserChangedEventArgs> DocumentChangedEvent;
         public event EventHandler<DocumentUnloadingEventArgs> DocumentUnloadingEvent;
         public event EventHandler<DocumentUnloadedEventArgs> DocumentUnloadedEvent;
 

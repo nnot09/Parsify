@@ -98,8 +98,8 @@
     <Compile Include="AppMarkerMode.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Core\DocumentFactory.cs" />
-    <Compile Include="Models\Events\EArgs\DocumentChangedEventArgs.cs" />
-    <Compile Include="Models\Events\EArgs\DocumentChangingEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentParserChangedEventArgs.cs" />
+    <Compile Include="Models\Events\EArgs\DocumentParserChangingEventArgs.cs" />
     <Compile Include="Models\Events\EArgs\DocumentInitializedEventArgs.cs" />
     <Compile Include="Models\Events\EArgs\DocumentParsedEventArgs.cs" />
     <Compile Include="Models\Events\EArgs\DocumentParseFailedEventArgs.cs" />
