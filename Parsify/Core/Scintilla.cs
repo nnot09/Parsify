@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 
@@ -35,6 +37,19 @@ namespace Parsify.Core
 
         public string GetFilePath()
             => _notepad.GetCurrentFilePath();
+
+        public byte[] CurrentDocumentHash()
+        {
+            if ( _gateway.GetLength() == 0 )
+                return null;
+
+            using (SHA1 sha1 =  SHA1.Create())
+            {
+                byte[] docBytes = File.ReadAllBytes( GetFilePath() );
+
+                return sha1.ComputeHash( docBytes );
+            }
+        }
 
         public ParsifyLine GetLineDefinition( string documentLine, List<ParsifyLine> lines )
         {
