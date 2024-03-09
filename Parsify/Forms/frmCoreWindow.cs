@@ -19,7 +19,6 @@ namespace Kbg.NppPluginNET
     {
         private List<ParsifyModule> _moduleDefinitions;
         private bool _toggleShowLines;
-        private int _errorsCount;
 
         public frmCoreWindow()
         {
@@ -170,7 +169,7 @@ namespace Kbg.NppPluginNET
                 }
             }
 
-            footerlbParsifyErrorsCount.Text = $"Parsify: {_errorsCount} Errors";
+            footerlbParsifyErrorsCount.Text = $"Parsify: {Main.DocumentFactory.DocumentReader.NumberOfErrors} Errors";
         }
 
         private int GetPlainTextSelectedCount( NodeLine line )
@@ -346,6 +345,15 @@ namespace Kbg.NppPluginNET
         private void btnHighlightSwitch_Click( object sender, EventArgs e )
         {
             Main.Scintilla.SwitchLanguage();
+        }
+
+        private void footerlbParsifyErrorsCount_Click( object sender, EventArgs e )
+        {
+            if ( Main.DocumentFactory.DocumentReader.NumberOfErrors == 0 )
+                return;
+
+            using ( frmParseErrMessages errMsgWnd = new frmParseErrMessages( Main.DocumentFactory.DocumentReader.GetErrors() ) )
+                errMsgWnd.ShowDialog();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Parsify.Models;
 using Parsify.Other;
 using Parsify.XmlModels;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,7 +33,7 @@ namespace Parsify.Core
 
         private void ParseText( ParsifyModule module, Scintilla scintilla )
         {
-            foreach ( var documentLine in scintilla.GetLines() )
+            foreach ( var documentLine in scintilla.GetLines( trimCrLf: true ) )
             {
                 var moduleLine = scintilla.GetLineDefinition( documentLine.Line, module.LineDefinitions );
 
@@ -63,7 +64,12 @@ namespace Parsify.Core
                         Parent = line,
                     };
 
-                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length );
+                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, out string error );
+                    if ( error != null )
+                    {
+                        _errors.AppendLine( error );
+                        NumberOfErrors++;
+                    }
 
                     foreach ( var translatedFieldValueDef in moduleLineField.Translations )
                     {

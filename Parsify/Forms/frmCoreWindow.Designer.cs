@@ -213,16 +213,18 @@
             // footerlbSelectedCount
             // 
             this.footerlbSelectedCount.Name = "footerlbSelectedCount";
-            this.footerlbSelectedCount.Size = new System.Drawing.Size(232, 17);
+            this.footerlbSelectedCount.Size = new System.Drawing.Size(217, 17);
             this.footerlbSelectedCount.Spring = true;
             this.footerlbSelectedCount.Text = "Selected Count: n/a";
             // 
             // footerlbParsifyErrorsCount
             // 
+            this.footerlbParsifyErrorsCount.IsLink = true;
             this.footerlbParsifyErrorsCount.Name = "footerlbParsifyErrorsCount";
-            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(232, 17);
+            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(217, 17);
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
+            this.footerlbParsifyErrorsCount.Click += new System.EventHandler(this.footerlbParsifyErrorsCount_Click);
             // 
             // frmCoreWindow
             // 

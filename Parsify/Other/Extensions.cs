@@ -12,16 +12,19 @@ namespace Parsify.Other
 {
     internal static class Extensions
     {
-        public static string GetField( string line, int index, int length )
+        public static string GetField( string line, int index, int length, int lineNo, out string error )
         {
+            error = null;
+
             if ( string.IsNullOrWhiteSpace( line ) )
                 return line;
 
-            if ( line.Length < index )
-                return line;
-
-            if ( line.Length < index + length )
-                return line.Substring( index );
+            if ( line.Length < index || index + length > line.Length )
+            {
+                error = $"Line {lineNo} ends unexpectedly and is not long enough for the field (Position: {index + 1}/Length: {length}).";
+                return "?".PadRight( length, '?' );
+                // return line.Substring( index );
+            }
 
             return line.Substring( index, length );
         }
