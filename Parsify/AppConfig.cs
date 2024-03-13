@@ -25,12 +25,6 @@ namespace Parsify
         [XmlIgnore]
         public static string AppConfigFullPath = Path.Combine( AppConfigDirectory, AppConfigFileName );
 
-        [XmlElement( "MarkerMode" )]
-        public AppMarkerMode MarkerMode { get; set; }
-
-        [XmlElement( "MarkerColor" )]
-        public uint MarkerColor { get; set; }
-
         [XmlElement( "ModulesFilePath" )]
         public string ModulesDirectoryPath { get; set; }
 
@@ -133,8 +127,6 @@ namespace Parsify
             => new AppConfig()
             {
                 ModulesDirectoryPath = @"C:\Parsify\Modules",
-                MarkerColor = 0xff2d8fcc,
-                MarkerMode = AppMarkerMode.Default,
                 HighlightingMode = AppHighlightingMode.Background,
             };
     }

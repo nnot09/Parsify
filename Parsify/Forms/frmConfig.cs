@@ -1,4 +1,5 @@
 ﻿using Kbg.NppPluginNET;
+using Parsify.Lexer;
 using Parsify.Other;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,6 @@ namespace Parsify.Forms
             InitializeComponent();
 
             this.txtDirectoryPath.Text = Main.Configuration.ModulesDirectoryPath;
-            this.comboHighlightingMode.SelectedIndex = (int)Main.Configuration.MarkerMode;
-            this.colorDiag.Color = Color.FromArgb( (int)Main.Configuration.MarkerColor );
-            this.panColor.BackColor = this.colorDiag.Color;
             this.rdBackground.Checked = Main.Configuration.HighlightingMode == AppHighlightingMode.Background;
             this.rdForeground.Checked = Main.Configuration.HighlightingMode == AppHighlightingMode.Foreground;
         }
@@ -52,9 +50,14 @@ namespace Parsify.Forms
             }
 
             Main.Configuration.ModulesDirectoryPath = this.txtDirectoryPath.Text.Trim();
-            Main.Configuration.MarkerColor = (uint)this.panColor.BackColor.ToArgb();
-            Main.Configuration.MarkerMode = (AppMarkerMode)this.comboHighlightingMode.SelectedIndex;
+            var old = Main.Configuration.HighlightingMode;
             Main.Configuration.HighlightingMode = rdForeground.Checked ? AppHighlightingMode.Foreground : AppHighlightingMode.Background;
+
+            if ( old != Main.Configuration.HighlightingMode )
+            {
+                MessageBox.Show( "Notepad++ needs a restart to apply the color settings.", "Restart required", MessageBoxButtons.OK, MessageBoxIcon.Information );
+                LexerColorConfiguration.Refresh();
+            }
 
             this.DialogResult = DialogResult.OK;
         }
@@ -65,19 +68,6 @@ namespace Parsify.Forms
             {
                 if ( fbd.ShowDialog() == DialogResult.OK )
                     this.txtDirectoryPath.Text = fbd.SelectedPath;
-            }
-        }
-
-        private void comboHighlightingMode_SelectedIndexChanged( object sender, EventArgs e )
-        {
-            this.panColorConfiguration.Enabled = comboHighlightingMode.SelectedIndex == 1;
-        }
-
-        private void panColor_MouseClick( object sender, MouseEventArgs e )
-        {
-            if ( colorDiag.ShowDialog() == DialogResult.OK )
-            {
-                this.panColor.BackColor = colorDiag.Color;
             }
         }
     }

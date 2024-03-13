@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Parsify.Lexer
@@ -17,15 +18,13 @@ namespace Parsify.Lexer
             if ( !File.Exists( _udlConfigPath ) )
             {
                 Directory.CreateDirectory( _langDirectoryPath );
-                GenerateUdl( Main.Configuration.HighlightingMode );
+                GenerateLanguage( Main.Configuration.HighlightingMode );
             }
         }
 
-        private static void GenerateUdl( AppHighlightingMode mode )
+        private static void GenerateLanguage( AppHighlightingMode mode )
         {
-            string[] presets = new string[] { "background higlighting mode", "foreground highlighting mode" };
             string[] tags = { "instre1", "instre2", "type1", "type2", "type3", "type4", "type5", "type6" };
-            int numberOfTags = 8;
 
             using ( XmlWriter writer = XmlWriter.Create( _udlConfigPath, new XmlWriterSettings() { Indent = true, Encoding = new UTF8Encoding( false ), OmitXmlDeclaration = false } ) )
             {
@@ -73,6 +72,26 @@ namespace Parsify.Lexer
                 writer.Flush();
                 writer.Close();
             }
+        }
+
+        private static void RemoveLanguage()
+        {
+            if ( !File.Exists( _udlConfigPath ) )
+            {
+                try
+                {
+                    File.Delete( _udlConfigPath );
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        public static void Refresh()
+        {
+            RemoveLanguage();
+            GenerateLanguage( Main.Configuration.HighlightingMode );
         }
     }
 }

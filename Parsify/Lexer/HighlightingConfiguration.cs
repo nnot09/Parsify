@@ -20,7 +20,6 @@ namespace Parsify.Lexer
     {
         public const int NUMBER_OF_COLORS_PER_SET = 12;
 
-        // Returns Background[], Foreground[] and BoldFlag
         public static ColorPalette GetColorPalette( AppHighlightingMode mode )
         {
             switch ( mode )
@@ -46,7 +45,7 @@ namespace Parsify.Lexer
         private static int[] ForegroundModePalette
             => new int[]
             {
-               0x186CC0,
+               0x000000,
                0x186CC0,
                0x909000,
                0x6C18C0,
