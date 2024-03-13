@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
-namespace Parsify.UDL
+namespace Parsify.Lexer
 {
     internal class ColorPalette
     {
@@ -34,10 +26,10 @@ namespace Parsify.UDL
             switch ( mode )
             {
                 case AppHighlightingMode.Background:
-                    return new ColorPalette(BackgroundModePalette.Select( c => c.ToString( "x6" ) ).ToArray(), Black, "0");
+                    return new ColorPalette( BackgroundModePalette.Select( c => c.ToString( "x6" ) ).ToArray(), Black, "0" );
 
                 case AppHighlightingMode.Foreground:
-                    return new ColorPalette(White, ForegroundModePalette.Select( c => c.ToString( "x6" ) ).ToArray(), "1");
+                    return new ColorPalette( White, ForegroundModePalette.Select( c => c.ToString( "x6" ) ).ToArray(), "1" );
 
                 case AppHighlightingMode.None:
                 default:
@@ -46,10 +38,10 @@ namespace Parsify.UDL
         }
 
         private static string[] White
-             => Enumerable.Repeat<string>( "FFFFFF", NUMBER_OF_COLORS_PER_SET ).ToArray();
+             => Enumerable.Repeat( "FFFFFF", NUMBER_OF_COLORS_PER_SET ).ToArray();
 
         private static string[] Black
-             => Enumerable.Repeat<string>( "000000", NUMBER_OF_COLORS_PER_SET ).ToArray();
+             => Enumerable.Repeat( "000000", NUMBER_OF_COLORS_PER_SET ).ToArray();
 
         private static int[] ForegroundModePalette
             => new int[]

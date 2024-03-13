@@ -1,16 +1,10 @@
 ﻿using Kbg.NppPluginNET;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using System.Xml;
 
-namespace Parsify.UDL
+namespace Parsify.Lexer
 {
     internal static class LexerColorConfiguration
     {
@@ -59,13 +53,13 @@ namespace Parsify.UDL
                 writer.WriteAttributeString( "desc", "Parsify - Text parser" );
                 writer.WriteAttributeString( "excluded", "no" );
 
-               ColorPalette colorPalette = HighlightingConfiguration.GetColorPalette( mode );
+                ColorPalette colorPalette = HighlightingConfiguration.GetColorPalette( mode );
 
                 for ( int i = 0; i < HighlightingConfiguration.NUMBER_OF_COLORS_PER_SET; i++ )
                 {
                     writer.WriteStartElement( "WordsStyle" );
                     writer.WriteAttributeString( "styleID", i.ToString() );
-                    writer.WriteAttributeString( "name", ( i == 0 ? "Default" : "ColumnColor" + i.ToString() ) );
+                    writer.WriteAttributeString( "name", i == 0 ? "Default" : "ColumnColor" + i.ToString() );
                     writer.WriteAttributeString( "fgColor", colorPalette.ForegroundColors[ i ] );
                     writer.WriteAttributeString( "bgColor", colorPalette.BackgroundColors[ i ] );
                     writer.WriteAttributeString( "fontName", "" );

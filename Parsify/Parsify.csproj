@@ -115,7 +115,7 @@
     <Compile Include="Models\Events\EArgs\DocumentUnloadedEventArgs.cs" />
     <Compile Include="Models\Events\EArgs\DocumentUnloadingEventArgs.cs" />
     <Compile Include="PluginInfrastructure\Lexer.cs" />
-    <Compile Include="UDL\LexerColorConfiguration.cs" />
+    <Compile Include="Lexer\LexerColorConfiguration.cs" />
     <Compile Include="Forms\NodeControls\FieldTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -124,8 +124,7 @@
     <Compile Include="Other\NativeWindowApi.cs" />
     <Compile Include="Forms\NodeControls\NodeField.cs" />
     <Compile Include="Forms\NodeControls\NodeLine.cs" />
-    <Compile Include="UDL\HighlightingConfiguration.cs" />
-    <Compile Include="UDL\KeywordColorPicker.cs" />
+    <Compile Include="Lexer\HighlightingConfiguration.cs" />
     <Compile Include="XmlModels\ParsifyField.cs" />
     <Compile Include="XmlModels\ParsifyFieldValueTranslate.cs" />
     <Compile Include="XmlModels\ParsifyFieldValueTranslateSearchMode.cs" />

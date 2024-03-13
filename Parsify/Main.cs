@@ -9,12 +9,12 @@ using System.Windows.Forms;
 using Kbg.NppPluginNET.PluginInfrastructure;
 using System.Collections.Generic;
 using System.Linq;
-using Parsify.UDL;
 using Parsify.Forms;
 using Parsify;
 using Parsify.PluginInfrastructure;
 using Parsify.Core;
 using Parsify.Models;
+using Parsify.Lexer;
 
 namespace Kbg.NppPluginNET
 {
