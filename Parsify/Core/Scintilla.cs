@@ -59,7 +59,7 @@ namespace Parsify.Core
             // TODO Optimize
             var line = lines
                 .Where( l => documentLine.Length > l.StartsWithIdentifier.Length )
-                .SingleOrDefault( l => l.StartsWithIdentifier == documentLine.Substring( 0, l.StartsWithIdentifier.Length ) );
+                .SingleOrDefault( l => l.StartsWithIdentifier == documentLine.Substring( 0, l.StartsWithIdentifier.Length ).TrimStart() );
 
             return line;
         }

@@ -137,6 +137,16 @@ namespace Parsify.Core
                 }
             }
 
+            // Find lines that are not listed in our document
+            var definedLinesNotFound = module.LineDefinitions
+                .Where( l => !Document.Lines.Any( foundLines => foundLines.LineIdentifier == l.StartsWithIdentifier ) );
+            
+            foreach ( var notfound in definedLinesNotFound )
+            {
+                _errors.AppendLine( $"Line definition '{notfound.StartsWithIdentifier}' is missing in current document." );
+                NumberOfErrors++;
+            }
+
             Success = true;
         }
 
