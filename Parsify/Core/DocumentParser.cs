@@ -64,7 +64,7 @@ namespace Parsify.Core
                         Parent = line,
                     };
 
-                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, out string error );
+                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, field.Name, out string error );
                     if ( error != null )
                     {
                         _errors.AppendLine( error );
