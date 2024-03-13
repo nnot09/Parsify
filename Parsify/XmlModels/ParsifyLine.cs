@@ -14,5 +14,8 @@ namespace Parsify.XmlModels
 
         [XmlElement( "Field" )]
         public List<ParsifyField> Fields { get; set; }
+
+        public bool ShouldSerializeOptional()
+            => Optional;
     }
 }
