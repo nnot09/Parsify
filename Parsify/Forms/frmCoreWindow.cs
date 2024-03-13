@@ -203,7 +203,7 @@ namespace Kbg.NppPluginNET
 
         private void btnUpdateModules_Click( object sender, EventArgs e )
         {
-            this.Enabled = false;
+            this.btnUpdateModules.Enabled = false;
 
             try
             {
@@ -211,7 +211,7 @@ namespace Kbg.NppPluginNET
             }
             finally
             {
-                this.Enabled = true;
+                this.btnUpdateModules.Enabled = true;
             }
         }
 
