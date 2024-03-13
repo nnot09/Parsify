@@ -21,7 +21,13 @@ namespace Parsify.XmlModels
         [XmlAttribute( "Length" )]
         public int Length { get; set; }
 
+        [XmlAttribute("Optional")]
+        public bool Optional { get; set; }
+
         [XmlElement( "Translate" )]
         public List<ParsifyFieldValueTranslate> Translations { get; set; }
+
+        public bool ShouldSerializeOptional()
+            => Optional;
     }
 }

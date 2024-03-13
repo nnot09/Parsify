@@ -67,8 +67,15 @@ namespace Parsify.Core
                     field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, field.Name, out string error );
                     if ( error != null )
                     {
-                        _errors.AppendLine( error );
-                        NumberOfErrors++;
+                        if ( moduleLineField.Optional )
+                        {
+                            field.Value = "[missing]";
+                        }
+                        else
+                        {
+                            _errors.AppendLine( error );
+                            NumberOfErrors++;
+                        }
                     }
                     else
                     {
