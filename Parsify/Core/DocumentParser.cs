@@ -40,7 +40,7 @@ namespace Parsify.Core
                 // Current document line isn't defined in our module XML
                 if ( moduleLine == null )
                 {
-                    _errors.AppendLine( $"LineNo {documentLine.LineNo} seems to be undefined." );
+                    _errors.AppendLine( $"Line {documentLine.LineNo} is not defined." );
                     NumberOfErrors++;
                     continue;
                 }
