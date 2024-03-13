@@ -63,16 +63,16 @@
             this.panToolbar.Dock = System.Windows.Forms.DockStyle.Top;
             this.panToolbar.Location = new System.Drawing.Point(0, 0);
             this.panToolbar.Name = "panToolbar";
-            this.panToolbar.Size = new System.Drawing.Size(566, 33);
+            this.panToolbar.Size = new System.Drawing.Size(586, 33);
             this.panToolbar.TabIndex = 0;
             // 
             // btnHighlightSwitch
             // 
             this.btnHighlightSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnHighlightSwitch.Enabled = false;
-            this.btnHighlightSwitch.Location = new System.Drawing.Point(501, 5);
+            this.btnHighlightSwitch.Location = new System.Drawing.Point(514, 5);
             this.btnHighlightSwitch.Name = "btnHighlightSwitch";
-            this.btnHighlightSwitch.Size = new System.Drawing.Size(58, 21);
+            this.btnHighlightSwitch.Size = new System.Drawing.Size(65, 21);
             this.btnHighlightSwitch.TabIndex = 3;
             this.btnHighlightSwitch.Text = "Highlight";
             this.btnHighlightSwitch.UseVisualStyleBackColor = true;
@@ -83,7 +83,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.Size = new System.Drawing.Size(46, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "Choose";
             // 
@@ -95,14 +95,14 @@
             this.comboTextFormats.FormattingEnabled = true;
             this.comboTextFormats.Location = new System.Drawing.Point(58, 6);
             this.comboTextFormats.Name = "comboTextFormats";
-            this.comboTextFormats.Size = new System.Drawing.Size(373, 21);
+            this.comboTextFormats.Size = new System.Drawing.Size(386, 21);
             this.comboTextFormats.TabIndex = 1;
             this.comboTextFormats.SelectedIndexChanged += new System.EventHandler(this.comboTextFormats_SelectedIndexChanged);
             // 
             // btnUpdateModules
             // 
             this.btnUpdateModules.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUpdateModules.Location = new System.Drawing.Point(437, 5);
+            this.btnUpdateModules.Location = new System.Drawing.Point(450, 5);
             this.btnUpdateModules.Name = "btnUpdateModules";
             this.btnUpdateModules.Size = new System.Drawing.Size(58, 21);
             this.btnUpdateModules.TabIndex = 0;
@@ -116,7 +116,7 @@
             this.panContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panContent.Location = new System.Drawing.Point(0, 33);
             this.panContent.Name = "panContent";
-            this.panContent.Size = new System.Drawing.Size(566, 405);
+            this.panContent.Size = new System.Drawing.Size(586, 405);
             this.panContent.TabIndex = 1;
             // 
             // treeDataView
@@ -127,7 +127,7 @@
             this.treeDataView.Location = new System.Drawing.Point(0, 0);
             this.treeDataView.Name = "treeDataView";
             this.treeDataView.ShowNodeToolTips = true;
-            this.treeDataView.Size = new System.Drawing.Size(566, 405);
+            this.treeDataView.Size = new System.Drawing.Size(586, 405);
             this.treeDataView.TabIndex = 0;
             this.treeDataView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeDataView_AfterSelect);
             // 
@@ -200,7 +200,7 @@
             this.footerlbParsifyErrorsCount});
             this.statusStrip1.Location = new System.Drawing.Point(0, 416);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(566, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(586, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -213,7 +213,7 @@
             // footerlbSelectedCount
             // 
             this.footerlbSelectedCount.Name = "footerlbSelectedCount";
-            this.footerlbSelectedCount.Size = new System.Drawing.Size(217, 17);
+            this.footerlbSelectedCount.Size = new System.Drawing.Size(242, 17);
             this.footerlbSelectedCount.Spring = true;
             this.footerlbSelectedCount.Text = "Selected Count: n/a";
             // 
@@ -221,7 +221,7 @@
             // 
             this.footerlbParsifyErrorsCount.IsLink = true;
             this.footerlbParsifyErrorsCount.Name = "footerlbParsifyErrorsCount";
-            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(217, 17);
+            this.footerlbParsifyErrorsCount.Size = new System.Drawing.Size(242, 17);
             this.footerlbParsifyErrorsCount.Spring = true;
             this.footerlbParsifyErrorsCount.Text = "Parsify: 0 Errors";
             this.footerlbParsifyErrorsCount.Click += new System.EventHandler(this.footerlbParsifyErrorsCount_Click);
@@ -230,10 +230,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(566, 438);
+            this.ClientSize = new System.Drawing.Size(586, 438);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panContent);
             this.Controls.Add(this.panToolbar);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmCoreWindow";
             this.Text = "Parsify";

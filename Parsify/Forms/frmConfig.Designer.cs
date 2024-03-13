@@ -44,7 +44,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(25, 33);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 13);
+            this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Modules-Path:";
             // 
@@ -52,7 +52,7 @@
             // 
             this.txtDirectoryPath.Location = new System.Drawing.Point(28, 49);
             this.txtDirectoryPath.Name = "txtDirectoryPath";
-            this.txtDirectoryPath.Size = new System.Drawing.Size(214, 20);
+            this.txtDirectoryPath.Size = new System.Drawing.Size(214, 22);
             this.txtDirectoryPath.TabIndex = 2;
             // 
             // btnBrowseNewPath
@@ -101,7 +101,7 @@
             this.rdForeground.AutoSize = true;
             this.rdForeground.Location = new System.Drawing.Point(16, 57);
             this.rdForeground.Name = "rdForeground";
-            this.rdForeground.Size = new System.Drawing.Size(79, 17);
+            this.rdForeground.Size = new System.Drawing.Size(87, 17);
             this.rdForeground.TabIndex = 1;
             this.rdForeground.TabStop = true;
             this.rdForeground.Text = "Foreground";
@@ -112,7 +112,7 @@
             this.rdBackground.AutoSize = true;
             this.rdBackground.Location = new System.Drawing.Point(16, 34);
             this.rdBackground.Name = "rdBackground";
-            this.rdBackground.Size = new System.Drawing.Size(126, 17);
+            this.rdBackground.Size = new System.Drawing.Size(134, 17);
             this.rdBackground.TabIndex = 0;
             this.rdBackground.TabStop = true;
             this.rdBackground.Text = "Background (Default)";
@@ -129,6 +129,7 @@
             this.Controls.Add(this.btnBrowseNewPath);
             this.Controls.Add(this.txtDirectoryPath);
             this.Controls.Add(this.label1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
