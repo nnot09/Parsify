@@ -316,6 +316,12 @@ namespace Kbg.NppPluginNET
 
             if ( e.Node is NodeField field )
             {
+                if ( !field.DocumentField.Success )
+                {
+                    Main.Scintilla.ClearSelect();
+                    return;
+                }
+
                 Main.Scintilla.SelectFieldValue( field.DocumentField );
 
                 ctxMenuItemShowOnlyColumnType.Visible = false;

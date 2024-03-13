@@ -70,6 +70,10 @@ namespace Parsify.Core
                         _errors.AppendLine( error );
                         NumberOfErrors++;
                     }
+                    else
+                    {
+                        field.Success = true;
+                    }
 
                     foreach ( var translatedFieldValueDef in moduleLineField.Translations )
                     {

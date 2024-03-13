@@ -88,6 +88,11 @@ namespace Parsify.Core
             _gateway.SetSelection( area.Start, area.End );
         }
 
+        public void ClearSelect()
+        {
+            _gateway.ClearSelections();
+        }
+
         public void SelectMultiplePlainFieldValues( IEnumerable<TextLine> lines, DataField field )
         {
             _gateway.ClearSelections();
