@@ -1,17 +1,14 @@
 ﻿using Kbg.NppPluginNET.PluginInfrastructure;
+using Parsify.Core.Models;
 using Parsify.Models;
-using Parsify.PluginInfrastructure;
 using Parsify.XmlModels;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml;
 
 namespace Parsify.Core
 {
@@ -59,7 +56,7 @@ namespace Parsify.Core
             // TODO Optimize
             var line = lines
                 .Where( l => documentLine.Length > l.StartsWithIdentifier.Length )
-                .SingleOrDefault( l => l.StartsWithIdentifier == documentLine.Substring( 0, l.StartsWithIdentifier.Length ) );
+                .SingleOrDefault( l => l.StartsWithIdentifier == documentLine.Substring( 0, l.StartsWithIdentifier.Length ).TrimStart() );
 
             return line;
         }
@@ -86,6 +83,11 @@ namespace Parsify.Core
 
             // caret, anchor
             _gateway.SetSelection( area.Start, area.End );
+        }
+
+        public void ClearSelect()
+        {
+            _gateway.ClearSelections();
         }
 
         public void SelectMultiplePlainFieldValues( IEnumerable<TextLine> lines, DataField field )
@@ -163,18 +165,23 @@ namespace Parsify.Core
             int parsifyLexerId = GetLexerId( "Parsify" );
             int newLangId = 0;
 
+#if DEBUG
             Debug.WriteLine( $"[{DateTime.Now}] Current Language Id: {currentLanguageId}" );
             Debug.WriteLine( $"[{DateTime.Now}] Parsify Language Id: {parsifyLexerId}" );
+#endif
 
             if ( currentLanguageId == parsifyLexerId )
             {
+#if DEBUG
                 Debug.WriteLine( $"[{DateTime.Now}] Activating Default Language." );
-
+#endif
                 newLangId = defaultLang;
             }
             else
             {
+#if DEBUG
                 Debug.WriteLine( $"[{DateTime.Now}] Activating Parsify Language." );
+#endif
 
                 defaultLang = currentLanguageId;
                 newLangId = parsifyLexerId;
@@ -223,36 +230,6 @@ namespace Parsify.Core
             int end = lineStartIndex + index + length;
 
             return new Area( start, end );
-        }
-    }
-
-    public class Area
-    {
-        public int Start { get; set; }
-        public int End { get; set; }
-
-        public Area()
-        {
-        }
-        public Area( int start, int end )
-        {
-            Start = start;
-            End = end;
-        }
-    }
-
-    public class LineInfo
-    {
-        public string Line { get; set; }
-        public int LineNo { get; set; }
-
-        public LineInfo()
-        {
-        }
-        public LineInfo( string line, int lineNo )
-        {
-            Line = line;
-            LineNo = lineNo;
         }
     }
 }

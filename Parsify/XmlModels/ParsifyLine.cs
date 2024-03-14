@@ -9,7 +9,13 @@ namespace Parsify.XmlModels
         [XmlAttribute( "StartsWith" )]
         public string StartsWithIdentifier { get; set; }
 
+        [XmlAttribute( "Optional" )]
+        public bool Optional { get; set; }
+
         [XmlElement( "Field" )]
         public List<ParsifyField> Fields { get; set; }
+
+        public bool ShouldSerializeOptional()
+            => Optional;
     }
 }

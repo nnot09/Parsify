@@ -203,7 +203,7 @@ namespace Kbg.NppPluginNET
 
         private void btnUpdateModules_Click( object sender, EventArgs e )
         {
-            this.Enabled = false;
+            this.btnUpdateModules.Enabled = false;
 
             try
             {
@@ -211,7 +211,7 @@ namespace Kbg.NppPluginNET
             }
             finally
             {
-                this.Enabled = true;
+                this.btnUpdateModules.Enabled = true;
             }
         }
 
@@ -316,6 +316,12 @@ namespace Kbg.NppPluginNET
 
             if ( e.Node is NodeField field )
             {
+                if ( !field.DocumentField.Success )
+                {
+                    Main.Scintilla.ClearSelect();
+                    return;
+                }
+
                 Main.Scintilla.SelectFieldValue( field.DocumentField );
 
                 ctxMenuItemShowOnlyColumnType.Visible = false;

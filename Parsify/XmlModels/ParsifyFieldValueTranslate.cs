@@ -25,5 +25,11 @@ namespace Parsify.XmlModels
 
         [XmlAttribute( "SearchMode" )]
         public ParsifyFieldValueTranslateSearchMode SearchMode { get; set; } = ParsifyFieldValueTranslateSearchMode.Default;
+
+        public bool ShouldSerializeIgnoreCase()
+            => IgnoreCase;
+
+        public bool ShouldSerializeInvertCondition()
+            => InvertCondition;
     }
 }

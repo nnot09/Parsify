@@ -3,6 +3,7 @@ using Parsify.Other;
 using Parsify.XmlModels;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -40,7 +41,7 @@ namespace Parsify.Core
                 // Current document line isn't defined in our module XML
                 if ( moduleLine == null )
                 {
-                    _errors.AppendLine( $"LineNo {documentLine.LineNo} seems to be undefined." );
+                    _errors.AppendLine( $"Line {documentLine.LineNo} is not defined." );
                     NumberOfErrors++;
                     continue;
                 }
@@ -54,6 +55,7 @@ namespace Parsify.Core
 
                 Document.Lines.Add( line );
 
+                int readLength = 0;
                 foreach ( var moduleLineField in moduleLine.Fields )
                 {
                     DataField field = new DataField()
@@ -64,12 +66,25 @@ namespace Parsify.Core
                         Parent = line,
                     };
 
-                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, out string error );
+                    field.Value = Extensions.GetField( documentLine.Line, field.Index, field.Length, documentLine.LineNo, field.Name, out string error );
                     if ( error != null )
                     {
-                        _errors.AppendLine( error );
-                        NumberOfErrors++;
+                        if ( moduleLineField.Optional )
+                        {
+                            field.Value = "[missing]";
+                        }
+                        else
+                        {
+                            _errors.AppendLine( error );
+                            NumberOfErrors++;
+                        }
                     }
+                    else
+                    {
+                        field.Success = true;
+                    }
+
+                    readLength += field.Length;
 
                     foreach ( var translatedFieldValueDef in moduleLineField.Translations )
                     {
@@ -131,6 +146,24 @@ namespace Parsify.Core
 
                     line.Fields.Add( field );
                 }
+
+                if ( documentLine.Length > readLength + line.LineIdentifier.Length )
+                {
+                    int unknownStartIndex = readLength + line.LineIdentifier.Length;
+                    _errors.AppendLine( $"Undefined value at line {documentLine.LineNo} (Position {unknownStartIndex + 1}): {documentLine.Line?.Substring( unknownStartIndex ) ?? "(null)"}" );
+                    NumberOfErrors++;
+                }
+            }
+
+            // Find lines that are not listed in our document
+            var definedLinesNotFound = module.LineDefinitions
+                .Where( l => !l.Optional )
+                .Where( l => !Document.Lines.Any( foundLines => foundLines.LineIdentifier == l.StartsWithIdentifier ) );
+            
+            foreach ( var notfound in definedLinesNotFound )
+            {
+                _errors.AppendLine( $"Line definition '{notfound.StartsWithIdentifier}' is missing in current document." );
+                NumberOfErrors++;
             }
 
             Success = true;

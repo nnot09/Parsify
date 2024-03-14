@@ -96,9 +96,11 @@
   <ItemGroup>
     <Compile Include="AppConfig.cs" />
     <Compile Include="AppMarkerMode.cs" />
+    <Compile Include="Core\Models\Area.cs" />
     <Compile Include="Core\DocumentParser.cs" />
     <Compile Include="Core\DocumentFactory.cs" />
     <Compile Include="Core\DocumentParserCache.cs" />
+    <Compile Include="Core\Models\LineInfo.cs" />
     <Compile Include="Forms\frmParseErrMessages.cs">
       <SubType>Form</SubType>
     </Compile>

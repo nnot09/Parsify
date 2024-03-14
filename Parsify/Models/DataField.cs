@@ -14,6 +14,7 @@ namespace Parsify.Models
         public string CustomDisplayValue { get; set; }
         public int Index { get; set; }
         public int Length { get; set; }
+        public bool Success { get; set; }
         public override string ToString()
             => $"{Name}: {Value ?? "(null)"}";
     }

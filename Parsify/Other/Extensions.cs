@@ -12,7 +12,7 @@ namespace Parsify.Other
 {
     internal static class Extensions
     {
-        public static string GetField( string line, int index, int length, int lineNo, out string error )
+        public static string GetField( string line, int index, int length, int lineNo, string fieldName, out string error )
         {
             error = null;
 
@@ -21,7 +21,7 @@ namespace Parsify.Other
 
             if ( line.Length < index || index + length > line.Length )
             {
-                error = $"Line {lineNo} ends unexpectedly and is not long enough for the field (Position: {index + 1}/Length: {length}).";
+                error = $"Line {lineNo} ends unexpectedly and is not long enough for the field '{fieldName}' (Position: {index + 1}/Length: {length}).";
                 return "?".PadRight( length, '?' );
                 // return line.Substring( index );
             }
