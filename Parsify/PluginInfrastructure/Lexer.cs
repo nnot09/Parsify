@@ -452,24 +452,20 @@ namespace Parsify.PluginInfrastructure
                 }
 
                 int remaining = i;
-                if ( remaining < content.Length && content[ remaining ] != '\n' )
+                if ( remaining < content.Length )
                 {
-                    vtable.StartStyling( p_access, (IntPtr)( i ) );
-                    for ( ; remaining < length && content[ remaining ] != '\n'; remaining++ ) ;
+                    if ( content[remaining] == '\n' && content[remaining - 1] == '\r' )
+                        vtable.StartStyling( p_access, (IntPtr)( i - 1 ) );
+                    else
+                        vtable.StartStyling( p_access, (IntPtr)( i ) );
 
-                    bool hasCarriageReturn = content[ remaining - 1 ] == '\r';
+                    for ( ; remaining < length && content[ remaining ] != '\n'; remaining++ ) ;
+                    
+                    vtable.SetStyleFor( p_access, (IntPtr)( remaining ), (char)0 );
 
                     int delta = remaining - i;
                     if ( delta > 0 )
-                    {
-                        int startDefaultIndex = remaining;
-                        
-                        if ( hasCarriageReturn )
-                            startDefaultIndex--;
-
-                        vtable.SetStyleFor( p_access, (IntPtr)( startDefaultIndex ), (char)0 );
                         i += delta;
-                    }
                 }
             }
 
