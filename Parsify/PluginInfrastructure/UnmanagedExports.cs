@@ -84,7 +84,9 @@ namespace Kbg.NppPluginNET
 
             string sName = Marshal.PtrToStringAnsi( pName );
 
+#if DEBUG
             Debug.WriteLine( $"[{DateTime.Now}] CreateLexer: " + sName );
+#endif
 
             if ( sName == Parsify.PluginInfrastructure.Lexer.Name.Trim( '\0' ) )
             {

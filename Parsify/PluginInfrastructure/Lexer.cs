@@ -352,7 +352,9 @@ namespace Parsify.PluginInfrastructure
             if ( !SupportedProperties.ContainsKey( name ) )
                 return IntPtr.Zero;
 
+#if DEBUG
             Debug.WriteLine( $"[{DateTime.Now}] PropertySet: {name} Value: {value}" );
+#endif
 
             SupportedProperties[ name ] = value == "0" ? false : true;
 
@@ -401,7 +403,9 @@ namespace Parsify.PluginInfrastructure
         // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
         public static void Lex( IntPtr instance, UIntPtr start_pos, IntPtr length_doc, int init_style, IntPtr p_access )
         {
-            Debug.WriteLine( "Lex Called!" );
+#if DEBUG
+            Debug.WriteLine( $"[{DateTime.Now}] Lex()" );
+#endif
 
             /* main lexing method. 
              * start_pos is always the startposition of a line
@@ -462,12 +466,6 @@ namespace Parsify.PluginInfrastructure
 
                 foreach ( var field in dataLine.Fields )
                 {
-#if DEBUG
-                    //int from = i;
-                    //int to = i + field.Length;
-                    //string value = content.Substring( from, to - from );
-                    //Debug.WriteLine( value );
-#endif
                     int fromDocumentFieldPosition = i;
                     int toDocumentFieldPosition = i + field.Length;
 

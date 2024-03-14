@@ -43,7 +43,9 @@ namespace Kbg.NppPluginNET
 
             if ( notification.Header.Code == (uint)NppMsg.NPPN_LANGCHANGED )
             {
+#if DEBUG
                 Debug.WriteLine( $"[{DateTime.Now}] Lang changed" );
+#endif
             }
         } 
 
