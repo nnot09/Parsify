@@ -35,6 +35,10 @@ Xml
   </Line>
 </ParsifyModule>
 ```
+## Credits
+- [BdR76](https://github.com/BdR76) and his [CSVLint](https://github.com/BdR76/CSVLint) project to understand highlighting/lexing in Notepad++.
+- [Chri-s](https://github.com/Chri-s) with his helpful PR's fixing various things and having great ideas to enhance the usability of this project.
+
 ### Foreground highlighting
 ![fg-highlight](https://i.gyazo.com/abeb5b694453e0ea73a3382f4d586ac4.png)
 
