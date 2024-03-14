@@ -3,6 +3,7 @@ using Parsify.Other;
 using Parsify.XmlModels;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -54,6 +55,7 @@ namespace Parsify.Core
 
                 Document.Lines.Add( line );
 
+                int readLength = 0;
                 foreach ( var moduleLineField in moduleLine.Fields )
                 {
                     DataField field = new DataField()
@@ -81,6 +83,8 @@ namespace Parsify.Core
                     {
                         field.Success = true;
                     }
+
+                    readLength += field.Length;
 
                     foreach ( var translatedFieldValueDef in moduleLineField.Translations )
                     {
@@ -141,6 +145,13 @@ namespace Parsify.Core
                     }
 
                     line.Fields.Add( field );
+                }
+
+                if ( documentLine.Length > readLength + line.LineIdentifier.Length )
+                {
+                    int unknownStartIndex = readLength + line.LineIdentifier.Length;
+                    _errors.AppendLine( $"Undefined value at line {documentLine.LineNo} (Position {unknownStartIndex + 1}): {documentLine.Line?.Substring( unknownStartIndex ) ?? "(null)"}" );
+                    NumberOfErrors++;
                 }
             }
 

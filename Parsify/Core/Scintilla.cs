@@ -250,6 +250,7 @@ namespace Parsify.Core
     {
         public string Line { get; set; }
         public int LineNo { get; set; }
+        public int Length => Line?.TrimEnd( new[] { '\r', '\n' } ).Length ?? 0;
 
         public LineInfo()
         {
