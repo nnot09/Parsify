@@ -1,3 +1,16 @@
+readme is in progress
+
+# Parsify - Notepad++ Plugin for Text-Based Document Visualization
+
+Parsify is a powerful plugin for Notepad++ that enables users to visualize electronic documents in a text-based format, such as EDIFACT or GDV. With Parsify, users can create custom format definitions using XML files, allowing them to precisely interpret and display various parts of the document.
+
+## Features
+
+- **Custom Format Definitions**: Define custom format definitions using XML files to parse text-based documents accurately.
+- **Flexible Parsing**: Specify the structure of each line and the fields within them, including optional fields and translations for specific values.
+- **Visualization**: Visualize parsed documents as a tree of nodes, displaying all lines and fields along with their corresponding values.
+- **Much more** (WIP)
+
 Xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
