@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 namespace Parsify.Forms.NodeControls
 {
+    // Credits: github.com/chri-s
     internal class FieldTreeView : TreeView
     {
         /// <summary>
