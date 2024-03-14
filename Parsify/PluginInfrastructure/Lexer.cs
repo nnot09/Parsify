@@ -445,7 +445,7 @@ namespace Parsify.PluginInfrastructure
                 int startPosition = i;
                 string indexedContent = content.Substring( i );
 
-                var dataLine = Lines.Where( l => indexedContent.StartsWith( l.StartsWithIdentifier ) ).Single();
+                var dataLine = Lines.Where( l => indexedContent.StartsWith( l.StartsWithIdentifier ) ).FirstOrDefault();
 
                 if ( dataLine == null )
                     continue;
