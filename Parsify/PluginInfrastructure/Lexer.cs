@@ -8,14 +8,14 @@ using System.Runtime.InteropServices;
 
 namespace Parsify.PluginInfrastructure
 {
+    // Credits: github.com/BdR76
+
     internal static class Lexer
     {
         public static readonly string Name = "Parsify\0";
         public static readonly string StatusText = "Parsify - Text parser highlighting\0";
         public static List<ParsifyLine> Lines { get; set; } = new List<ParsifyLine>();
         public static bool RefreshLexerState = false;
-
-        static readonly string KeywordDescription = "Keywords1\nKeywords2\nKeywords3\nKeywords4\nKeywords5";
 
         static readonly Dictionary<string, bool> SupportedProperties = new Dictionary<string, bool>
         {
@@ -365,38 +365,13 @@ namespace Parsify.PluginInfrastructure
         public static IntPtr DescribeWordListSets( IntPtr instance )
         {
             // ? A string describing the different keywords, but how to separate is the question
-            return Marshal.StringToHGlobalAnsi( KeywordDescription );
+            // return Marshal.StringToHGlobalAnsi( KeywordDescription );
+            return Marshal.StringToHGlobalAnsi( "" );
         }
 
         // virtual i64 SCI_METHOD WordListSet(int n, const char *wl) = 0
         public static IntPtr WordListSet( IntPtr instance, int kw_list_index, IntPtr key_word_list )
         {
-            // Upto 8 different keyword lists are possible, each list is a space separated string
-            switch ( kw_list_index )
-            {
-                //case 0:
-                //    //ILexer.Segs1.AddRange("UNA UNB UNH UNT UNZ BGM".Split(' '));
-                //    ILexer.Keywords1 = new List<string>( Marshal.PtrToStringAnsi( key_word_list ).Split( ' ' ) );
-                //    break;
-                //case 1:
-                //    ILexer.Keywords2 = new List<string>( Marshal.PtrToStringAnsi( key_word_list ).Split( ' ' ) );
-                //    break;
-                //case 2:
-                //    ILexer.Keywords3 = new List<string>( Marshal.PtrToStringAnsi( key_word_list ).Split( ' ' ) );
-                //    break;
-                //case 3:
-                //    ILexer.Keywords4 = new List<string>( Marshal.PtrToStringAnsi( key_word_list ).Split( ' ' ) );
-                //    break;
-                //case 4:
-                //    ILexer.Keywords5 = new List<string>( Marshal.PtrToStringAnsi( key_word_list ).Split( ' ' ) );
-                //    break;
-                //default:
-                //    break;
-
-                default:
-                    break;
-            }
-
             return (IntPtr)kw_list_index;
         }
 
@@ -416,9 +391,6 @@ namespace Parsify.PluginInfrastructure
 
             int length = (int)length_doc;
             int start = (int)start_pos;
-
-            // bool bHighlight = SupportedProperties[ "highlight" ];
-            //bool bHighlight = true;
 
             // allocate a buffer
             IntPtr buffer_ptr = Marshal.AllocHGlobal( length );
@@ -508,112 +480,6 @@ namespace Parsify.PluginInfrastructure
         // virtual void SCI_METHOD Fold(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
         public static void Fold( IntPtr instance, UIntPtr start_pos, IntPtr length_doc, int init_style, IntPtr p_access )
         {
-            /* 
-             * is called with the exact range that needs folding. 
-             * Previously, lexers were called with a range that started one line 
-             * before the range that needs to be folded as this allowed fixing up 
-             * the last line from the previous folding. 
-             * The new approach allows the lexer to decide whether to backtrack 
-             * or to handle this more efficiently.
-             * 
-             * Lessons I have learned so far are
-             * - do not start with a base level of 0 to simplify the arithmetic int calculation
-             * - scintilla recommends to use 0x400 as a base level
-             * - when the value becomes smaller than the base value, set the base value
-             * - create an additional margin in which you set the levels of the respective lines, 
-             *      so it is easy to see when something breaks.
-             */
-
-            //int length = (int)length_doc;
-            //int start = (int)start_pos;
-
-            //// allocate a buffer
-            //IntPtr buffer_ptr = Marshal.AllocHGlobal( length );
-            //if ( buffer_ptr == IntPtr.Zero ) { return; }
-
-            //IDocument idoc = (IDocument)Marshal.PtrToStructure( p_access, typeof( IDocument ) );
-            //IDocumentVtable vtable = (IDocumentVtable)Marshal.PtrToStructure( (IntPtr)idoc.VTable, typeof( IDocumentVtable ) );
-
-            //// scintilla fills the allocated buffer
-            //vtable.GetCharRange( p_access, buffer_ptr, (IntPtr)start, (IntPtr)length );
-            //if ( buffer_ptr == IntPtr.Zero ) { return; }
-
-            //// convert the buffer into a managed string
-            //string content = Marshal.PtrToStringAnsi( buffer_ptr, length );
-
-
-            //int cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
-            //int cur_line = (int)vtable.LineFromPosition( p_access, (IntPtr)start );
-
-            //if ( cur_line > 0 )
-            //{
-            //    int prev_level = (int)vtable.GetLevel( p_access, (IntPtr)( cur_line - 1 ) );
-            //    bool header_flag_set = ( prev_level & (int)SciMsg.SC_FOLDLEVELHEADERFLAG ) == (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
-
-            //    if ( header_flag_set )
-            //    {
-            //        cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK ) + 1;
-            //    }
-            //    else
-            //    {
-            //        cur_level = ( prev_level & (int)SciMsg.SC_FOLDLEVELNUMBERMASK );
-            //    }
-            //}
-
-            //int next_level = cur_level;
-
-            //for ( int i = 0; i < length; i++ )
-            //{
-
-            //    if ( !SupportedProperties[ "fold" ] )
-            //    {
-            //        vtable.SetLevel( p_access, (IntPtr)cur_line, (int)SciMsg.SC_FOLDLEVELBASE );
-            //        while ( i < length )
-            //        {
-            //            // read rest of the line
-            //            if ( content[ i ] == '\n' ) { break; }
-            //            i++;
-            //        }
-            //        cur_line++;
-            //        continue;
-            //    }
-
-            //    string tag = "";
-            //    if ( i + 2 < length ) { tag = content.Substring( i, 3 ); }
-
-            //    //if ( FoldOpeningTags.Contains( tag ) )
-            //    //{
-            //    //    next_level++;
-            //    //    cur_level |= (int)SciMsg.SC_FOLDLEVELHEADERFLAG;
-            //    //}
-            //    //else if ( FoldClosingTags.Contains( tag ) )
-            //    //{
-            //    //    next_level--;
-            //    //    if ( SupportedProperties[ "fold.compact" ] ) { cur_level--; }
-            //    //    cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
-            //    //}
-            //    //else
-            //    {
-            //        cur_level &= (int)SciMsg.SC_FOLDLEVELNUMBERMASK;
-            //    }
-
-            //    while ( i < length )
-            //    {
-            //        // read rest of the line
-            //        if ( content[ i ] == '\n' ) { break; }
-            //        i++;
-            //    }
-            //    // set fold level
-            //    if ( cur_level < (int)SciMsg.SC_FOLDLEVELBASE )
-            //    {
-            //        cur_level = (int)SciMsg.SC_FOLDLEVELBASE;
-            //    }
-            //    vtable.SetLevel( p_access, (IntPtr)cur_line, cur_level );
-            //    cur_line++;
-            //    cur_level = next_level;
-            //}
-            //// free allocated buffer
-            //Marshal.FreeHGlobal( buffer_ptr );
         }
 
         // virtual int SCI_METHOD NamedStyles() = 0;
