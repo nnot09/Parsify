@@ -350,6 +350,9 @@ namespace Kbg.NppPluginNET
 
         private void btnHighlightSwitch_Click( object sender, EventArgs e )
         {
+            if ( comboTextFormats.SelectedItem != null )
+                Main.DocumentFactory.UpdateParser( comboTextFormats.SelectedItem as ParsifyModule );
+            
             Main.Scintilla.SwitchLanguage();
         }
 

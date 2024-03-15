@@ -96,7 +96,8 @@ namespace Parsify.Core
             if ( OnDocumentPreInitalize( document ).Cancel )
                 return;
 
-            PluginInfrastructure.Lexer.Lines.AddRange( document.Parser.LineDefinitions );
+            // PluginInfrastructure.Lexer.Lines.AddRange( document.Parser.LineDefinitions );
+            PluginInfrastructure.Lexer.Lines.AddRange( document.Lines );
             _scintilla.GatewaySetProperty( "nnot09", "0" );
 
             OnDocumentInitialized();

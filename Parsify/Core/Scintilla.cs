@@ -145,18 +145,6 @@ namespace Parsify.Core
             _gateway.SetIdleStyling( IdleStyling.ALL );
         }
 
-        public void UpdateLexerStyle( ParsifyModule module )
-        {
-            PluginInfrastructure.Lexer.Lines.Clear();
-            PluginInfrastructure.Lexer.Lines.AddRange( module.LineDefinitions );
-
-            _gateway.SetProperty( "nnot09", "0" );
-            _gateway.SetIdleStyling( IdleStyling.ALL );
-            // _gateway.SetFocus( true );
-
-            PluginInfrastructure.Lexer.RefreshLexerState = !PluginInfrastructure.Lexer.RefreshLexerState;
-        }
-
         int defaultLang = 0;
         public void SwitchLanguage()
         {

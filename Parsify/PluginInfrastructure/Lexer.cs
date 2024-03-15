@@ -1,4 +1,6 @@
-﻿using Kbg.NppPluginNET.PluginInfrastructure;
+﻿using Kbg.NppPluginNET;
+using Kbg.NppPluginNET.PluginInfrastructure;
+using Parsify.Models;
 using Parsify.XmlModels;
 using System;
 using System.Collections.Generic;
@@ -8,13 +10,14 @@ using System.Runtime.InteropServices;
 
 namespace Parsify.PluginInfrastructure
 {
-    // Credits: github.com/BdR76
+    // Credits: Mainly from github.com/BdR76 except Lex
 
     internal static class Lexer
     {
         public static readonly string Name = "Parsify\0";
         public static readonly string StatusText = "Parsify - Text parser highlighting\0";
-        public static List<ParsifyLine> Lines { get; set; } = new List<ParsifyLine>();
+        public static List<TextLine> Lines { get; set; } = new List<TextLine>();
+       
         public static bool RefreshLexerState = false;
 
         static readonly Dictionary<string, bool> SupportedProperties = new Dictionary<string, bool>
@@ -378,6 +381,16 @@ namespace Parsify.PluginInfrastructure
         // virtual void SCI_METHOD Lex(Sci_PositionU startPos, i64 lengthDoc, int initStyle, IDocument *pAccess) = 0;
         public static void Lex( IntPtr instance, UIntPtr start_pos, IntPtr length_doc, int init_style, IntPtr p_access )
         {
+            /* 
+             * Lex is called whenever the active document changes (e.g. adding new char), but the content will be the affected line/word only.
+             * This is a problem because in our Lex logic we entirely rely on full document lexing instead of single words.
+             * To combat this, we cancel Lex when the current language is already Parsify.
+             */
+
+            // TODO avoid GetLexerId, cache Parsify language id instead.
+            if ( Main.Scintilla.CurrentLanguage == Main.Scintilla.GetLexerId( "Parsify" ) )
+                return;
+
 #if DEBUG
             Debug.WriteLine( $"[{DateTime.Now}] Lex()" );
 #endif
@@ -409,6 +422,7 @@ namespace Parsify.PluginInfrastructure
             string content = Marshal.PtrToStringAnsi( buffer_ptr, length );
 
             int styleId = 2;
+            int dataLineIndex = 0;
             for ( int i = 0; i < length; i++ )
             {
                 //if ( content[ i ] == '\n' || content[ i ] == '\r' )
@@ -421,14 +435,16 @@ namespace Parsify.PluginInfrastructure
                 int startPosition = i;
                 string indexedContent = content.Substring( i );
 
-                var dataLine = Lines.Where( l => indexedContent.StartsWith( l.StartsWithIdentifier ) ).FirstOrDefault();
+                //var dataLine = Lines.Where( l => indexedContent.StartsWith( l.LineIdentifier ) ).FirstOrDefault();
 
-                if ( dataLine == null )
-                    continue;
+                //if ( dataLine == null )
+                //    continue;
+
+                var dataLine = Lines[ dataLineIndex ];
 
                 styleId = 2;
 
-                i += dataLine.StartsWithIdentifier.Length;
+                i += dataLine.LineIdentifier.Length;
 
                 int fromDocumentLineStartPosition = start + startPosition;
                 int toDocumentLineStartPosition = i - startPosition;
@@ -436,37 +452,53 @@ namespace Parsify.PluginInfrastructure
                 vtable.StartStyling( p_access, (IntPtr)( fromDocumentLineStartPosition ) );
                 vtable.SetStyleFor( p_access, (IntPtr)( toDocumentLineStartPosition ), (char)1 );
 
+                // TODO Fix here
+                int lineptr = i;
+                int effectiveLength = 0;
                 foreach ( var field in dataLine.Fields )
                 {
-                    int fromDocumentFieldPosition = i;
-                    int toDocumentFieldPosition = i + field.Length;
+                    if ( !field.Success )
+                        continue;
 
+                    int fromDocumentFieldPosition = start + startPosition + field.Index;
+                    int toDocumentFieldPosition = lineptr + field.Length;
+#if DEBUG
+                    //string value = content.Substring( fromDocumentFieldPosition, toDocumentFieldPosition - fromDocumentFieldPosition );
+                    //Debug.WriteLine( $"[{DateTime.Now}] Field: {value}" );
+#endif
                     vtable.StartStyling( p_access, (IntPtr)( fromDocumentFieldPosition ) );
-                    vtable.SetStyleFor( p_access, (IntPtr)( toDocumentFieldPosition ), (char)styleId );
+                    vtable.SetStyleFor( p_access, (IntPtr)( toDocumentFieldPosition - fromDocumentFieldPosition ), (char)styleId );
 
-                    i += field.Length;
+                    lineptr += field.Length;
+                    effectiveLength += field.Length;
+                    // i += field.Length;
 
                     styleId++;
                     if ( styleId > 11 )
                         styleId = 2;
                 }
 
+                // i += lineptr;
+                i += effectiveLength;
+
                 int remaining = i;
                 if ( remaining < content.Length )
                 {
-                    if ( content[remaining] == '\n' && content[remaining - 1] == '\r' )
+                    if ( content[ remaining ] == '\n' && content[ remaining - 1 ] == '\r' )
                         vtable.StartStyling( p_access, (IntPtr)( i - 1 ) );
                     else
                         vtable.StartStyling( p_access, (IntPtr)( i ) );
 
                     for ( ; remaining < length && content[ remaining ] != '\n'; remaining++ ) ;
-                    
+
                     vtable.SetStyleFor( p_access, (IntPtr)( remaining ), (char)0 );
 
                     int delta = remaining - i;
                     if ( delta > 0 )
                         i += delta;
                 }
+
+                dataLineIndex++;
             }
 
             // free allocated buffer
